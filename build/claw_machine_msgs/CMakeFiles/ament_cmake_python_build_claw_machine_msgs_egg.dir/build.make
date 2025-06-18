@@ -44,19 +44,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /home/pico/miniconda3/envs/ros2/bin/cmake
+CMAKE_COMMAND = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake
 
 # The command to remove a file.
-RM = /home/pico/miniconda3/envs/ros2/bin/cmake -E rm -f
+RM = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pico/code/claw_machine_ros2/src/claw_machine_msgs
+CMAKE_SOURCE_DIR = /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pico/code/claw_machine_ros2/build/claw_machine_msgs
+CMAKE_BINARY_DIR = /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs
 
 # Utility rule file for ament_cmake_python_build_claw_machine_msgs_egg.
 
@@ -67,7 +67,7 @@ include CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg.dir/compiler_d
 include CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg.dir/progress.make
 
 CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg:
-	cd /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/ament_cmake_python/claw_machine_msgs && /home/pico/miniconda3/envs/ros2/bin/python3.11 setup.py egg_info
+	cd /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/ament_cmake_python/claw_machine_msgs && /home/clawMachine/miniforge3/envs/ros_env/bin/python3.11 setup.py egg_info
 
 ament_cmake_python_build_claw_machine_msgs_egg: CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg
 ament_cmake_python_build_claw_machine_msgs_egg: CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg.dir/clean:
 .PHONY : CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg.dir/clean
 
 CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg.dir/depend:
-	cd /home/pico/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pico/code/claw_machine_ros2/src/claw_machine_msgs /home/pico/code/claw_machine_ros2/src/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/ament_cmake_python_build_claw_machine_msgs_egg.dir/depend
 

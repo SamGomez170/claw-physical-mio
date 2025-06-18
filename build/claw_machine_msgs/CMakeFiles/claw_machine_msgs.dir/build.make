@@ -44,19 +44,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /home/pico/miniconda3/envs/ros2/bin/cmake
+CMAKE_COMMAND = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake
 
 # The command to remove a file.
-RM = /home/pico/miniconda3/envs/ros2/bin/cmake -E rm -f
+RM = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pico/code/claw_machine_ros2/src/claw_machine_msgs
+CMAKE_SOURCE_DIR = /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pico/code/claw_machine_ros2/build/claw_machine_msgs
+CMAKE_BINARY_DIR = /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs
 
 # Utility rule file for claw_machine_msgs.
 
@@ -66,37 +66,37 @@ include CMakeFiles/claw_machine_msgs.dir/compiler_depend.make
 # Include the progress variables for this target.
 include CMakeFiles/claw_machine_msgs.dir/progress.make
 
-CMakeFiles/claw_machine_msgs: /home/pico/code/claw_machine_ros2/src/claw_machine_msgs/msg/Position.msg
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Bool.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Byte.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/ByteMultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Char.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/ColorRGBA.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Empty.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float32.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float32MultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float64.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float64MultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Header.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int16.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int16MultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int32.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int32MultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int64.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int64MultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int8.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int8MultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/MultiArrayDimension.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/MultiArrayLayout.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/String.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt16.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt16MultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt32.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt32MultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt64.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt64MultiArray.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt8.idl
-CMakeFiles/claw_machine_msgs: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt8MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs/msg/Position.msg
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Bool.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Byte.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/ByteMultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Char.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/ColorRGBA.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Empty.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float32.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float32MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float64.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float64MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Header.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int16.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int16MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int32.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int32MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int64.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int64MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int8.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int8MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/MultiArrayDimension.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/MultiArrayLayout.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/String.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt16.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt16MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt32.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt32MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt64.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt64MultiArray.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt8.idl
+CMakeFiles/claw_machine_msgs: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt8MultiArray.idl
 
 claw_machine_msgs: CMakeFiles/claw_machine_msgs
 claw_machine_msgs: CMakeFiles/claw_machine_msgs.dir/build.make
@@ -111,6 +111,6 @@ CMakeFiles/claw_machine_msgs.dir/clean:
 .PHONY : CMakeFiles/claw_machine_msgs.dir/clean
 
 CMakeFiles/claw_machine_msgs.dir/depend:
-	cd /home/pico/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pico/code/claw_machine_ros2/src/claw_machine_msgs /home/pico/code/claw_machine_ros2/src/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles/claw_machine_msgs.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles/claw_machine_msgs.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/claw_machine_msgs.dir/depend
 

@@ -1,8 +1,8 @@
-# Install script for directory: /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py
+# Install script for directory: /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/pico/code/claw_machine_ros2/install/claw_machine_msgs")
+  set(CMAKE_INSTALL_PREFIX "/home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,6 +39,6 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/home/pico/miniconda3/envs/ros2/bin/x86_64-conda-linux-gnu-objdump")
+  set(CMAKE_OBJDUMP "/home/clawMachine/miniforge3/envs/ros_env/bin/x86_64-conda-linux-gnu-objdump")
 endif()
 

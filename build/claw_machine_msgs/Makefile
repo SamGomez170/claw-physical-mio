@@ -48,19 +48,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /home/pico/miniconda3/envs/ros2/bin/cmake
+CMAKE_COMMAND = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake
 
 # The command to remove a file.
-RM = /home/pico/miniconda3/envs/ros2/bin/cmake -E rm -f
+RM = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pico/code/claw_machine_ros2/src/claw_machine_msgs
+CMAKE_SOURCE_DIR = /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pico/code/claw_machine_ros2/build/claw_machine_msgs
+CMAKE_BINARY_DIR = /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /home/pico/code/claw_machine_ros2/build/claw_machine_msgs
 # Special rule for the target test
 test:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
-	/home/pico/miniconda3/envs/ros2/bin/ctest --force-new-ctest-process $(ARGS)
+	/home/clawMachine/miniforge3/envs/ros_env/bin/ctest --force-new-ctest-process $(ARGS)
 .PHONY : test
 
 # Special rule for the target test
@@ -78,7 +78,7 @@ test/fast: test
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
-	/home/pico/miniconda3/envs/ros2/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/home/clawMachine/miniforge3/envs/ros_env/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -88,7 +88,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake to regenerate build system..."
-	/home/pico/miniconda3/envs/ros2/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/home/clawMachine/miniforge3/envs/ros_env/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -107,44 +107,44 @@ list_install_components/fast: list_install_components
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/pico/miniconda3/envs/ros2/bin/cmake -P cmake_install.cmake
+	/home/clawMachine/miniforge3/envs/ros_env/bin/cmake -P cmake_install.cmake
 .PHONY : install
 
 # Special rule for the target install
 install/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/pico/miniconda3/envs/ros2/bin/cmake -P cmake_install.cmake
+	/home/clawMachine/miniforge3/envs/ros_env/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
 
 # Special rule for the target install/local
 install/local: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/pico/miniconda3/envs/ros2/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+	/home/clawMachine/miniforge3/envs/ros_env/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
 .PHONY : install/local
 
 # Special rule for the target install/local
 install/local/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/pico/miniconda3/envs/ros2/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+	/home/clawMachine/miniforge3/envs/ros_env/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
 .PHONY : install/local/fast
 
 # Special rule for the target install/strip
 install/strip: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/pico/miniconda3/envs/ros2/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+	/home/clawMachine/miniforge3/envs/ros_env/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip
 
 # Special rule for the target install/strip
 install/strip/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/pico/miniconda3/envs/ros2/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+	/home/clawMachine/miniforge3/envs/ros_env/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles /home/pico/code/claw_machine_ros2/build/claw_machine_msgs//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -402,7 +402,7 @@ claw_machine_msgs__py: cmake_check_build_system
 
 # fast build rule for target.
 claw_machine_msgs__py/fast:
-	$(MAKE) $(MAKESILENT) -f /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build.make /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build
+	$(MAKE) $(MAKESILENT) -f /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build.make /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build
 .PHONY : claw_machine_msgs__py/fast
 
 rosidl_generator_c/claw_machine_msgs/msg/detail/position__functions.o: rosidl_generator_c/claw_machine_msgs/msg/detail/position__functions.c.o

@@ -44,19 +44,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /home/pico/miniconda3/envs/ros2/bin/cmake
+CMAKE_COMMAND = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake
 
 # The command to remove a file.
-RM = /home/pico/miniconda3/envs/ros2/bin/cmake -E rm -f
+RM = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pico/code/claw_machine_ros2/src/claw_machine_msgs
+CMAKE_SOURCE_DIR = /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pico/code/claw_machine_ros2/build/claw_machine_msgs
+CMAKE_BINARY_DIR = /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs
 
 # Include any dependencies generated for this target.
 include CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/depend.make
@@ -69,49 +69,49 @@ include CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/progress
 # Include the compile flags for this target's objects.
 include CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/flags.make
 
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/lib/rosidl_typesupport_fastrtps_c/rosidl_typesupport_fastrtps_c
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/lib/python3.11/site-packages/rosidl_typesupport_fastrtps_c/__init__.py
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/rosidl_typesupport_fastrtps_c/resource/idl__rosidl_typesupport_fastrtps_c.h.em
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/rosidl_typesupport_fastrtps_c/resource/idl__type_support_c.cpp.em
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/rosidl_typesupport_fastrtps_c/resource/msg__rosidl_typesupport_fastrtps_c.h.em
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/rosidl_typesupport_fastrtps_c/resource/msg__type_support_c.cpp.em
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/rosidl_typesupport_fastrtps_c/resource/srv__rosidl_typesupport_fastrtps_c.h.em
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/rosidl_typesupport_fastrtps_c/resource/srv__type_support_c.cpp.em
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/lib/rosidl_typesupport_fastrtps_c/rosidl_typesupport_fastrtps_c
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/lib/python3.11/site-packages/rosidl_typesupport_fastrtps_c/__init__.py
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_typesupport_fastrtps_c/resource/idl__rosidl_typesupport_fastrtps_c.h.em
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_typesupport_fastrtps_c/resource/idl__type_support_c.cpp.em
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_typesupport_fastrtps_c/resource/msg__rosidl_typesupport_fastrtps_c.h.em
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_typesupport_fastrtps_c/resource/msg__type_support_c.cpp.em
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_typesupport_fastrtps_c/resource/srv__rosidl_typesupport_fastrtps_c.h.em
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_typesupport_fastrtps_c/resource/srv__type_support_c.cpp.em
 rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: rosidl_adapter/claw_machine_msgs/msg/Position.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Bool.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Byte.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/ByteMultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Char.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/ColorRGBA.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Empty.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float32.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float32MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float64.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float64MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Header.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int16.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int16MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int32.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int32MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int64.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int64MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int8.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int8MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/MultiArrayDimension.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/MultiArrayLayout.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/String.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt16.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt16MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt32.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt32MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt64.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt64MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt8.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt8MultiArray.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/builtin_interfaces/msg/Duration.idl
-rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/pico/miniconda3/envs/ros2/share/builtin_interfaces/msg/Time.idl
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating C type support for eProsima Fast-RTPS"
-	/home/pico/miniconda3/envs/ros2/bin/python3.11 /home/pico/miniconda3/envs/ros2/lib/rosidl_typesupport_fastrtps_c/rosidl_typesupport_fastrtps_c --generator-arguments-file /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_typesupport_fastrtps_c__arguments.json
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Bool.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Byte.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/ByteMultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Char.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/ColorRGBA.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Empty.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float32.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float32MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float64.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float64MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Header.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int16.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int16MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int32.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int32MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int64.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int64MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int8.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int8MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/MultiArrayDimension.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/MultiArrayLayout.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/String.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt16.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt16MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt32.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt32MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt64.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt64MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt8.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt8MultiArray.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/builtin_interfaces/msg/Duration.idl
+rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h: /home/clawMachine/miniforge3/envs/ros_env/share/builtin_interfaces/msg/Time.idl
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating C type support for eProsima Fast-RTPS"
+	/home/clawMachine/miniforge3/envs/ros_env/bin/python3.11 /home/clawMachine/miniforge3/envs/ros_env/lib/rosidl_typesupport_fastrtps_c/rosidl_typesupport_fastrtps_c --generator-arguments-file /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_typesupport_fastrtps_c__arguments.json
 
 rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp: rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h
 	@$(CMAKE_COMMAND) -E touch_nocreate rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp
@@ -119,16 +119,16 @@ rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_suppor
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o: CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/flags.make
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o: rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o: CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o"
-	/home/pico/miniconda3/envs/ros2/bin/x86_64-conda-linux-gnu-c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o -MF CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o.d -o CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o -c /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o"
+	/home/clawMachine/miniforge3/envs/ros_env/bin/x86_64-conda-linux-gnu-c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o -MF CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o.d -o CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o -c /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp
 
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.i"
-	/home/pico/miniconda3/envs/ros2/bin/x86_64-conda-linux-gnu-c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp > CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.i
+	/home/clawMachine/miniforge3/envs/ros_env/bin/x86_64-conda-linux-gnu-c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp > CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.i
 
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.s"
-	/home/pico/miniconda3/envs/ros2/bin/x86_64-conda-linux-gnu-c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp -o CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.s
+	/home/clawMachine/miniforge3/envs/ros_env/bin/x86_64-conda-linux-gnu-c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp -o CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.s
 
 # Object files for target claw_machine_msgs__rosidl_typesupport_fastrtps_c
 claw_machine_msgs__rosidl_typesupport_fastrtps_c_OBJECTS = \
@@ -140,18 +140,18 @@ claw_machine_msgs__rosidl_typesupport_fastrtps_c_EXTERNAL_OBJECTS =
 libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp.o
 libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/build.make
 libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: libclaw_machine_msgs__rosidl_generator_c.so
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_typesupport_fastrtps_c.so
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_c.so
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/librosidl_typesupport_fastrtps_cpp.so
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/libfastcdr.so.1.0.24
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/librmw.so
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/librosidl_typesupport_fastrtps_c.so
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_generator_c.so
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_generator_c.so
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/librosidl_runtime_c.so
-libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/pico/miniconda3/envs/ros2/lib/librcutils.so
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_typesupport_fastrtps_c.so
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_c.so
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librosidl_typesupport_fastrtps_cpp.so
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libfastcdr.so.1.0.24
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librmw.so
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librosidl_typesupport_fastrtps_c.so
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_generator_c.so
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_generator_c.so
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librosidl_runtime_c.so
+libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librcutils.so
 libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so: CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX shared library libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX shared library libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -164,6 +164,6 @@ CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/clean:
 
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/depend: rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/depend: rosidl_typesupport_fastrtps_c/claw_machine_msgs/msg/detail/position__type_support_c.cpp
-	cd /home/pico/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pico/code/claw_machine_ros2/src/claw_machine_msgs /home/pico/code/claw_machine_ros2/src/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/claw_machine_msgs__rosidl_typesupport_fastrtps_c.dir/depend
 

@@ -44,83 +44,83 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /home/pico/miniconda3/envs/ros2/bin/cmake
+CMAKE_COMMAND = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake
 
 # The command to remove a file.
-RM = /home/pico/miniconda3/envs/ros2/bin/cmake -E rm -f
+RM = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pico/code/claw_machine_ros2/src/claw_machine_msgs
+CMAKE_SOURCE_DIR = /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pico/code/claw_machine_ros2/build/claw_machine_msgs
+CMAKE_BINARY_DIR = /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs
 
 # Utility rule file for claw_machine_msgs__py.
 
 # Include any custom commands dependencies for this target.
-include /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/compiler_depend.make
+include /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/compiler_depend.make
 
 # Include the progress variables for this target.
-include /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/progress.make
+include /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/progress.make
 
-/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
-/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c
-/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_c.c
-/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/msg/_position.py
-/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/msg/__init__.py
-/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/msg/_position_s.c
+/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
+/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c
+/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_c.c
+/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/msg/_position.py
+/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/msg/__init__.py
+/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/msg/_position_s.c
 
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/lib/rosidl_generator_py/rosidl_generator_py
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/lib/python3.11/site-packages/rosidl_generator_py/__init__.py
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/lib/python3.11/site-packages/rosidl_generator_py/generate_py_impl.py
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_action_pkg_typesupport_entry_point.c.em
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_action.py.em
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_idl_pkg_typesupport_entry_point.c.em
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_idl_support.c.em
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_idl.py.em
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_msg_pkg_typesupport_entry_point.c.em
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_msg_support.c.em
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_msg.py.em
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_srv_pkg_typesupport_entry_point.c.em
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/resource/_srv.py.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/lib/rosidl_generator_py/rosidl_generator_py
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/lib/python3.11/site-packages/rosidl_generator_py/__init__.py
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/lib/python3.11/site-packages/rosidl_generator_py/generate_py_impl.py
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_action_pkg_typesupport_entry_point.c.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_action.py.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_idl_pkg_typesupport_entry_point.c.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_idl_support.c.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_idl.py.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_msg_pkg_typesupport_entry_point.c.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_msg_support.c.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_msg.py.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_srv_pkg_typesupport_entry_point.c.em
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/resource/_srv.py.em
 rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: rosidl_adapter/claw_machine_msgs/msg/Position.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Bool.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Byte.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/ByteMultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Char.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/ColorRGBA.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Empty.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float32.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float32MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float64.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Float64MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Header.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int16.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int16MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int32.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int32MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int64.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int64MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int8.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/Int8MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/MultiArrayDimension.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/MultiArrayLayout.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/String.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt16.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt16MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt32.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt32MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt64.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt64MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt8.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/std_msgs/msg/UInt8MultiArray.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/builtin_interfaces/msg/Duration.idl
-rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/pico/miniconda3/envs/ros2/share/builtin_interfaces/msg/Time.idl
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating Python code for ROS interfaces"
-	cd /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py && /home/pico/miniconda3/envs/ros2/bin/python3 /home/pico/miniconda3/envs/ros2/share/rosidl_generator_py/cmake/../../../lib/rosidl_generator_py/rosidl_generator_py --generator-arguments-file /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_generator_py__arguments.json --typesupport-impls "rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c;rosidl_typesupport_c"
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Bool.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Byte.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/ByteMultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Char.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/ColorRGBA.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Empty.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float32.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float32MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float64.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Float64MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Header.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int16.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int16MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int32.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int32MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int64.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int64MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int8.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/Int8MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/MultiArrayDimension.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/MultiArrayLayout.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/String.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt16.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt16MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt32.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt32MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt64.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt64MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt8.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/std_msgs/msg/UInt8MultiArray.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/builtin_interfaces/msg/Duration.idl
+rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c: /home/clawMachine/miniforge3/envs/ros_env/share/builtin_interfaces/msg/Time.idl
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating Python code for ROS interfaces"
+	cd /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py && /home/clawMachine/miniforge3/envs/ros_env/bin/python3 /home/clawMachine/miniforge3/envs/ros_env/share/rosidl_generator_py/cmake/../../../lib/rosidl_generator_py/rosidl_generator_py --generator-arguments-file /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_generator_py__arguments.json --typesupport-impls "rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c;rosidl_typesupport_c"
 
 rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
 	@$(CMAKE_COMMAND) -E touch_nocreate rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c
@@ -137,25 +137,25 @@ rosidl_generator_py/claw_machine_msgs/msg/__init__.py: rosidl_generator_py/claw_
 rosidl_generator_py/claw_machine_msgs/msg/_position_s.c: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
 	@$(CMAKE_COMMAND) -E touch_nocreate rosidl_generator_py/claw_machine_msgs/msg/_position_s.c
 
-claw_machine_msgs__py: /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py
+claw_machine_msgs__py: /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py
 claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_c.c
 claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
 claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c
 claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/msg/__init__.py
 claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/msg/_position.py
 claw_machine_msgs__py: rosidl_generator_py/claw_machine_msgs/msg/_position_s.c
-claw_machine_msgs__py: /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build.make
+claw_machine_msgs__py: /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build.make
 .PHONY : claw_machine_msgs__py
 
 # Rule to build all files generated by this target.
-/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build: claw_machine_msgs__py
-.PHONY : /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build
+/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build: claw_machine_msgs__py
+.PHONY : /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/build
 
-/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/clean:
-	cd /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py && $(CMAKE_COMMAND) -P CMakeFiles/claw_machine_msgs__py.dir/cmake_clean.cmake
-.PHONY : /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/clean
+/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/clean:
+	cd /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py && $(CMAKE_COMMAND) -P CMakeFiles/claw_machine_msgs__py.dir/cmake_clean.cmake
+.PHONY : /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/clean
 
-/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/depend:
-	cd /home/pico/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pico/code/claw_machine_ros2/src/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py /home/pico/code/claw_machine_ros2/build/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/DependInfo.cmake "--color=$(COLOR)"
-.PHONY : /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/depend
+/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/depend:
+	cd /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/DependInfo.cmake "--color=$(COLOR)"
+.PHONY : /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/claw_machine_msgs__py/CMakeFiles/claw_machine_msgs__py.dir/depend
 

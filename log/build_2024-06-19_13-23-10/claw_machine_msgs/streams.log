@@ -1,0 +1,5 @@
+[0.108s] Invoking command in '/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs': CONDA_PROMPT_MODIFIER=(ros_env) /home/clawMachine/miniforge3/envs/ros_env/bin/cmake --build /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs -- -j8 -l8
+[0.920s] [0mCMake Error: The current CMakeCache.txt directory /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeCache.txt is different than the directory /home/pico/code/claw_machine_ros2/build/claw_machine_msgs where CMakeCache.txt was created. This may result in binaries being created in the wrong place. If you are not sure, reedit the CMakeCache.txt[0m
+[0.952s] No such file or directory
+[0.952s] [0mCMake Error: Generator: execution of make failed. Make command was: /usr/bin/gmake -f Makefile -j8 -l8[0m
+[1.108s] Invoked command in '/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs' returned '1': CONDA_PROMPT_MODIFIER=(ros_env) /home/clawMachine/miniforge3/envs/ros_env/bin/cmake --build /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs -- -j8 -l8

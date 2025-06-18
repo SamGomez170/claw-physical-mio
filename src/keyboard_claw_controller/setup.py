@@ -1,4 +1,6 @@
 from setuptools import find_packages, setup
+import os
+from glob import glob
 
 package_name = 'keyboard_claw_controller'
 
@@ -10,6 +12,9 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', 'keyboard_claw_controller'),
+            glob('launch/*.launch.py')
+        )
     ],
     install_requires=['setuptools'],
     zip_safe=True,

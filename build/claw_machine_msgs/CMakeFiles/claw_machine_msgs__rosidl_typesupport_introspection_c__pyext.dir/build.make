@@ -44,19 +44,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /home/pico/miniconda3/envs/ros2/bin/cmake
+CMAKE_COMMAND = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake
 
 # The command to remove a file.
-RM = /home/pico/miniconda3/envs/ros2/bin/cmake -E rm -f
+RM = /home/clawMachine/miniforge3/envs/ros_env/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pico/code/claw_machine_ros2/src/claw_machine_msgs
+CMAKE_SOURCE_DIR = /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pico/code/claw_machine_ros2/build/claw_machine_msgs
+CMAKE_BINARY_DIR = /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs
 
 # Include any dependencies generated for this target.
 include CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/depend.make
@@ -72,16 +72,16 @@ include CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o: CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/flags.make
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o: rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o: CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o"
-	/home/pico/miniconda3/envs/ros2/bin/x86_64-conda-linux-gnu-cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o -MF CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o.d -o CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o -c /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o"
+	/home/clawMachine/miniforge3/envs/ros_env/bin/x86_64-conda-linux-gnu-cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o -MF CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o.d -o CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.o -c /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c
 
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.i"
-	/home/pico/miniconda3/envs/ros2/bin/x86_64-conda-linux-gnu-cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c > CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.i
+	/home/clawMachine/miniforge3/envs/ros_env/bin/x86_64-conda-linux-gnu-cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c > CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.i
 
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.s"
-	/home/pico/miniconda3/envs/ros2/bin/x86_64-conda-linux-gnu-cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c -o CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.s
+	/home/clawMachine/miniforge3/envs/ros_env/bin/x86_64-conda-linux-gnu-cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c -o CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c.s
 
 # Object files for target claw_machine_msgs__rosidl_typesupport_introspection_c__pyext
 claw_machine_msgs__rosidl_typesupport_introspection_c__pyext_OBJECTS = \
@@ -95,35 +95,35 @@ rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_in
 rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: rosidl_generator_py/claw_machine_msgs/libclaw_machine_msgs__rosidl_generator_py.so
 rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: libclaw_machine_msgs__rosidl_typesupport_introspection_c.so
 rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: libclaw_machine_msgs__rosidl_typesupport_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_typesupport_fastrtps_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_typesupport_fastrtps_cpp.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_typesupport_introspection_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_typesupport_introspection_cpp.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_typesupport_cpp.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_generator_py.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_typesupport_introspection_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_cpp.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_typesupport_introspection_cpp.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_typesupport_cpp.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_generator_py.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/librmw.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_typesupport_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_typesupport_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_typesupport_fastrtps_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_typesupport_fastrtps_cpp.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_typesupport_introspection_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_typesupport_introspection_cpp.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_typesupport_cpp.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_generator_py.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_typesupport_introspection_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_typesupport_fastrtps_cpp.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_typesupport_introspection_cpp.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_typesupport_cpp.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_generator_py.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librmw.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_typesupport_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_typesupport_c.so
 rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: libclaw_machine_msgs__rosidl_generator_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libstd_msgs__rosidl_generator_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libbuiltin_interfaces__rosidl_generator_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/librosidl_typesupport_fastrtps_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/librosidl_typesupport_fastrtps_cpp.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/libfastcdr.so.1.0.24
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/librmw.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/librosidl_typesupport_introspection_cpp.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/librosidl_typesupport_introspection_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/librosidl_typesupport_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/librosidl_runtime_c.so
-rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/pico/miniconda3/envs/ros2/lib/librcutils.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libstd_msgs__rosidl_generator_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libbuiltin_interfaces__rosidl_generator_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librosidl_typesupport_fastrtps_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librosidl_typesupport_fastrtps_cpp.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/libfastcdr.so.1.0.24
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librmw.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librosidl_typesupport_introspection_cpp.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librosidl_typesupport_introspection_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librosidl_typesupport_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librosidl_runtime_c.so
+rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: /home/clawMachine/miniforge3/envs/ros_env/lib/librcutils.so
 rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so: CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C shared library rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C shared library rosidl_generator_py/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -135,6 +135,6 @@ CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/clea
 .PHONY : CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/clean
 
 CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/depend:
-	cd /home/pico/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pico/code/claw_machine_ros2/src/claw_machine_msgs /home/pico/code/claw_machine_ros2/src/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs /home/pico/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs/CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/claw_machine_msgs__rosidl_typesupport_introspection_c__pyext.dir/depend
 

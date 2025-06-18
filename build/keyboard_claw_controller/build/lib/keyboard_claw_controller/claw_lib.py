@@ -66,6 +66,9 @@ class ClawCtl():
         self.ctl.get_logger().info(f'claw open')
 
     def close_claw(self, grip):
+        '''
+        grip 0-255	
+        '''
         self.ctl.get_logger().info(f'closing claw ...')
 
         cmd = f'close {int(grip)}'
@@ -74,6 +77,9 @@ class ClawCtl():
         self.ctl.get_logger().info(f'claw closed')
 
     def claw_up(self, speed):
+        '''
+        speed 0-255
+        '''
         self.ctl.get_logger().info(f'raising claw ...')
 
         cmd = f'up {int(speed)}'
