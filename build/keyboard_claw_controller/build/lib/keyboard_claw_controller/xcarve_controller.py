@@ -7,23 +7,32 @@ import time
 import threading
 from claw_machine_msgs.msg import Position
 import re
+from std_msgs.msg import UInt8
 
 
 class XcarveController(Node):
     def __init__(self):
         super().__init__('xcarve_controller')
 
+        self.joystick_enabled = False
+        #self.axis_enabled = False
+
         self.last_received_cmd = 'x'
 
         self.lock = threading.Lock()
 
-        # subscriber for joystick commands for xcarve
+        self.joystick_enable_subscription = self.create_subscription(
+            UInt8,
+            'joystick/enable',
+            self.joystick_enable_callback,
+            1)
+
         self.move_cmds_subscription = self.create_subscription(
             String,
-            'joystick/cmd',
+            'joystick/filtered_cmd',
             self.movement_cmd_callback,
-            1)
-        self.move_cmds_subscription  # prevent unused variable warning
+            1
+        )
 
         # subscriber for command to move to specific position
         self.goto_subscription = self.create_subscription(
@@ -58,6 +67,13 @@ class XcarveController(Node):
         self.lock.release()
 
     def movement_cmd_callback(self, msg):
+        #drop _all_ movement keys when joystick is disabled
+        if not self.joystick_enabled:
+            return
+
+        #if not self.axis_enabled:
+            #return
+
         self.get_logger().info('I heard: "%s"' % msg.data)
 
         # when receives a move command it tells the xcarve to move all the way
@@ -101,7 +117,16 @@ class XcarveController(Node):
                 self.xcarve_stop_cmd()
 
         self.last_received_cmd = msg.data
-        
+    
+    def joystick_enable_callback(self, msg: UInt8):
+        """
+        msg.data == 0  → disable all movement
+        msg.data == 1  → enable movement
+        """
+        self.joystick_enabled = bool(msg.data)
+        state = "ENABLED" if self.joystick_enabled else "DISABLED"
+        self.get_logger().info(f"Joystick movement is now {state}")
+
     #moves to specific position 
     def goto_callback(self, msg):
         cmd = f"$J=G90 G21 X{msg.x} Y{msg.y} F8000"
@@ -177,6 +202,11 @@ class XcarveController(Node):
             mess.z = -1.0
         
         return mess
+
+    def __del__(self):
+        if self.serial_port and self.serial_port.is_open:
+            self.serial_port.close()
+
 
 def main(args=None):
     rclpy.init(args=args)
