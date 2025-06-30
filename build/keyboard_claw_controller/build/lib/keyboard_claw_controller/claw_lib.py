@@ -155,7 +155,7 @@ class ClawCtl():
         while not self.ctl.claw_status_event.is_set():
             rclpy.spin_once(self.ctl, timeout_sec=0.5)
 
-
+    # to restart completely the game
     def __del__(self):
         self.ctl.destroy_node()
         rclpy.shutdown()
@@ -184,9 +184,8 @@ class RosClawCtl(Node):
         self.red_button_event = threading.Event()
         self.red_button_event.clear()
 
+        #flag to indicate you can't move the claw
         self.axis_enabled = False
-        # subscriber for joystick commands
-
 
         #flag to indicate that a claw status message was received
         self.claw_status_event = threading.Event()
