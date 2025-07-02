@@ -4,7 +4,7 @@ from std_msgs.msg import UInt8,String
 from claw_machine_msgs.msg import Position
 import threading
 import time
-
+import queue
 
 class ClawCtl():
     '''Wrapper class for using ROS2 functions for claw controller'''
@@ -25,21 +25,7 @@ class ClawCtl():
         self.ctl.joystick_enable_publisher.publish(joy_en)
         #self.ctl.axis_enabled = True
         self.ctl.get_logger().info("axes UNLOCKED")
-        '''
-        def disable_joystick(self):
-            #disable joystick
-            self.ctl.get_logger().info(f'disabling joystick...')
-            joytick_enable_msg = UInt8()
-            joytick_enable_msg.data = 0
-            self.ctl.joystick_enable_publisher.publish(joytick_enable_msg)
-        
-        def enable_joystick(self):
-            #enable joystick to send commands
-            self.ctl.get_logger().info(f'enabling joystick ...')
-            joytick_enable_msg = UInt8()
-            joytick_enable_msg.data = 1
-            self.ctl.joystick_enable_publisher.publish(joytick_enable_msg)
-        '''
+
     def move_home(self):
         #move xcarve to initial position
         self.ctl.get_logger().info(f'going to home position...')
@@ -162,9 +148,6 @@ class ClawCtl():
 
 
 
-
-
-
 class RosClawCtl(Node):
     '''ROS2 node for controlling claw controller messages manually'''
     def __init__(self):
@@ -186,6 +169,9 @@ class RosClawCtl(Node):
 
         #flag to indicate you can't move the claw
         self.axis_enabled = False
+        self.ui_enabled = False
+        self.ui_nav_queue = queue.Queue()
+
 
         #flag to indicate that a claw status message was received
         self.claw_status_event = threading.Event()
@@ -243,17 +229,23 @@ class RosClawCtl(Node):
     def joystick_callback(self, msg):
         data = msg.data
 
-        # 1) Fire button is always delivered
+        # Always catch the fire button
         if data == 'Button.red':
             self.get_logger().info("  → fire button pressed")
             self.red_button_event.set()
             return
 
-        # 2) When locked (lever), ignore absolutely everything else
+        # If we're in UI mode, capture left/right but don't forward to the claw
+        if self.ui_enabled and data in ('Key.left','Key.right'):
+            self.get_logger().info(f"  → UI nav: {data}")
+            self.ui_nav_queue.put(data)
+            return
+
+        # Otherwise, normal axis gating logic
         if not self.axis_enabled:
             return
 
-        # 3) When unlocked, handle movement + stop
         if data in ('Key.up','Key.down','Key.left','Key.right','Key.stop'):
             self.get_logger().info(f"  → forwarding movement: {data}")
             self.filtered_joy_pub.publish(msg)
+
