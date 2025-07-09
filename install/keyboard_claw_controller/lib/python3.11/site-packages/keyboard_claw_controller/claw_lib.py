@@ -236,7 +236,7 @@ class RosClawCtl(Node):
             return
 
         # If we're in UI mode, capture left/right but don't forward to the claw
-        if self.ui_enabled and data in ('Key.left','Key.right'):
+        if self.ui_enabled and data in ('Key.left','Key.right', 'Key.up', 'Key.down'):
             self.get_logger().info(f"  → UI nav: {data}")
             self.ui_nav_queue.put(data)
             return
