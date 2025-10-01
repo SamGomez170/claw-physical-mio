@@ -15,7 +15,6 @@ class XcarveController(Node):
         super().__init__('xcarve_controller')
 
         self.joystick_enabled = False
-        #self.axis_enabled = False
 
         self.last_received_cmd = 'x'
 

@@ -247,5 +247,21 @@ class RosClawCtl(Node):
 
         if data in ('Key.up','Key.down','Key.left','Key.right','Key.stop'):
             self.get_logger().info(f"  → forwarding movement: {data}")
+
+            # <-- NEW: call optional movement handler (safe, non-fatal)
+            try:
+                # handler signature: handler(movement_string, raw_msg_optional)
+                if hasattr(self, 'on_movement') and callable(self.on_movement):
+                    # pass both data and the full msg in case caller wants timestamp/seq
+                    try:
+                        self.on_movement(data, msg)
+                    except TypeError:
+                        # older handlers may accept only single arg
+                        self.on_movement(data)
+            except Exception as e:
+                # don't crash the callback when the handler raises
+                self.get_logger().warning(f"movement handler raised: {e}")
+
+            # publish for the rest of the system as before
             self.filtered_joy_pub.publish(msg)
 

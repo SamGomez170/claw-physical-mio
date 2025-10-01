@@ -1,0 +1,147 @@
+[0.085s] Invoking command in '/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller CONDA_PROMPT_MODIFIER=(ros_env) /home/clawMachine/miniforge3/envs/ros_env/bin/cmake --build /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs -- -j8 -l8
+[0.775s] [  3%] Built target claw_machine_msgs__cpp
+[0.812s] [  3%] Built target ament_cmake_python_copy_claw_machine_msgs
+[1.004s] [ 22%] Built target claw_machine_msgs__rosidl_generator_c
+[1.004s] [ 22%] Built target claw_machine_msgs__rosidl_typesupport_cpp
+[1.004s] [ 32%] Built target claw_machine_msgs__rosidl_typesupport_introspection_cpp
+[1.006s] [ 41%] Built target claw_machine_msgs__rosidl_typesupport_fastrtps_cpp
+[1.063s] [ 51%] Built target claw_machine_msgs__rosidl_typesupport_fastrtps_c
+[1.077s] [ 61%] Built target claw_machine_msgs__rosidl_typesupport_introspection_c
+[1.099s] [ 70%] Built target claw_machine_msgs__rosidl_typesupport_c
+[1.113s] running egg_info
+[1.117s] [ 70%] Built target claw_machine_msgs
+[1.127s] writing claw_machine_msgs.egg-info/PKG-INFO
+[1.127s] writing dependency_links to claw_machine_msgs.egg-info/dependency_links.txt
+[1.128s] writing top-level names to claw_machine_msgs.egg-info/top_level.txt
+[1.137s] [ 74%] Built target claw_machine_msgs__py
+[1.164s] reading manifest file 'claw_machine_msgs.egg-info/SOURCES.txt'
+[1.170s] writing manifest file 'claw_machine_msgs.egg-info/SOURCES.txt'
+[1.185s] [ 80%] Built target claw_machine_msgs__rosidl_generator_py
+[1.196s] [ 80%] Built target ament_cmake_python_build_claw_machine_msgs_egg
+[1.215s] [ 87%] Built target claw_machine_msgs__rosidl_typesupport_introspection_c__pyext
+[1.261s] [ 93%] Built target claw_machine_msgs__rosidl_typesupport_c__pyext
+[1.261s] [100%] Built target claw_machine_msgs__rosidl_typesupport_fastrtps_c__pyext
+[1.275s] Invoked command in '/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller CONDA_PROMPT_MODIFIER=(ros_env) /home/clawMachine/miniforge3/envs/ros_env/bin/cmake --build /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs -- -j8 -l8
+[1.345s] Invoking command in '/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller CONDA_PROMPT_MODIFIER=(ros_env) /home/clawMachine/miniforge3/envs/ros_env/bin/cmake --install /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs
+[1.395s] -- Install configuration: ""
+[1.402s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/ament_index/resource_index/rosidl_interfaces/claw_machine_msgs
+[1.403s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs
+[1.403s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg
+[1.404s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/rosidl_generator_c__visibility_control.h
+[1.404s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/position.h
+[1.404s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail
+[1.405s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__struct.h
+[1.405s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__functions.h
+[1.405s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__type_support.h
+[1.405s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__functions.c
+[1.439s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_generator_c.so
+[1.459s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs
+[1.459s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg
+[1.459s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[1.460s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail
+[1.460s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_c.h
+[1.460s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so
+[1.461s] -- Set non-toolchain portion of runtime path of "/home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_typesupport_fastrtps_c.so" to ""
+[1.461s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs
+[1.461s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg
+[1.461s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/position.hpp
+[1.461s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail
+[1.462s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__traits.hpp
+[1.462s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__struct.hpp
+[1.462s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__builder.hpp
+[1.462s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs
+[1.462s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg
+[1.462s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[1.462s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail
+[1.462s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__rosidl_typesupport_fastrtps_cpp.hpp
+[1.462s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/dds_fastrtps
+[1.472s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_typesupport_fastrtps_cpp.so
+[1.473s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs
+[1.473s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg
+[1.473s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[1.473s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail
+[1.474s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__type_support.c
+[1.474s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__rosidl_typesupport_introspection_c.h
+[1.474s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_typesupport_introspection_c.so
+[1.474s] -- Set non-toolchain portion of runtime path of "/home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_typesupport_introspection_c.so" to ""
+[1.475s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_typesupport_c.so
+[1.475s] -- Set non-toolchain portion of runtime path of "/home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_typesupport_c.so" to ""
+[1.475s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs
+[1.475s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg
+[1.475s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail
+[1.476s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__rosidl_typesupport_introspection_cpp.hpp
+[1.476s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/include/claw_machine_msgs/claw_machine_msgs/msg/detail/position__type_support.cpp
+[1.481s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_typesupport_introspection_cpp.so
+[1.493s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_typesupport_cpp.so
+[1.493s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/environment/pythonpath.sh
+[1.494s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/environment/pythonpath.dsv
+[1.494s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs-0.0.0-py3.11.egg-info
+[1.494s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs-0.0.0-py3.11.egg-info/PKG-INFO
+[1.494s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs-0.0.0-py3.11.egg-info/top_level.txt
+[1.495s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs-0.0.0-py3.11.egg-info/SOURCES.txt
+[1.495s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs-0.0.0-py3.11.egg-info/dependency_links.txt
+[1.495s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs
+[1.495s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_c.c
+[1.496s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
+[1.496s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so
+[1.496s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/__init__.py
+[1.496s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_fastrtps_c.cpython-311-x86_64-linux-gnu.so
+[1.497s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/msg
+[1.497s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/msg/__init__.py
+[1.497s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/msg/_position.py
+[1.497s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/msg/_position_s.c
+[1.497s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/_claw_machine_msgs_s.ep.rosidl_typesupport_introspection_c.c
+[1.497s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_c.cpython-311-x86_64-linux-gnu.so
+[1.498s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/libclaw_machine_msgs__rosidl_generator_py.so
+[1.551s] Listing 'lib/python3.11/site-packages/claw_machine_msgs'...
+[1.551s] Can't list 'lib/python3.11/site-packages/claw_machine_msgs'
+[1.570s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_fastrtps_c.cpython-311-x86_64-linux-gnu.so
+[1.570s] -- Set non-toolchain portion of runtime path of "/home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_fastrtps_c.cpython-311-x86_64-linux-gnu.so" to ""
+[1.571s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so
+[1.571s] -- Set non-toolchain portion of runtime path of "/home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_introspection_c.cpython-311-x86_64-linux-gnu.so" to ""
+[1.572s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_c.cpython-311-x86_64-linux-gnu.so
+[1.572s] -- Set non-toolchain portion of runtime path of "/home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/python3.11/site-packages/claw_machine_msgs/claw_machine_msgs_s__rosidl_typesupport_c.cpython-311-x86_64-linux-gnu.so" to ""
+[1.572s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_generator_py.so
+[1.572s] -- Set non-toolchain portion of runtime path of "/home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/lib/libclaw_machine_msgs__rosidl_generator_py.so" to ""
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/msg/Position.idl
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/msg/Position.msg
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/ament_index/resource_index/package_run_dependencies/claw_machine_msgs
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/ament_index/resource_index/parent_prefix_path/claw_machine_msgs
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/environment/ament_prefix_path.sh
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/environment/ament_prefix_path.dsv
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/environment/path.sh
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/environment/path.dsv
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/local_setup.bash
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/local_setup.sh
+[1.573s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/local_setup.zsh
+[1.574s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/local_setup.dsv
+[1.574s] -- Installing: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/package.dsv
+[1.599s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/ament_index/resource_index/packages/claw_machine_msgs
+[1.600s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/export_claw_machine_msgs__rosidl_generator_cExport.cmake
+[1.600s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/export_claw_machine_msgs__rosidl_generator_cExport-noconfig.cmake
+[1.601s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/export_claw_machine_msgs__rosidl_typesupport_fastrtps_cExport.cmake
+[1.601s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/export_claw_machine_msgs__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[1.602s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/export_claw_machine_msgs__rosidl_generator_cppExport.cmake
+[1.602s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/export_claw_machine_msgs__rosidl_typesupport_fastrtps_cppExport.cmake
+[1.602s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/export_claw_machine_msgs__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[1.603s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgs__rosidl_typesupport_introspection_cExport.cmake
+[1.603s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgs__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[1.604s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgs__rosidl_typesupport_cExport.cmake
+[1.604s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgs__rosidl_typesupport_cExport-noconfig.cmake
+[1.604s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgs__rosidl_typesupport_introspection_cppExport.cmake
+[1.604s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgs__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[1.606s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgs__rosidl_typesupport_cppExport.cmake
+[1.606s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgs__rosidl_typesupport_cppExport-noconfig.cmake
+[1.606s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/export_claw_machine_msgs__rosidl_generator_pyExport.cmake
+[1.606s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/export_claw_machine_msgs__rosidl_generator_pyExport-noconfig.cmake
+[1.606s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/rosidl_cmake-extras.cmake
+[1.606s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/ament_cmake_export_dependencies-extras.cmake
+[1.606s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/ament_cmake_export_include_directories-extras.cmake
+[1.607s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/ament_cmake_export_libraries-extras.cmake
+[1.607s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/ament_cmake_export_targets-extras.cmake
+[1.607s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[1.607s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[1.607s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgsConfig.cmake
+[1.607s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/cmake/claw_machine_msgsConfig-version.cmake
+[1.607s] -- Up-to-date: /home/clawMachine/code/claw_machine_ros2/install/claw_machine_msgs/share/claw_machine_msgs/package.xml
+[1.610s] Invoked command in '/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller CONDA_PROMPT_MODIFIER=(ros_env) /home/clawMachine/miniforge3/envs/ros_env/bin/cmake --install /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs
