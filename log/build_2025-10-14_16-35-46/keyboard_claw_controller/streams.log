@@ -1,0 +1,38 @@
+[0.726s] Invoking command in '/home/clawMachine/code/claw_machine_ros2/src/keyboard_claw_controller': CONDA_PROMPT_MODIFIER=(ros_env) PYTHONPATH=/home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/prefix_override:/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages: /home/clawMachine/miniforge3/envs/ros_env/bin/python3.11 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/keyboard_claw_controller build --build-base /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build install --record /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/install.log --single-version-externally-managed install_data
+[0.939s] running egg_info
+[0.949s] writing ../../build/keyboard_claw_controller/keyboard_claw_controller.egg-info/PKG-INFO
+[0.950s] writing dependency_links to ../../build/keyboard_claw_controller/keyboard_claw_controller.egg-info/dependency_links.txt
+[0.950s] writing entry points to ../../build/keyboard_claw_controller/keyboard_claw_controller.egg-info/entry_points.txt
+[0.950s] writing requirements to ../../build/keyboard_claw_controller/keyboard_claw_controller.egg-info/requires.txt
+[0.950s] writing top-level names to ../../build/keyboard_claw_controller/keyboard_claw_controller.egg-info/top_level.txt
+[0.974s] reading manifest file '../../build/keyboard_claw_controller/keyboard_claw_controller.egg-info/SOURCES.txt'
+[0.975s] writing manifest file '../../build/keyboard_claw_controller/keyboard_claw_controller.egg-info/SOURCES.txt'
+[0.975s] running build
+[0.975s] running build_py
+[0.975s] copying keyboard_claw_controller/keyboard_publisher.py -> /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller
+[0.975s] copying keyboard_claw_controller/__init__.py -> /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller
+[0.975s] copying keyboard_claw_controller/ros2_mqtt_bridge.py -> /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller
+[0.976s] copying keyboard_claw_controller/basic_game (copy).py -> /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller
+[0.976s] copying keyboard_claw_controller/xcarve_controller.py -> /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller
+[0.976s] copying keyboard_claw_controller/basic_game.py -> /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller
+[0.976s] running install
+[0.984s] running install_lib
+[0.995s] copying /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller/claw_lib.py -> /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller
+[0.996s] copying /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller/read_rfid.py -> /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller
+[0.996s] copying /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller/data_logger.py -> /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller
+[0.996s] copying /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build/lib/keyboard_claw_controller/game_flow.py -> /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller
+[0.997s] byte-compiling /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller/claw_lib.py to claw_lib.cpython-311.pyc
+[0.998s] running install_data
+[0.999s] copying resource/keyboard_claw_controller -> /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/share/ament_index/resource_index/packages
+[0.999s] copying package.xml -> /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/share/keyboard_claw_controller
+[0.999s] copying launch/clawMachine_engine.launch.py -> /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/share/keyboard_claw_controller
+[0.999s] running install_egg_info
+[1.018s] removing '/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller-0.0.0-py3.11.egg-info' (and everything under it)
+[1.018s] Copying ../../build/keyboard_claw_controller/keyboard_claw_controller.egg-info to /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller-0.0.0-py3.11.egg-info
+[1.019s] running install_scripts
+[1.111s] Installing basic_game script to /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/keyboard_claw_controller
+[1.111s] Installing keyboard_publisher script to /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/keyboard_claw_controller
+[1.111s] Installing ros2_mqtt_bridge script to /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/keyboard_claw_controller
+[1.111s] Installing xcarve_controller script to /home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/keyboard_claw_controller
+[1.111s] writing list of installed files to '/home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/install.log'
+[1.153s] Invoked command in '/home/clawMachine/code/claw_machine_ros2/src/keyboard_claw_controller' returned '0': CONDA_PROMPT_MODIFIER=(ros_env) PYTHONPATH=/home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/prefix_override:/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages: /home/clawMachine/miniforge3/envs/ros_env/bin/python3.11 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/keyboard_claw_controller build --build-base /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/build install --record /home/clawMachine/code/claw_machine_ros2/build/keyboard_claw_controller/install.log --single-version-externally-managed install_data

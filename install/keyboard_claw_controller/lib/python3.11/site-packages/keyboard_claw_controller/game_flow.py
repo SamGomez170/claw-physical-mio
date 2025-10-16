@@ -13,6 +13,11 @@ import numpy as np
 import datetime
 from .data_logger import DataLogger, save_choice_data, save_event_data, save_trial_json, make_session_dir, save_session_metadata
 import time 
+from .read_rfid import RFIDReader
+
+rfid = RFIDReader(port=None, baud=115200, timeout=0.1, verbose=False)
+rfid.start()
+    
 
 SELECTION_COLOR = (0, 128, 0)   # e.g. a green for “selection” 
 OUTCOME_COLOR   = (128, 0, 0)   # e.g. a red for “outcome”
@@ -592,18 +597,7 @@ async def display_rating(screen, claw_ctl,
 
         if updated:
             draw()  # Redraw screen when selection changes
-        '''
-        # two‐step red‐button logic:
-        if claw_ctl.ctl.red_button_event.is_set():
-            claw_ctl.ctl.red_button_event.clear()
-            if not locked_in:
-                # first press: lock in current choice
-                locked_in    = True
-                locked_value = current + 1
-            else:
-                # second press: confirm and exit
-                break
-        '''
+
         # one-step red button confirm
         if claw_ctl.ctl.red_button_event.is_set():
             claw_ctl.ctl.red_button_event.clear()
@@ -662,7 +656,7 @@ async def run_trial(claw_ctl, screen, grip_type,
                     speed, grip,
                     home_delay=2, open_delay=2,
                     trial_number=None, total_trials=None,
-                    training_mode=False, total_reward=0):
+                    training_mode=False, total_reward=0, rfid_reader=None):
     """
     Run one trial while logging telemetry. Returns a trial_record dict.
     """
@@ -762,17 +756,27 @@ async def run_trial(claw_ctl, screen, grip_type,
     logger.log_event('fire_pressed')
 
     # At this point the automatic sequence will run:
-    # grab -> move_home -> open_claw (we wrapped those calls for event timestamps)
+    # grab -> move_to_box -> open_claw -> move_home (random)
     try:
         # Note: the wrapped functions will log start/end events
         claw_ctl.grab_sequence(speed, grip)
-        claw_ctl.move_home()
-        await asyncio.sleep(home_delay)
+
+        # move to the fixed drop-box and wait for arrival (if you added move_to_box)
+        if hasattr(claw_ctl, 'move_to_box'):
+            claw_ctl.move_to_box(x=0.0, y=150.0)
+
         claw_ctl.open_claw()
         await asyncio.sleep(open_delay)
+
+        # THEN move to a random home position (move_home still uses the random logic)
+        claw_ctl.move_home()
+
+        # optional extra wait after move to random new position
+        #await asyncio.sleep(home_delay)
+
     except Exception as e:
         logger.log_event('run_sequence_exception', {'exc': str(e)})
-        # still continue to stop logger & restore methods
+ 
 
     # restore original methods
     if orig_grab:
@@ -782,10 +786,30 @@ async def run_trial(claw_ctl, screen, grip_type,
     if orig_open_claw:
         setattr(claw_ctl, 'open_claw', orig_open_claw)
 
-    # stop sampling and collect data
-    logger.log_event('trial_end')
-    logger.stop()
+    # --- attempt to read RFID tag and record it in the trial_end event ---
+    info_value = None
+    try:
+        if rfid_reader:
+            # prefer waiting for a new tag that arrives during the open window
+            # set require_new=True if you want to ensure it was presented after the open
+            tag = rfid_reader.read_tag(timeout=3.0, require_new=False)
+            # or, if you want only tags that arrived after a certain moment, call with require_new=True
+            # tag = rfid_reader.read_tag(timeout=3.0, require_new=True)
+            if tag:
+                info_value = f"SUCCESSFUL BALL, tag: {tag}"
 
+        # fallback: try to read last_tag (very recent)
+        if not info_value and rfid_reader:
+            info_value = rfid_reader.get_last_tag(max_age=0.5)
+    except Exception as e:
+        print(f"[WARN] RFID check failed: {e}")
+
+    if not info_value:
+        info_value = "NO BALL SUCCESS"
+    logger.log_event('trial_end', info_value)
+
+    # stop the logger after logging the event
+    logger.stop()
 
     # detach movement handler (clean up)
     try:
@@ -796,6 +820,23 @@ async def run_trial(claw_ctl, screen, grip_type,
     except Exception:
         pass
 
+    # try to read the node's current home target (this should be the random point chosen by move_home)
+    original_position = None
+    try:
+        ctl_node = getattr(claw_ctl, 'ctl', None)
+        if ctl_node is not None:
+            # if there's a lock, use it
+            home_lock = getattr(ctl_node, 'home_lock', None)
+            if home_lock is not None:
+                with home_lock:
+                    original_position = (float(getattr(ctl_node, 'home_x', None)),
+                                         float(getattr(ctl_node, 'home_y', None)))
+            else:
+                original_position = (float(getattr(ctl_node, 'home_x', None)),
+                                     float(getattr(ctl_node, 'home_y', None)))
+    except Exception:
+        original_position = None
+
     # build trial record
     trial_record = {
         'timestamp_utc': datetime.datetime.utcnow().isoformat() + 'Z',
@@ -805,12 +846,15 @@ async def run_trial(claw_ctl, screen, grip_type,
         'grip_type': grip_type,
         'grip_params': grip_distribution_types.get(grip_type, {}),
         'grip_sampled_value': grip,
-        'speed_value': speed,
+        #'speed_value': speed,
         'total_reward_before': total_reward,
-        'logger': logger.as_dict()
+        'logger': logger.as_dict(),
+        'original_claw_position': original_position,
+        'rfid': info_value
     }
 
     # return the data; caller (run_game) will handle saving or aggregate collection
+    
     return trial_record
 
 async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
@@ -818,15 +862,21 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
     await display_and_wait(screen, claw_ctl, INTRO)
     await display_and_wait(screen, claw_ctl, PRE_TRAINING)
 
+        # === RFID: start session-wide background reader ===
+    rfid = RFIDReader(port=None, baud=115200, timeout=0.1, verbose=True)
+    rfid.start()
+
+
     all_records = []
     training_types = list(grip_distribution_types.keys())
     random.shuffle(training_types)
 
     participant_id = generate_participant_id()   # e.g. "P3f8a9d2b"
     session_dir = make_session_dir(participant_id, base_dir='claw_data')
-    save_session_metadata(session_dir, participant_id, extra={'experiment': 'claw_v1', 'notes': ''})
+    #save_session_metadata(session_dir, participant_id, extra={'experiment': 'claw_v1', 'notes': ''})
 
     # TRAINING TRIALS
+    
     for i, grip_type in enumerate(training_types, start=1):
         claw_ctl.ctl.axis_enabled = False
         await display_trial_start(
@@ -856,12 +906,9 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             grip=grip_value,
             trial_number=i,
             training_mode=True,
-            total_trials=len(training_types)
+            total_trials=len(training_types),
+            rfid_reader=rfid
         )
-        # Save training trial into the participant/session folder
-        #p = save_trial_json(trial_record, out_dir=session_dir)
-        #print(f"[DATA] Saved training trial to {p}")
-        #all_records.append(trial_record)
 
         # SAVING DATA
         ts = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%S')
@@ -874,7 +921,8 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
                                        include_samples=False)   # set True if you want samples too
         if ev_path:
             print(f"[DATA] Saved training events JSON to {ev_path}")
-
+        all_records.append(trial_record)
+    
     # TRAINING COMPLETE
     claw_ctl.ctl.axis_enabled = False
     await display_and_wait(
@@ -973,7 +1021,7 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             trial_number=trial,
             total_trials=total_trials,
             training_mode=False,
-            total_reward=current_total_reward
+            total_reward=current_total_reward, rfid_reader=rfid
         )
 
         # augment record with participant responses & choices
@@ -994,17 +1042,80 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
                                     out_dir=session_dir,
                                     filename_prefix=f"choice_trial_{trial}")
         print(f"[DATA] Saved choice summary to {choice_path}")
+        all_records.append(trial_record)
 
         claw_ctl.ctl.axis_enabled = False
 
-    # final combined save (optional)
-    combined_path = os.path.join(session_dir, 'combined_all_trials.json')
-    with open(combined_path, 'w') as f:
-        import json
-        json.dump(all_records, f, indent=2, default=str)
-    print(f"[DATA] Combined saved to {combined_path}")
+    ts = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%S')
 
+    def _is_success(rfid_val):
+        """Return True if RFID suggests success; False otherwise."""
+        if not rfid_val:
+            return False
+        s = str(rfid_val).upper()
+        if 'NO' in s and 'NO BALL' in s:
+            return False
+        if 'NO BALL SUCCESS' in s or 'NO SUCCESS' in s:
+            return False
+        # anything mentioning SUCCESS or a tag we treat as success
+        if 'SUCCESS' in s or 'TAG' in s or 'SUCCESSFUL' in s:
+            return True
+        # fallback: if it's not the explicit NO string assume success if non-empty
+        return True
+
+    # partition
+    training_trials = [t for t in all_records if t.get('training_mode')]
+    experiment_trials = [t for t in all_records if not t.get('training_mode')]
+
+    # build minimal summaries
+    training_summary = []
+    for t in training_trials:
+        training_summary.append({
+            'participant_id': participant_id,
+            'trial_number': t.get('trial_number'),
+            'grip_force': t.get('grip_sampled_value'),
+            'rfid': t.get('rfid'),
+            'success': _is_success(t.get('rfid')),
+        })
+
+    experiment_summary = []
+    for t in experiment_trials:
+        experiment_summary.append({
+            'participant_id': participant_id,
+            'trial_number': t.get('trial_number'),
+            'grip_force': t.get('grip_sampled_value'),
+            'rfid': t.get('rfid'),
+            'success': _is_success(t.get('rfid')),
+            'selection_confidence': t.get('selection_confidence'),
+            'outcome_confidence': t.get('outcome_confidence'),
+        })
+
+    # ensure session dir exists
+    os.makedirs(session_dir, exist_ok=True)
+
+    train_path = os.path.join(session_dir, f'combined_all_training_{participant_id}_{ts}.json')
+    exp_path   = os.path.join(session_dir, f'combined_all_trials_{participant_id}_{ts}.json')
+
+    try:
+        with open(train_path, 'w', encoding='utf-8') as f:
+            json.dump(training_summary, f, indent=2, default=str)
+        print(f"[DATA] Saved combined training summary to {train_path}")
+    except Exception as e:
+        print(f"[WARN] failed saving combined training summary: {e}")
+
+    try:
+        with open(exp_path, 'w', encoding='utf-8') as f:
+            json.dump(experiment_summary, f, indent=2, default=str)
+        print(f"[DATA] Saved combined experiment summary to {exp_path}")
+    except Exception as e:
+        print(f"[WARN] failed saving combined experiment summary: {e}")
     claw_ctl.ctl.axis_enabled = False
+        # at end of run_game, before exiting:
+    try:
+        rfid.stop()
+    except Exception:
+        pass
+
 
     await display_and_wait(
         screen,

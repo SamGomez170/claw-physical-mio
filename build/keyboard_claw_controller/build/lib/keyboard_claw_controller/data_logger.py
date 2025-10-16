@@ -215,7 +215,7 @@ def save_session_metadata(session_dir, participant_id=None, extra=None):
     """Write a small session_meta.json into session_dir with participant and extra info."""
     meta = {
         'participant_id': participant_id,
-        'created_utc': datetime.datetime.utcnow().isoformat() + 'Z'
+        #'created_utc': datetime.datetime.utcnow().isoformat() + 'Z'
     }
     if extra:
         meta['extra'] = extra
@@ -418,12 +418,12 @@ def save_event_data(trial_data, participant_id=None, timestamp=None,
 
 def save_choice_data(trial_record, participant_id=None, timestamp=None,
                      out_dir=None, filename_prefix="choice"):
-    """
-    Save minimal JSON for the option-selection part of a trial.
-    Includes trial metadata, displayed options, choice, and confidence ratings.
-    """
+
     if timestamp is None:
         timestamp = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%S')
+
+    # Extract RFID info if present
+    rfid_info = trial_record.get('rfid') if trial_record is not None else None
 
     summary = {
         "trial_info": {
@@ -439,12 +439,26 @@ def save_choice_data(trial_record, participant_id=None, timestamp=None,
         "selection_confidence": trial_record.get("selection_confidence"),
         "action_confidence": trial_record.get("outcome_confidence"),
         "chosen_reward": trial_record.get("chosen_reward"),
+
+        # NEW: original claw position (tuple or None)
+        "original_claw_position": trial_record.get("original_claw_position"),
+
+        # NEW: RFID summary dict (raw string + detected/tag fields) or None
+        "rfid": rfid_info,
     }
 
-    os.makedirs(out_dir, exist_ok=True)
-    fname = f"{filename_prefix}_T{trial_record.get('trial_number')}_{timestamp}.json"
-    fpath = os.path.join(out_dir, fname)
-    with open(fpath, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2, ensure_ascii=False)
+    # The rest of your save logic (create filename, write JSON) goes here.
+    # For example:
+    if out_dir is None:
+        out_dir = '.'
+    filename = f"{filename_prefix}_{participant_id or 'unknown'}_{timestamp}.json"
+    out_path = os.path.join(out_dir, filename)
+    try:
+        with open(out_path, 'w') as f:
+            json.dump(summary, f, indent=2, default=str)
+    except Exception as e:
+        print(f"[WARN] failed saving choice summary to {out_path}: {e}")
+        return None
 
-    return fpath
+    return out_path
+

@@ -5,6 +5,8 @@ from claw_machine_msgs.msg import Position
 import threading
 import time
 import queue
+import threading
+import random
 
 class ClawCtl():
     '''Wrapper class for using ROS2 functions for claw controller'''
@@ -26,21 +28,79 @@ class ClawCtl():
         #self.ctl.axis_enabled = True
         self.ctl.get_logger().info("axes UNLOCKED")
 
-    def move_home(self):
-        #move xcarve to initial position
-        self.ctl.get_logger().info(f'going to home position...')
-        xcarve_position_msg = Position()
-        xcarve_position_msg.x = 0.0
-        xcarve_position_msg.y = 150.0
-        self.ctl.xcarve_goto_publisher.publish(xcarve_position_msg)
+    def move_to_box(self, x=0.0, y=150.0):
+        """
+        Move to the fixed drop-box position (default 0,150) and block until the
+        node's home_event is set (i.e. arrival confirmed by xcarve_position_callback).
+        """
+        self.ctl.get_logger().info(f'moving to drop-box at x={x}, y={y}...')
 
-        #wait to get to home position
+        # set expected target on node (thread-safe setter if available)
+        try:
+            if hasattr(self.ctl, 'set_home_target'):
+                self.ctl.set_home_target(x, y)
+            else:
+                # fallback (less safe)
+                self.ctl.home_x = float(x)
+                self.ctl.home_y = float(y)
+                self.ctl.home_event.clear()
+        except Exception:
+            # be defensive: continue to publish even if setter fails
+            pass
+
+        # publish goto message
+        pos_msg = Position()
+        pos_msg.x = float(x)
+        pos_msg.y = float(y)
+        self.ctl.xcarve_goto_publisher.publish(pos_msg)
+
+        # wait until arrival
         self.ctl.home_event.clear()
         while not self.ctl.home_event.is_set():
             rclpy.spin_once(self.ctl, timeout_sec=0.5)
 
-        self.ctl.get_logger().info(f'home position.')
+        self.ctl.get_logger().info(f'arrived at drop-box x={x:.2f}, y={y:.2f}.')
 
+    def move_home(self, target=None, bounds=(0.0, 0.0, 500.0, 500.0)):
+        """
+        Move xcarve to 'home'. Uniform random point inside the rectangle defined by bounds = (xmin, ymin, xmax, ymax).
+        """
+        self.ctl.get_logger().info('going to home position...')
+
+        # home position defined
+        if target is None:
+            xmin, ymin, xmax, ymax = bounds
+            x = random.uniform(xmin, xmax)
+            y = random.uniform(ymin, ymax)
+        else:
+            x, y = float(target[0]), float(target[1])
+
+        # Tell the node what the new home target is (thread-safe) BEFORE publishing
+        try:
+            # preferred: use the node's method
+            if hasattr(self.ctl, 'set_home_target'):
+                self.ctl.set_home_target(x, y)
+            else:
+                # fallback: direct assignment (still ok but less safe)
+                self.ctl.home_x = x
+                self.ctl.home_y = y
+                self.ctl.home_event.clear()
+        except Exception:
+            # be defensive
+            pass
+
+        xcarve_position_msg = Position()
+        xcarve_position_msg.x = x
+        xcarve_position_msg.y = y
+        self.ctl.xcarve_goto_publisher.publish(xcarve_position_msg)
+
+        # wait to get to home position
+        self.ctl.home_event.clear()
+        while not self.ctl.home_event.is_set():
+            rclpy.spin_once(self.ctl, timeout_sec=0.5)
+
+        self.ctl.get_logger().info(f'home position reached at x={x:.2f}, y={y:.2f}.')
+        
     def move_to(self, x, y):
         #move xcarve to initial position
         self.ctl.get_logger().info(f'going to home position...')
@@ -156,7 +216,10 @@ class RosClawCtl(Node):
         self.xcarve_goto_publisher = self.create_publisher(Position, 'xcarve/goto', 1)
         self.claw_cmds_publisher = self.create_publisher(String, 'claw/ctl', 1)
 
-        #coordinates for home position
+        # lock to protect home_x/home_y
+        self.home_lock = threading.Lock()
+
+        # coordinates for home position (defaults)
         self.home_x = 0.0
         self.home_y = 150.0
         #flag to indicate that xcarve is in home position
@@ -214,11 +277,25 @@ class RosClawCtl(Node):
         if msg.data == 'done':
             self.claw_status_event.set()
 
+    def set_home_target(self, x, y):
+        """Set the expected home position (thread-safe). Clears home_event so we wait for arrival."""
+        with self.home_lock:
+            self.home_x = float(x)
+            self.home_y = float(y)
+            # clear event so any waiting routine will block until arrival
+            self.home_event.clear()
+
     def xcarve_position_callback(self, msg):
+        # read target under lock to avoid race
+        with self.home_lock:
+            target_x = self.home_x
+            target_y = self.home_y
+            max_error = getattr(self, 'home_tolerance', 5.0)
+
         #absolute errors between home and current positions
         max_error = 5.0
-        ex = abs(msg.x - self.home_x)
-        ey = abs(msg.y - self.home_y)
+        ex = abs(msg.x - target_x)
+        ey = abs(msg.y - target_y)
 
         #self.get_logger().info(f'position: {ex} {ey}')
         
