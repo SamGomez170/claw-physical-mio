@@ -141,6 +141,21 @@ class XcarveController(Node):
 
     def homing(self):
         self.serial_port.flushInput()
+        self.get_logger().info('Checking current status...') 
+        self.lock.acquire() 
+        self.serial_port.write("?\n".encode('utf-8')) 
+        status = self.serial_port.readline().decode('utf-8') 
+        self.lock.release() 
+        self.get_logger().info(f'Current status: {status}')
+
+        # Send soft reset to clear any errors 
+        self.get_logger().info('Sending soft reset (Ctrl-X)') 
+        self.serial_port.write(b'\x18') 
+        time.sleep(2)
+        # Clear alarm state 
+        self.get_logger().info('Clearing any alarm state') 
+        self.send_cmd("$X") 
+        time.sleep(0.5)
         #print('Going home')
         self.get_logger().info('Going home')
         output = self.send_cmd("$H")

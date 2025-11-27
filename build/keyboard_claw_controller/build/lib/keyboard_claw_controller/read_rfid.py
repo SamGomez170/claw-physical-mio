@@ -39,10 +39,6 @@ class RFIDReader:
     """
     Background reader that keeps the serial port open and continually
     parses lines for tag UIDs. Use start() to begin the background thread.
-    Methods:
-      - get_last_tag() -> last HEX string or None
-      - read_tag(timeout) -> wait up to timeout seconds for a new tag, return it or None
-    Set verbose=True to print raw incoming lines for debugging.
     """
     def __init__(self, port=None, baud=115200, timeout=0.1, verbose=False):
         self.baud = baud
@@ -112,8 +108,6 @@ class RFIDReader:
         """
         Robust loop: read raw bytes, append to a bytearray buffer,
         search for JSON hex/dec first, then generic hex sequences.
-        Consume matched bytes from the buffer so partial fragments remain
-        to be combined with subsequent reads.
         """
         if not self.ser:
             return
