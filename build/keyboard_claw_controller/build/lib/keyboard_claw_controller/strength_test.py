@@ -10,8 +10,9 @@ from .claw_lib import ClawCtl
 from .read_rfid import RFIDReader
 
 # Test configuration
-TEST_FORCES = [190, 195, 180, 179]
-TRIALS_PER_FORCE = 1
+# 0.080 kg mass
+TEST_FORCES = [174, 174.5, 175, 175.5]
+TRIALS_PER_FORCE = 5
 SPEED = 255
 
 async def _run_blocking(func, *args, **kwargs):
@@ -56,15 +57,14 @@ async def test_single_grip(claw_ctl, force_value, trial_num, rfid_reader, screen
 
         if hasattr(claw_ctl, 'move_to_box'):
             await _run_blocking(claw_ctl.move_to_box, x=0.0, y=150.0)
+        
+        await _run_blocking(claw_ctl.close_claw, 255)
 
-        DROPBOX_OPEN_FORCE = 40
-        await _run_blocking(claw_ctl.close_claw, DROPBOX_OPEN_FORCE)
-
-        # give the claw a small moment to release
+        await _run_blocking(claw_ctl.open_claw)
         await asyncio.sleep(2.0)
 
         if hasattr(claw_ctl, 'move_home'):
-            await _run_blocking(claw_ctl.move_home, target=(400, 300))
+            await _run_blocking(claw_ctl.move_home, target=(700, 450))
 
         await asyncio.sleep(1)
 
