@@ -424,6 +424,9 @@ def save_choice_data(trial_record, participant_id=None, timestamp=None,
 
     # Extract RFID info if present
     rfid_info = trial_record.get('rfid') if trial_record is not None else None
+    
+    # Extract IR detection info if present
+    ir_info = trial_record.get('ir_detection') if trial_record is not None else None
 
     summary = {
         "trial_info": {
@@ -445,6 +448,9 @@ def save_choice_data(trial_record, participant_id=None, timestamp=None,
 
         # NEW: RFID summary dict (raw string + detected/tag fields) or None
         "rfid": rfid_info,
+        
+        # NEW: IR detection info (string or None)
+        "ir_detection": ir_info,
     }
 
     # The rest of your save logic (create filename, write JSON) goes here.
@@ -461,4 +467,3 @@ def save_choice_data(trial_record, participant_id=None, timestamp=None,
         return None
 
     return out_path
-

@@ -1,0 +1,32 @@
+[
+  {
+    "participant_id": "P9c540fb7",
+    "trial_number": 1,
+    "grip_force": 183.21041144147512,
+    "rfid": "NO BALL SUCCESS",
+    "ir_detection": "Detected at 00:02:18.995  (138995 ms since start)",
+    "success": false,
+    "selection_confidence": 1,
+    "outcome_confidence": 1
+  },
+  {
+    "participant_id": "P9c540fb7",
+    "trial_number": 2,
+    "grip_force": 183.60518609380247,
+    "rfid": "NO BALL SUCCESS",
+    "ir_detection": "Detected at 00:02:38.657  (158657 ms since start)",
+    "success": false,
+    "selection_confidence": 1,
+    "outcome_confidence": 1
+  },
+  {
+    "participant_id": "P9c540fb7",
+    "trial_number": 3,
+    "grip_force": 183.39540537825783,
+    "rfid": "NO BALL SUCCESS",
+    "ir_detection": "No IR detection",
+    "success": false,
+    "selection_confidence": 1,
+    "outcome_confidence": 1
+  }
+]

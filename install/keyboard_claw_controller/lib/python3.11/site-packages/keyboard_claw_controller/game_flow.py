@@ -14,10 +14,12 @@ import datetime
 from .data_logger import DataLogger, save_choice_data, save_event_data, save_trial_json, make_session_dir, save_session_metadata
 import time 
 from .read_rfid import RFIDReader
+from .read_IR import IRDetector
 
-rfid = RFIDReader(port=None, baud=115200, timeout=0.1, verbose=False)
+rfid = RFIDReader(port="/dev/rfid_reader", baud=115200, timeout=0.1, verbose=False)
 rfid.start()
-    
+IR = IRDetector(port="/dev/ir_detector", baud=115200, verbose=True)
+IR.start()
 
 SELECTION_COLOR = (0, 128, 0)   # e.g. a green for “selection” 
 OUTCOME_COLOR   = (128, 0, 0)   # e.g. a red for “outcome”
@@ -719,6 +721,11 @@ async def run_trial(claw_ctl, screen, grip_type,
     """
     Run one trial while logging telemetry. Returns a trial_record dict.
     """
+    # Clear any old detections from previous trials
+    IR.clear_detection()
+    if rfid_reader:
+        rfid_reader.clear_tag()
+    
     # prepare logger
     logger = DataLogger(claw_ctl, sample_interval=0.01)  # 100 Hz sampling
     logger.log_event('trial_init', {'grip_type': grip_type, 'speed': speed, 'grip_sampled': grip, 'training_mode': training_mode})
@@ -830,8 +837,8 @@ async def run_trial(claw_ctl, screen, grip_type,
         # THEN move to a random home position (move_home still uses the random logic)
         claw_ctl.move_home(target=(350, 400))
 
-        # optional extra wait after move to random new position
-        #await asyncio.sleep(home_delay)
+        # Wait a moment for any ball to settle and trigger sensors
+        await asyncio.sleep(0.5)
 
     except Exception as e:
         logger.log_event('run_sequence_exception', {'exc': str(e)})
@@ -845,35 +852,75 @@ async def run_trial(claw_ctl, screen, grip_type,
     if orig_open_claw:
         setattr(claw_ctl, 'open_claw', orig_open_claw)
 
-    # --- attempt to read RFID tag and record it in the trial_end event ---
+    # --- attempt to read RFID tag and IR detection, record in the trial_end event ---
     info_value = None
+    ir_value = None
+    
+    # Check IR detection (no max_age needed since we cleared at trial start)
+    try:
+        # DEBUG: Check what we have
+        import time as _time
+        with IR._lock:
+            last_det = IR.last_detection
+            last_ts = IR.last_detection_ts
+        
+        if last_ts:
+            age = _time.time() - last_ts
+            print(f"[DEBUG] IR last detection: {last_det}")
+            print(f"[DEBUG] IR detection age: {age:.3f}s ago")
+        else:
+            print(f"[DEBUG] No IR detection timestamp available")
+        
+        ir_detection = IR.get_last_detection(max_age=None)  # No time limit - we cleared at trial start
+        if ir_detection:
+            ir_value = ir_detection
+            print(f"✅ IR detected: {ir_detection}")
+            # Show IR popup
+            try:
+                await show_popup(screen, f"IR Ball Detected!\n{ir_detection}", duration=2.0, fps=30, claw_ctl=claw_ctl)
+            except Exception as e:
+                print(f"[WARN] failed to show IR popup: {e}")
+        else:
+            ir_value = "No IR detection"
+            print("❌ No IR detection")
+    except Exception as e:
+        print(f"[WARN] IR check failed: {e}")
+        ir_value = "IR check failed"
+    
+    # Check RFID tag (no timeout/max_age needed since we cleared at trial start)
     try:
         if rfid_reader:
-            tag = rfid_reader.read_tag(timeout=3.0, require_new=False)
+            # DEBUG: Check what we have
+            import time as _time
+            with rfid_reader._lock:
+                last_tag = rfid_reader.last_tag
+                last_tag_ts = rfid_reader.last_tag_ts
+            
+            if last_tag_ts:
+                age = _time.time() - last_tag_ts
+                print(f"[DEBUG] RFID last tag: {last_tag}")
+                print(f"[DEBUG] RFID tag age: {age:.3f}s ago")
+            else:
+                print(f"[DEBUG] No RFID tag timestamp available")
+            
+            # Get last tag (no time limit - we cleared at trial start)
+            tag = rfid_reader.get_last_tag(max_age=None)
             if tag:
                 info_value = f"SUCCESSFUL BALL, tag: {tag}"
                 print(f"✅ Tag detected: {tag}")
 
                 # show popup to participant for 2s
                 popup_text = f"Tag detected!\n{tag}"
-                # await the async popup helper so it will appear now and then disappear
                 try:
                     await show_popup(screen, popup_text, duration=2.0, fps=30, claw_ctl=claw_ctl)
                 except Exception as e:
                     print(f"[WARN] failed to show popup: {e}")
-
-        # fallback: try to read last_tag (very recent)
-        if not info_value and rfid_reader:
-            info_value = rfid_reader.get_last_tag(max_age=0.5)
-            if info_value:
-                # optional popup for fallback too (shorter)
-                popup_text = f"Tag seen (recent):\n{info_value}"
-                try:
-                    await show_popup(screen, popup_text, duration=1.2, fps=30, claw_ctl=claw_ctl)
-                except Exception:
-                    pass
+            else:
+                info_value = "NO BALL SUCCESS"
+                print("❌ No RFID tag detected")
     except Exception as e:
         print(f"[WARN] RFID check failed: {e}")
+        info_value = "RFID check failed"
 
 
     if not info_value:
@@ -932,7 +979,8 @@ async def run_trial(claw_ctl, screen, grip_type,
         'total_reward_before': total_reward,
         'logger': logger.as_dict(),
         'original_claw_position': original_position,
-        'rfid': info_value
+        'rfid': info_value,
+        'ir_detection': ir_value
     }
 
     # return the data; caller (run_game) will handle saving or aggregate collection
@@ -945,7 +993,8 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
     await display_and_wait(screen, claw_ctl, PRE_TRAINING)
 
         # === RFID: start session-wide background reader ===
-    rfid = RFIDReader(port=None, baud=115200, timeout=0.1, verbose=True)
+
+    rfid = RFIDReader(port="/dev/rfid_reader", baud=115200, timeout=0.1, verbose=True)
     rfid.start()
 
 
@@ -1157,6 +1206,7 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             'trial_number': t.get('trial_number'),
             'grip_force': t.get('grip_sampled_value'),
             'rfid': t.get('rfid'),
+            'ir_detection': t.get('ir_detection'),
             'success': _is_success(t.get('rfid')),
         })
 
@@ -1167,6 +1217,7 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             'trial_number': t.get('trial_number'),
             'grip_force': t.get('grip_sampled_value'),
             'rfid': t.get('rfid'),
+            'ir_detection': t.get('ir_detection'),
             'success': _is_success(t.get('rfid')),
             'selection_confidence': t.get('selection_confidence'),
             'outcome_confidence': t.get('outcome_confidence'),

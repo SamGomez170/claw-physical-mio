@@ -180,3 +180,9 @@ class RFIDReader:
             
             time.sleep(0.02)
         return None
+    
+    def clear_tag(self):
+        """Clear the stored tag. Call this at the start of each trial."""
+        with self._lock:
+            self.last_tag = None
+            self.last_tag_ts = None
