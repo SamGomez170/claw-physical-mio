@@ -1,0 +1,24 @@
+{
+  "trial_info": {
+    "trial_number": 3,
+    "total_trials": 3,
+    "training_mode": false,
+    "timestamp_utc": "2026-02-06T13:57:35.226297Z",
+    "grip_type": "narrow_low"
+  },
+  "participant_id": "P9c540fb7",
+  "options_displayed": [
+    "narrow_low",
+    "narrow_high"
+  ],
+  "choice": "narrow_low",
+  "selection_confidence": 1,
+  "action_confidence": 1,
+  "chosen_reward": 18,
+  "original_claw_position": [
+    350.0,
+    400.0
+  ],
+  "rfid": "NO BALL SUCCESS",
+  "ir_detection": "No IR detection"
+}

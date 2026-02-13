@@ -17,15 +17,15 @@ def main(args=None):
         claw_ctl.disable_joystick()
 
         speed = 255
-        grip = 255
-        #claw_ctl.grab_sequence(speed, grip)
-        claw_ctl.open_claw()
+        grip = 160
+        claw_ctl.grab_sequence(speed, grip)
+        '''claw_ctl.open_claw()
         claw_ctl.claw_down(speed)
         time.sleep(1)
         claw_ctl.close_claw(grip)
         time.sleep(1)
         claw_ctl.claw_up(speed)
-        time.sleep(1)
+        time.sleep(1)'''
 
         claw_ctl.move_home()
         time.sleep(2)
@@ -38,3 +38,4 @@ def main(args=None):
     
 if __name__ == '__main__':
     main()
+

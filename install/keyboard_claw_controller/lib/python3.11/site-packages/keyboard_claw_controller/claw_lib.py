@@ -19,13 +19,13 @@ class ClawCtl():
         joy_en = UInt8(data=0)
         self.ctl.joystick_enable_publisher.publish(joy_en)
         # 2) also lock the local axis filter
-        #self.ctl.axis_enabled = False
+        self.ctl.axis_enabled = False
         self.ctl.get_logger().info("axes LOCKED")
 
     def enable_joystick(self):
         joy_en = UInt8(data=1)
         self.ctl.joystick_enable_publisher.publish(joy_en)
-        #self.ctl.axis_enabled = True
+        self.ctl.axis_enabled = True
         self.ctl.get_logger().info("axes UNLOCKED")
 
     def move_to_box(self, x=0.0, y=150.0):
@@ -61,7 +61,7 @@ class ClawCtl():
 
         self.ctl.get_logger().info(f'arrived at drop-box x={x:.2f}, y={y:.2f}.')
 
-    def move_home(self, target=None, bounds=(0.0, 0.0, 500.0, 500.0)):
+    def move_home(self, target=None, bounds=(0.0, 0.0, 100.0, 100.0)):
         """
         Move xcarve to 'home'. Uniform random point inside the rectangle defined by bounds = (xmin, ymin, xmax, ymax).
         """
@@ -128,14 +128,9 @@ class ClawCtl():
         self.ctl.get_logger().info(f'grabbing object ...')
 
         cmd = f'grab_seq {int(speed)} {int(grip)}'
-        self.ctl.claw_status_event.clear()
         self.__send_claw_msg(cmd)
 
         self.ctl.get_logger().info(f'claw done')
-
-        while not self.ctl.claw_status_event.wait(timeout=5):
-            self.ctl.get_logger().warn("Timeout waiting for claw to finish")
-
 
     def open_claw(self):
         self.ctl.get_logger().info(f'releasing object ...')

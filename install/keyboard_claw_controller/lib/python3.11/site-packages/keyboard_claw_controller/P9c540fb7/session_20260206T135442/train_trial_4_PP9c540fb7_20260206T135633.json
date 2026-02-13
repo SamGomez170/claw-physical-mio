@@ -1,0 +1,102 @@
+{
+  "trial_info": {
+    "timestamp_utc": "2026-02-06T13:56:33.566057Z",
+    "trial_number": 4,
+    "total_trials": 4,
+    "training_mode": true,
+    "grip_type": "narrow_low",
+    "grip_params": {
+      "force": {
+        "mu": 183.4,
+        "sigma": 0.12
+      },
+      "rate": 255
+    },
+    "grip_sampled_value": 183.60287656290922,
+    "total_reward_before": 0,
+    "original_claw_position": [
+      350.0,
+      400.0
+    ],
+    "rfid": "NO BALL SUCCESS",
+    "ir_detection": "Detected at 00:01:57.705  (117705 ms since start)"
+  },
+  "meta": {
+    "participant_id": "P9c540fb7",
+    "timestamp": "20260206T135633"
+  },
+  "events": [
+    {
+      "t": 0.0,
+      "name": "trial_init"
+    },
+    {
+      "t": 0.18050985599984415,
+      "name": "fire_pressed",
+      "info": null
+    },
+    {
+      "t": 0.1805173080001623,
+      "name": "grab_sequence_start",
+      "info": {
+        "args": [
+          255,
+          183.60287656290922
+        ],
+        "kwargs": {}
+      }
+    },
+    {
+      "t": 0.33293810299983306,
+      "name": "joystick_movement",
+      "info": {
+        "movement": "Key.stop",
+        "timestamp": 1770386175.3196247
+      }
+    },
+    {
+      "t": 0.58422254099969,
+      "name": "joystick_movement",
+      "info": {
+        "movement": "Key.stop",
+        "timestamp": 1770386175.5709088
+      }
+    },
+    {
+      "t": 7.261128506999739,
+      "name": "grab_sequence_end",
+      "info": null
+    },
+    {
+      "t": 10.637049449000187,
+      "name": "open_claw_start",
+      "info": {
+        "args": [],
+        "kwargs": {}
+      }
+    },
+    {
+      "t": 10.701937957000155,
+      "name": "open_claw_end",
+      "info": null
+    },
+    {
+      "t": 12.704135437999867,
+      "name": "move_home_start",
+      "info": {
+        "args": [],
+        "kwargs": {
+          "target": [
+            350,
+            400
+          ]
+        }
+      }
+    },
+    {
+      "t": 16.038367981000192,
+      "name": "move_home_end",
+      "info": null
+    }
+  ]
+}
