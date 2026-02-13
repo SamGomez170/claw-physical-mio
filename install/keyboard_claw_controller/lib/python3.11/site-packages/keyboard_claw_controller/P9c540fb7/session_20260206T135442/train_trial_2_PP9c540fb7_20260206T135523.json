@@ -1,0 +1,102 @@
+{
+  "trial_info": {
+    "timestamp_utc": "2026-02-06T13:55:23.371939Z",
+    "trial_number": 2,
+    "total_trials": 4,
+    "training_mode": true,
+    "grip_type": "wide_low",
+    "grip_params": {
+      "force": {
+        "mu": 183.4,
+        "sigma": 0.3
+      },
+      "rate": 255
+    },
+    "grip_sampled_value": 183.37134023927052,
+    "total_reward_before": 0,
+    "original_claw_position": [
+      350.0,
+      400.0
+    ],
+    "rfid": "SUCCESSFUL BALL, tag: DC:06:99:69",
+    "ir_detection": "Detected at 00:00:46.080  (46080 ms since start)"
+  },
+  "meta": {
+    "participant_id": "P9c540fb7",
+    "timestamp": "20260206T135523"
+  },
+  "events": [
+    {
+      "t": 0.0,
+      "name": "trial_init"
+    },
+    {
+      "t": 0.17298467599994183,
+      "name": "joystick_movement",
+      "info": {
+        "movement": "Key.stop",
+        "timestamp": 1770386102.7489831
+      }
+    },
+    {
+      "t": 0.5257477280001694,
+      "name": "fire_pressed",
+      "info": null
+    },
+    {
+      "t": 0.525754004999726,
+      "name": "grab_sequence_start",
+      "info": {
+        "args": [
+          255,
+          183.37134023927052
+        ],
+        "kwargs": {}
+      }
+    },
+    {
+      "t": 0.6860875969996414,
+      "name": "joystick_movement",
+      "info": {
+        "movement": "Key.stop",
+        "timestamp": 1770386103.2620876
+      }
+    },
+    {
+      "t": 7.409113896000235,
+      "name": "grab_sequence_end",
+      "info": null
+    },
+    {
+      "t": 10.754183082000054,
+      "name": "open_claw_start",
+      "info": {
+        "args": [],
+        "kwargs": {}
+      }
+    },
+    {
+      "t": 10.819110872999772,
+      "name": "open_claw_end",
+      "info": null
+    },
+    {
+      "t": 12.821361748000527,
+      "name": "move_home_start",
+      "info": {
+        "args": [],
+        "kwargs": {
+          "target": [
+            350,
+            400
+          ]
+        }
+      }
+    },
+    {
+      "t": 16.25337576899983,
+      "name": "move_home_end",
+      "info": null
+    }
+  ]
+}
