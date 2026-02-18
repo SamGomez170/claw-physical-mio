@@ -824,6 +824,7 @@ async def run_trial(claw_ctl, screen, grip_type,
     # At this point the automatic sequence will run:
     # grab -> move_to_box -> open_claw -> move_home (random)
     try:
+        claw_ctl.disable_joystick()
         # Note: the wrapped functions will log start/end events
         claw_ctl.grab_sequence(speed, grip)
 
@@ -839,7 +840,7 @@ async def run_trial(claw_ctl, screen, grip_type,
 
         # Wait a moment for any ball to settle and trigger sensors
         await asyncio.sleep(0.5)
-
+        claw_ctl.enable_joystick()
     except Exception as e:
         logger.log_event('run_sequence_exception', {'exc': str(e)})
  
