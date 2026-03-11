@@ -3,7 +3,9 @@ import sys
 import pygame
 from .claw_lib import ClawCtl
 from .game_flow import run_game
+from .game_flow import run_game, IR 
 from .strength_test import run_grip_strength_test
+
 
 def main(args=None):
     claw_ctl = ClawCtl(args)
@@ -11,9 +13,10 @@ def main(args=None):
     screen = pygame.display.set_mode((800, 600))
 
     # Decide mode from command line
-    if len(sys.argv) > 1 and sys.argv[1] == '--test':
+    if sys.argv[1] == '--test':
         print("Running grip strength test mode...")
-        asyncio.run(run_grip_strength_test(screen, claw_ctl))
+        asyncio.run(run_grip_strength_test(screen, claw_ctl, ir_detector=IR))
+        
     else:
         print("Running normal game mode...")
         asyncio.run(run_game(screen, claw_ctl))

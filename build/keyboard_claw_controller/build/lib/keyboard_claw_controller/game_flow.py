@@ -124,7 +124,7 @@ async def display_trial_start(
     screen,
     claw_ctl,
     trial_number,
-    automatic_mode=False,
+    automatic_mode=True,
     is_training=False,
     total_training_trials=2,
     delay=2000
@@ -1016,7 +1016,7 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             trial_number=i,
             is_training=True,
             total_training_trials=len(training_types),
-            automatic_mode=False,
+            automatic_mode=True,
             delay=2000
         )
         claw_ctl.ctl.axis_enabled = True
@@ -1072,7 +1072,7 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             trial_number=trial,
             is_training=False,
             total_training_trials=total_trials,
-            automatic_mode=False,
+            automatic_mode=True,
             delay=2000
         )
 

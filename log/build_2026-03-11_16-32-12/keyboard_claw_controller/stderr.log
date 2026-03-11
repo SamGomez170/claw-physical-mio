@@ -1,0 +1,5 @@
+  File "/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller/strength_test.py", line 217
+    await asyncio.sleep(2.0)
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: 'await' outside async function
+
