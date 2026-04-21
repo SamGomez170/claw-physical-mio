@@ -21,8 +21,8 @@ rfid.start()
 IR = IRDetector(port="/dev/ir_detector", baud=115200, verbose=True)
 IR.start()
 
-SELECTION_COLOR = (0, 128, 0)   # e.g. a green for “selection” 
-OUTCOME_COLOR   = (128, 0, 0)   # e.g. a red for “outcome”
+SELECTION_COLOR = (0, 128, 0)   # e.g. a green for "selection" 
+OUTCOME_COLOR   = (128, 0, 0)   # e.g. a red for "outcome"
 rewards = {
     "wide_low": 14,      # Base reward
     "narrow_low": 18,  # Slight penalty for playing it safe
@@ -33,19 +33,19 @@ WIDTH = 800
 HEIGHT = 600  # You may need to adjust this based on your screen height
 grip_distribution_types = {
     "wide_high": {
-        "force": {"mu": 184.5, "sigma": 0.3},
+        "force": {"mu": 192, "sigma": 1.7}, #0.3
         "rate": 255
     }, #yellow
     "narrow_high": {
-        "force": {"mu": 184.5, "sigma": 0.12},
+        "force": {"mu": 192, "sigma": 0.7}, #0.12
         "rate": 255
     },#red
     "wide_low": {
-        "force": {"mu": 183.4, "sigma": 0.3},
+        "force": {"mu": 189, "sigma": 1.7},
         "rate": 255
     }, #green
     "narrow_low": {
-        "force": {"mu": 183.4, "sigma": 0.12},
+        "force": {"mu": 189, "sigma": 0.7},
         "rate": 255
     }#blue
 }
@@ -137,11 +137,11 @@ async def display_trial_start(
 
     # choose message
     if is_training:
-        msg = f"Training Trial {trial_number}/{total_training_trials}. Red Button to continue"
+        msg = f"Training Trial {trial_number}/{total_training_trials}. Press Red Button to continue"
         draw_legend(screen)
     else:
         if automatic_mode:
-            msg = f"Trial {trial_number}. Starting automatically…"
+            msg = f"Trial {trial_number}. Press Red Button to continue"
         else:
             msg = f"Action Selection Trial {trial_number}/{total_training_trials}. Red Button to continue"
 
@@ -152,20 +152,11 @@ async def display_trial_start(
 
     pygame.display.flip()
 
-    # wait for fire button
-    #loop = asyncio.get_running_loop()
-    #await loop.run_in_executor(None, claw_ctl.wait_fire_button)
     # wait until the fire button is pressed, but keep UI responsive
     while not claw_ctl.ctl.red_button_event.is_set():
-        # let rclpy process incoming joystick/red-button messages
         rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
-
-        # ensure pygame processes window messages (prevents "Not Responding")
         pygame.event.pump()
-
-        # yield to the asyncio loop so other tasks can run
         await asyncio.sleep(0.01)
-    # once set, clear it or use it as needed
     claw_ctl.ctl.red_button_event.clear()
 
     # clear screen
@@ -219,43 +210,35 @@ async def display_and_wait(screen, claw_ctl=None, render_items=None,
         max_width = screen.get_width() - 40
 
         for item in render_items:
-            # inside your for item in render_items:
             paragraph   = item.get('text', '')
             text_color  = item.get('color', color)
             draw_icon   = item.get('icon', False)
 
-            # wrap the text to a single line if it’s short enough
             wrapped = await wrap_text(paragraph, font, max_width)
             for line in wrapped:
-                # if this line needs a claw icon, split out the color‐word
                 if draw_icon:
-                    # split on the color word itself
-                    cname = line.split()[0]       # "RED"
-                    crgb  = text_color            # (220,20,60)
+                    cname = line.split()[0]
+                    crgb  = text_color
 
-                    before = ""                   # nothing before “RED” in this example
-                    after  = line[len(cname):]    # the rest of the sentence
+                    before = ""
+                    after  = line[len(cname):]
 
                     x = (screen.get_width() - font.size(line)[0]) // 2
                     y = y_offset
 
-                    # 1) draw ‘before’ text (if any)
                     if before:
                         s0 = font.render(before, True, (0,0,0))
                         screen.blit(s0, (x, y))
                         x += s0.get_width()
 
-                    # 2) draw the mini‑claw icon
                     icon_y = y + (font.get_height() - (15 + 4 + 12)) // 2
                     claw_w = draw_small_claw(screen, crgb, (x, icon_y))
-                    x += claw_w + 8    # gap after icon
+                    x += claw_w + 8
 
-                    # 3) draw the color word in its color
                     s1 = font.render(cname, True, crgb)
                     screen.blit(s1, (x, y))
                     x += s1.get_width()
 
-                    # 4) draw the rest of the sentence
                     if after.strip():
                         s2 = font.render(after, True, (0,0,0))
                         screen.blit(s2, (x, y))
@@ -268,26 +251,16 @@ async def display_and_wait(screen, claw_ctl=None, render_items=None,
 
                 y_offset += font.get_linesize()
 
-            # extra paragraph spacing
             y_offset += font.get_linesize() * 1.2
 
     pygame.display.flip()
 
-    # wait for input
-    # wait until the fire button is pressed, but keep UI responsive
     while not claw_ctl.ctl.red_button_event.is_set():
-        # let rclpy process incoming joystick/red-button messages
         rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
-
-        # ensure pygame processes window messages (prevents "Not Responding")
         pygame.event.pump()
-
-        # yield to the asyncio loop so other tasks can run
         await asyncio.sleep(0.01)
-    # once set, clear it or use it as needed
     claw_ctl.ctl.red_button_event.clear()
 
-    # clear screen
     screen.fill((255,255,255))
     pygame.display.flip()
 
@@ -306,74 +279,87 @@ def draw_legend(screen):
         screen.blit(txt, (x+25, y))
         y += 25
 
-def draw_reward_display(screen, grip_distribution_type, total_reward, training_mode=False):
-    if training_mode:  # Don't display rewards during training
-        return
-        
-    font = pygame.font.Font(None, 24)
-    reward_x = WIDTH - 300  # Position in upper right corner
-    reward_y = 10  # Near the top
 
-    # Create a larger font for the claw text
+def draw_grip_debug(screen, grip_sampled=None, force_mu=None, force_sigma=None):
+    """Draw grip force parameters (mu, sigma, sampled value) in the top-left corner."""
+    font = pygame.font.Font(None, 26)
+    debug_x = 10
+    debug_y = 10
+    debug_color = (30, 30, 200)
+    line_h = 24
+
+    if force_mu is not None:
+        surf = font.render(f"\u03bc (mu): {force_mu:.2f}", True, debug_color)
+        screen.blit(surf, (debug_x, debug_y))
+        debug_y += line_h
+    if force_sigma is not None:
+        surf = font.render(f"\u03c3 (sigma): {force_sigma:.2f}", True, debug_color)
+        screen.blit(surf, (debug_x, debug_y))
+        debug_y += line_h
+    if grip_sampled is not None:
+        surf = font.render(f"Sampled force: {grip_sampled:.2f}", True, debug_color)
+        screen.blit(surf, (debug_x, debug_y))
+
+
+def draw_reward_display(screen, grip_distribution_type, total_reward, training_mode=False,
+                        grip_sampled=None, force_mu=None, force_sigma=None):
+    font = pygame.font.Font(None, 24)
+    reward_x = WIDTH - 300
+    reward_y = 10
+
     large_font_size = 36
     large_font = pygame.font.Font(None, large_font_size)
 
-    
-    # Get potential reward for current trial
-    potential_reward = rewards[grip_distribution_type] if grip_distribution_type in rewards else 0
-    
-    # Draw potential and total rewards
-    potential_text = f"Potential Reward in This Trial: {potential_reward:.1f}"
-    total_text = f"Total Reward: {total_reward:.1f}"
-    
-    potential_surface = font.render(potential_text, True, (0, 0, 0))
-    total_surface = font.render(total_text, True, (0, 0, 0))
-
-    # Draw the new text at the top center behind everything else
     claw_text = "You are playing now with this claw:"
-    claw_surface = large_font.render(claw_text, True, (200, 200, 200))  # Light gray for background effect
-    claw_rect = claw_surface.get_rect()
-    claw_rect.centerx = WIDTH // 2
-    claw_rect.top = 150
-    screen.blit(claw_surface, claw_rect)
-    
-    screen.blit(potential_surface, (reward_x, reward_y))
-    screen.blit(total_surface, (reward_x, reward_y + 25))
-
-
-def draw_training_claw_counter(screen, current_claw, total_claws):
-    # Create a smaller font for instructions and counter
-    font = pygame.font.Font(None, 24)
-
-    # Create a larger font for the claw text
-    large_font_size = 36
-    large_font = pygame.font.Font(None, large_font_size)
-
-    # Draw the new text at the top center behind everything else
-    claw_text = "You are playing now with this claw:"
-    claw_surface = large_font.render(claw_text, True, (200, 200, 200))  # Light gray for background effect
+    claw_surface = large_font.render(claw_text, True, (200, 200, 200))
     claw_rect = claw_surface.get_rect()
     claw_rect.centerx = WIDTH // 2
     claw_rect.top = 150
     screen.blit(claw_surface, claw_rect)
 
-    # Draw first instruction line about arrow keys
+    if not training_mode:
+        potential_reward = rewards[grip_distribution_type] if grip_distribution_type in rewards else 0
+        potential_text = f"Potential Reward in This Trial: {potential_reward:.1f}"
+        total_text = f"Total Reward: {total_reward:.1f}"
+        potential_surface = font.render(potential_text, True, (0, 0, 0))
+        total_surface = font.render(total_text, True, (0, 0, 0))
+        screen.blit(potential_surface, (reward_x, reward_y))
+        screen.blit(total_surface, (reward_x, reward_y + 25))
+
+    # Always draw grip debug info
+    draw_grip_debug(screen, grip_sampled=grip_sampled, force_mu=force_mu, force_sigma=force_sigma)
+
+
+def draw_training_claw_counter(screen, current_claw, total_claws,
+                                grip_sampled=None, force_mu=None, force_sigma=None):
+    font = pygame.font.Font(None, 24)
+    large_font_size = 36
+    large_font = pygame.font.Font(None, large_font_size)
+
+    claw_text = "You are playing now with this claw:"
+    claw_surface = large_font.render(claw_text, True, (200, 200, 200))
+    claw_rect = claw_surface.get_rect()
+    claw_rect.centerx = WIDTH // 2
+    claw_rect.top = 150
+    screen.blit(claw_surface, claw_rect)
+
     instruction1_text = "Move <- and -> the joystick to control the claw horizontally"
     instruction1_surface = font.render(instruction1_text, True, (0, 0, 0))
     instruction1_rect = instruction1_surface.get_rect(topright=(WIDTH - 10, 10))
     screen.blit(instruction1_surface, instruction1_rect)
 
-    # Draw second instruction line about the 'd' key
     instruction2_text = "Press red button for the claw to go down and pick the object"
     instruction2_surface = font.render(instruction2_text, True, (0, 0, 0))
     instruction2_rect = instruction2_surface.get_rect(topright=(WIDTH - 10, 40))
     screen.blit(instruction2_surface, instruction2_rect)
 
-    # Draw the claw counter below both instructions
     counter_text = f"Claws: {current_claw}/{total_claws}"
     text_surface = font.render(counter_text, True, (0, 0, 0))
     text_rect = text_surface.get_rect(topright=(WIDTH - 10, 70))
     screen.blit(text_surface, text_rect)
+
+    # Draw grip debug info in the top-left
+    draw_grip_debug(screen, grip_sampled=grip_sampled, force_mu=force_mu, force_sigma=force_sigma)
 
 # pop-up drawing helper
 def draw_tag_popup(screen, text, padding=20, alpha=200, font_size=28):
@@ -393,11 +379,8 @@ def draw_tag_popup(screen, text, padding=20, alpha=200, font_size=28):
     popup_y = (screen_h - popup_h) // 2
 
     surf = pygame.Surface((popup_w, popup_h), pygame.SRCALPHA)
-    rect_color = (0, 0, 0, alpha)  # black with alpha (0..255)
-    # draw rounded rect background
+    rect_color = (0, 0, 0, alpha)
     pygame.draw.rect(surf, rect_color, surf.get_rect(), border_radius=12)
-
-    # optional border (semi-transparent white)
     pygame.draw.rect(surf, (255,255,255,50), surf.get_rect(), width=2, border_radius=12)
     y_offset = padding
     for r in rendered:
@@ -421,10 +404,8 @@ async def show_popup(screen, text, duration=2.0, fps=30, claw_ctl=None):
                 break
             try:
                 if claw_ctl is not None and hasattr(claw_ctl, 'ctl'):
-                    # keep rclpy callbacks processed
                     rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
             except Exception:
-                # don't let rclpy errors kill the popup; it's UX only
                 pass
             draw_tag_popup(screen, text)
             pygame.display.flip()
@@ -436,21 +417,18 @@ async def show_popup(screen, text, duration=2.0, fps=30, claw_ctl=None):
 
 
 async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewards):
-    # Enable UI nav (captures left/right; blocks axis movement)
     claw_ctl.ctl.ui_enabled = True
     claw_ctl.ctl.axis_enabled = False
 
-    # Clear any stale events
     claw_ctl.ctl.red_button_event.clear()
     while not claw_ctl.ctl.ui_nav_queue.empty():
         claw_ctl.ctl.ui_nav_queue.get_nowait()
 
-    current_selection = 0  # 0 = left, 1 = right
+    current_selection = 0
     clock = pygame.time.Clock()
     font = pygame.font.Font(None, 36)
     small_font = pygame.font.Font(None, 24)
 
-    # Precompute distribution text
     dist = {
         "wide_high": f"High force\nHigh variability\nReward: {rewards['wide_high']}",
         "narrow_high": f"High force\nLow variability\nReward: {rewards['narrow_high']}",
@@ -459,45 +437,37 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
     }
 
     def draw_claw(surface, cx, cy, ctype):
-        # (same as your draw_claw)
         claw_colors = {
-            "narrow_low": (30, 144, 255), #blue
-            "wide_low":   (50, 205, 50),  #green
-            "wide_high":  (255, 215, 0),  #yellow
-            "narrow_high":(220, 20, 60)   #red
+            "narrow_low": (30, 144, 255),
+            "wide_low":   (50, 205, 50),
+            "wide_high":  (255, 215, 0),
+            "narrow_high":(220, 20, 60)
         }
         color = claw_colors.get(ctype, (100, 100, 100))
         base_w, arm_l, arm_w, cord_l = 60, 50, 10, 100
 
-        # cord
         pygame.draw.line(surface, (0,0,0),
                          (cx, cy - cord_l),
                          (cx, cy - arm_w//2), 2)
-        # base
         base_rect = pygame.Rect(cx - base_w//2,
                                 cy - arm_w//2,
                                 base_w, arm_w)
         pygame.draw.rect(surface, color, base_rect)
-        # arms
         lx, rx = cx - base_w//2, cx + base_w//2
         sy = cy
         ey = cy + arm_l
         pygame.draw.line(surface, color, (lx, sy), (lx, ey), arm_w)
         pygame.draw.line(surface, color, (rx, sy), (rx, ey), arm_w)
-        # endpoints
         for x in (lx, rx):
             pygame.draw.circle(surface, color, (x, ey), 4)
 
-    # Main loop
     while True:
         screen.fill((255,255,255))
         w, h = screen.get_size()
 
-        # box sizes & positions
         normal, selected = (200,200), (240,240)
         lx, rx, by = 100, 500, 200
 
-        # build rects
         if current_selection == 0:
             left = pygame.Rect(lx-20, by-20, *selected)
             right = pygame.Rect(rx, by, *normal)
@@ -505,7 +475,6 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
             left = pygame.Rect(lx, by, *normal)
             right = pygame.Rect(rx-20, by-20, *selected)
 
-        # draw outlines
         highlight = (50,255,255)
         pygame.draw.rect(screen,
                          highlight if current_selection==0 else (0,0,0),
@@ -514,11 +483,9 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
                          highlight if current_selection==1 else (0,0,0),
                          right,4 if current_selection==1 else 2)
 
-        # draw claws
         draw_claw(screen, left.centerx, left.centery+30, first_type)
         draw_claw(screen, right.centerx, right.centery+30, second_type)
 
-        # distribution info
         lines1 = dist[first_type].split('\n')
         lines2 = dist[second_type].split('\n')
         for i, line in enumerate(lines1):
@@ -532,13 +499,11 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
                         (right.centerx - txt.get_width()//2,
                          right.bottom + 15 + i*20))
 
-        # instructions
         instr = font.render("Left/Right to choose, Red button to confirm", True, (0,0,0))
         screen.blit(instr, (w//2 - instr.get_width()//2, 100))
 
         pygame.display.flip()
 
-        # handle nav
         try:
             nav = claw_ctl.ctl.ui_nav_queue.get_nowait()
             if nav == 'Key.left':
@@ -548,10 +513,8 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
         except queue.Empty:
             pass
 
-        # spin ROS for joystick/red‑button
         rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
 
-        # confirm?
         if claw_ctl.ctl.red_button_event.is_set():
             claw_ctl.ctl.red_button_event.clear()
             break
@@ -559,7 +522,6 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
         await asyncio.sleep(0.02)
         clock.tick(60)
 
-    # teardown UI mode
     claw_ctl.ctl.ui_enabled = False
     claw_ctl.ctl.axis_enabled = True
 
@@ -569,17 +531,14 @@ async def display_rating(screen, claw_ctl,
                          question_lines, scale_texts,
                          question_type, trial):
 
-    # — INITIAL SETUP —
     pygame.font.init()
     claw_ctl.ctl.ui_enabled   = True
     claw_ctl.ctl.axis_enabled = False
 
-    # clear any pending input
     claw_ctl.ctl.red_button_event.clear()
     while not claw_ctl.ctl.ui_nav_queue.empty():
         claw_ctl.ctl.ui_nav_queue.get_nowait()
 
-    # headers & fonts
     header_text  = ("BALL SELECTION CONFIDENCE"
                     if question_type=="selection"
                     else "ACTION OUTCOME CONFIDENCE")
@@ -600,31 +559,26 @@ async def display_rating(screen, claw_ctl,
         w,h = screen.get_size()
         y = 50
 
-        # Header
         surf = header_font.render(header_text, True, header_color)
         screen.blit(surf, surf.get_rect(center=(w//2,y)))
         y += header_font.get_linesize() + 10
 
-        # Trial #
         surf = font.render(trial_text, True, (0,0,0))
         screen.blit(surf, surf.get_rect(center=(w//2, y)))
         y += font.get_linesize() + 10
 
-        # Question lines
         for line in question_lines:
             surf = font.render(line, True, (0,0,0))
             screen.blit(surf, surf.get_rect(center=(w//2,y)))
             y += font.get_linesize() + 5
         y += 20
 
-        # Options
         for idx, label in enumerate(scale_texts):
             col = (0,0,255) if idx==current else (0,0,0)
             surf = label_font.render(label, True, col)
             screen.blit(surf, surf.get_rect(center=(w//2,y)))
             y += label_font.get_linesize() + 15
 
-        # Two‐step instructions:
         if not locked_in:
             prompt = "Navigate with Up/Down, then press Red Button"
         else:
@@ -634,14 +588,11 @@ async def display_rating(screen, claw_ctl,
 
         pygame.display.flip()
 
-    # draw initial frame
     draw()
 
-    # — MAIN LOOP —
     while True:
-        updated = False  # Track if UI needs redraw
+        updated = False
 
-        # handle nav
         try:
             nav = claw_ctl.ctl.ui_nav_queue.get_nowait()
             if nav == 'Key.up':
@@ -653,31 +604,26 @@ async def display_rating(screen, claw_ctl,
         except queue.Empty:
             pass
 
-
         rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
 
         if updated:
-            draw()  # Redraw screen when selection changes
+            draw()
 
-        # one-step red button confirm
         if claw_ctl.ctl.red_button_event.is_set():
             claw_ctl.ctl.red_button_event.clear()
-            locked_value = current + 1   # 1-based scale
+            locked_value = current + 1
             break
 
-        # always redraw to update the prompt/selection highlight
         draw()
         await asyncio.sleep(0.01)
         clock.tick(60)
 
-     # — TEARDOWN & RETURN —
     claw_ctl.ctl.ui_enabled   = False
     claw_ctl.ctl.axis_enabled = True
 
     return locked_value
 
 def draw_claw(surface, cx, cy, ctype):
-        # (same as your draw_claw)
         claw_colors = {
             "narrow_low": (30, 144, 255),
             "wide_low":   (50, 205, 50),
@@ -687,28 +633,23 @@ def draw_claw(surface, cx, cy, ctype):
         color = claw_colors.get(ctype, (100, 100, 100))
         base_w, arm_l, arm_w, cord_l = 60, 50, 10, 100
 
-        # cord
         pygame.draw.line(surface, (0,0,0),
                          (cx, cy - cord_l),
                          (cx, cy - arm_w//2), 2)
-        # base
         base_rect = pygame.Rect(cx - base_w//2,
                                 cy - arm_w//2,
                                 base_w, arm_w)
         pygame.draw.rect(surface, color, base_rect)
-        # arms
         lx, rx = cx - base_w//2, cx + base_w//2
         sy = cy
         ey = cy + arm_l
         pygame.draw.line(surface, color, (lx, sy), (lx, ey), arm_w)
         pygame.draw.line(surface, color, (rx, sy), (rx, ey), arm_w)
-        # endpoints
         for x in (lx, rx):
             pygame.draw.circle(surface, color, (x, ey), 4)
 
 def generate_participant_id(prefix='P', length=8):
     """Return a random hex id like 'P8b3a2f1c' (length is number of chars after prefix)."""
-    # token_hex(4) -> 8 hex chars; adjust if you want longer
     nbytes = max(1, (length + 1) // 2)
     return prefix + secrets.token_hex(nbytes)[:length]
 
@@ -721,26 +662,19 @@ async def run_trial(claw_ctl, screen, grip_type,
     """
     Run one trial while logging telemetry. Returns a trial_record dict.
     """
-    # Clear any old detections from previous trials
     IR.clear_detection()
     if rfid_reader:
         rfid_reader.clear_tag()
     
-    # prepare logger
-    logger = DataLogger(claw_ctl, sample_interval=0.01)  # 100 Hz sampling
+    logger = DataLogger(claw_ctl, sample_interval=0.01)
     logger.log_event('trial_init', {'grip_type': grip_type, 'speed': speed, 'grip_sampled': grip, 'training_mode': training_mode})
     logger.start()
 
     def _movement_handler(movement, raw_msg=None):
-        """
-        movement: string like 'Key.up' or 'Key.stop'
-        raw_msg: the original ROS message (optional)
-        """
         payload = {
             'movement': movement,
             'timestamp': time.time()
         }
-        # if raw_msg has header or seq you might include it:
         try:
             if raw_msg is not None and hasattr(raw_msg, 'header'):
                 payload['msg_header'] = {
@@ -750,34 +684,39 @@ async def run_trial(claw_ctl, screen, grip_type,
         except Exception:
             pass
 
-        # write to the same logger used for trial events
         try:
             logger.log_event('joystick_movement', payload)
         except Exception as e:
-            # be defensive: don't let logging errors break the trial
             print(f"[WARN] movement logging failed: {e}")
 
-    # attach to the hardware control object
     if hasattr(claw_ctl, 'ctl'):
         claw_ctl.ctl.on_movement = _movement_handler
     else:
-        # fallback if ClawCtl exposes the node directly
         setattr(claw_ctl, 'on_movement', _movement_handler)
+
+    # Extract mu/sigma for this grip type to display on screen
+    grip_params = grip_distribution_types.get(grip_type, {})
+    force_mu    = grip_params.get("force", {}).get("mu")
+    force_sigma = grip_params.get("force", {}).get("sigma")
 
     # show UI overlays depending on mode
     if training_mode:
         if trial_number is not None and total_trials is not None:
             draw_legend(screen)
-            draw_training_claw_counter(screen, trial_number, total_trials)
+            draw_training_claw_counter(
+                screen, trial_number, total_trials,
+                grip_sampled=grip, force_mu=force_mu, force_sigma=force_sigma
+            )
     else:
-        draw_reward_display(screen, grip_type, total_reward, training_mode)
+        draw_reward_display(
+            screen, grip_type, total_reward, training_mode,
+            grip_sampled=grip, force_mu=force_mu, force_sigma=force_sigma
+        )
 
     cx, cy = screen.get_width() // 2, screen.get_height() // 2
     draw_claw(screen, cx, cy, grip_type)
     pygame.display.flip()
 
-    # Wrap the key claw_ctl actions to add precise event logging
-    # Save originals so we can restore later
     orig_grab = getattr(claw_ctl, 'grab_sequence', None)
     orig_move_home = getattr(claw_ctl, 'move_home', None)
     orig_open_claw = getattr(claw_ctl, 'open_claw', None)
@@ -803,49 +742,39 @@ async def run_trial(claw_ctl, screen, grip_type,
     if orig_open_claw:
         setattr(claw_ctl, 'open_claw', _wrap('open_claw', orig_open_claw))
 
-    # enable joystick and wait for user fire (samples already collecting)
     claw_ctl.enable_joystick()
 
-    # wait until the fire button is pressed, but keep UI responsive
     while not claw_ctl.ctl.red_button_event.is_set():
-        # let rclpy process incoming joystick/red-button messages
         rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
-
-        # ensure pygame processes window messages (prevents "Not Responding")
         pygame.event.pump()
-
-        # yield to the asyncio loop so other tasks can run
         await asyncio.sleep(0.01)
-    # once set, clear it or use it as needed
     claw_ctl.ctl.red_button_event.clear()
 
     logger.log_event('fire_pressed')
 
-    # At this point the automatic sequence will run:
-    # grab -> move_to_box -> open_claw -> move_home (random)
     try:
+        claw_ctl.open_claw()
+        claw_ctl.claw_down(speed)
+        claw_ctl.close_claw(grip)
         claw_ctl.disable_joystick()
-        # Note: the wrapped functions will log start/end events
-        claw_ctl.grab_sequence(speed, grip)
-
-        # move to the fixed drop-box and wait for arrival (if you added move_to_box)
+        time.sleep(1)
+        claw_ctl.claw_up(speed)
         if hasattr(claw_ctl, 'move_to_box'):
             claw_ctl.move_to_box(x=0.0, y=150.0)
 
         claw_ctl.open_claw()
         await asyncio.sleep(open_delay)
 
-        # THEN move to a random home position (move_home still uses the random logic)
-        claw_ctl.move_home(target=(350, 400))
+        random_home_x = random.randint(440, 755)
+        random_home_y = random.randint(150, 500)
+        claw_ctl.move_home(target=(random_home_x, random_home_y))
 
-        # Wait a moment for any ball to settle and trigger sensors
         await asyncio.sleep(0.5)
         claw_ctl.enable_joystick()
     except Exception as e:
         logger.log_event('run_sequence_exception', {'exc': str(e)})
  
 
-    # restore original methods
     if orig_grab:
         setattr(claw_ctl, 'grab_sequence', orig_grab)
     if orig_move_home:
@@ -853,13 +782,10 @@ async def run_trial(claw_ctl, screen, grip_type,
     if orig_open_claw:
         setattr(claw_ctl, 'open_claw', orig_open_claw)
 
-    # --- attempt to read RFID tag and IR detection, record in the trial_end event ---
     info_value = None
     ir_value = None
     
-    # Check IR detection (no max_age needed since we cleared at trial start)
     try:
-        # DEBUG: Check what we have
         import time as _time
         with IR._lock:
             last_det = IR.last_detection
@@ -872,11 +798,10 @@ async def run_trial(claw_ctl, screen, grip_type,
         else:
             print(f"[DEBUG] No IR detection timestamp available")
         
-        ir_detection = IR.get_last_detection(max_age=None)  # No time limit - we cleared at trial start
+        ir_detection = IR.get_last_detection(max_age=None)
         if ir_detection:
             ir_value = ir_detection
             print(f"✅ IR detected: {ir_detection}")
-            # Show IR popup
             try:
                 await show_popup(screen, f"IR Ball Detected!\n{ir_detection}", duration=2.0, fps=30, claw_ctl=claw_ctl)
             except Exception as e:
@@ -888,10 +813,8 @@ async def run_trial(claw_ctl, screen, grip_type,
         print(f"[WARN] IR check failed: {e}")
         ir_value = "IR check failed"
     
-    # Check RFID tag (no timeout/max_age needed since we cleared at trial start)
     try:
         if rfid_reader:
-            # DEBUG: Check what we have
             import time as _time
             with rfid_reader._lock:
                 last_tag = rfid_reader.last_tag
@@ -904,13 +827,11 @@ async def run_trial(claw_ctl, screen, grip_type,
             else:
                 print(f"[DEBUG] No RFID tag timestamp available")
             
-            # Get last tag (no time limit - we cleared at trial start)
             tag = rfid_reader.get_last_tag(max_age=None)
             if tag:
                 info_value = f"SUCCESSFUL BALL, tag: {tag}"
                 print(f"✅ Tag detected: {tag}")
 
-                # show popup to participant for 2s
                 popup_text = f"Tag detected!\n{tag}"
                 try:
                     await show_popup(screen, popup_text, duration=2.0, fps=30, claw_ctl=claw_ctl)
@@ -938,10 +859,8 @@ async def run_trial(claw_ctl, screen, grip_type,
         except Exception:
             pass
 
-    # stop the logger after logging the event
     logger.stop()
 
-    # detach movement handler (clean up)
     try:
         if hasattr(claw_ctl, 'ctl') and hasattr(claw_ctl.ctl, 'on_movement'):
             claw_ctl.ctl.on_movement = None
@@ -950,12 +869,10 @@ async def run_trial(claw_ctl, screen, grip_type,
     except Exception:
         pass
 
-    # try to read the node's current home target (this should be the random point chosen by move_home)
     original_position = None
     try:
         ctl_node = getattr(claw_ctl, 'ctl', None)
         if ctl_node is not None:
-            # if there's a lock, use it
             home_lock = getattr(ctl_node, 'home_lock', None)
             if home_lock is not None:
                 with home_lock:
@@ -967,7 +884,6 @@ async def run_trial(claw_ctl, screen, grip_type,
     except Exception:
         original_position = None
 
-    # build trial record
     trial_record = {
         'timestamp_utc': datetime.datetime.utcnow().isoformat() + 'Z',
         'trial_number': trial_number,
@@ -976,7 +892,6 @@ async def run_trial(claw_ctl, screen, grip_type,
         'grip_type': grip_type,
         'grip_params': grip_distribution_types.get(grip_type, {}),
         'grip_sampled_value': grip,
-        #'speed_value': speed,
         'total_reward_before': total_reward,
         'logger': logger.as_dict(),
         'original_claw_position': original_position,
@@ -984,31 +899,24 @@ async def run_trial(claw_ctl, screen, grip_type,
         'ir_detection': ir_value
     }
 
-    # return the data; caller (run_game) will handle saving or aggregate collection
-    
     return trial_record
 
-async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
-    # show intro/instructions
+#30 min - 50 trials a mano
+async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
     await display_and_wait(screen, claw_ctl, INTRO)
     await display_and_wait(screen, claw_ctl, PRE_TRAINING)
 
-        # === RFID: start session-wide background reader ===
-
     rfid = RFIDReader(port="/dev/rfid_reader", baud=115200, timeout=0.1, verbose=True)
     rfid.start()
-
 
     all_records = []
     training_types = list(grip_distribution_types.keys())
     random.shuffle(training_types)
 
-    participant_id = generate_participant_id()   # e.g. "P3f8a9d2b"
+    participant_id = generate_participant_id()
     session_dir = make_session_dir(participant_id, base_dir='claw_data')
-    #save_session_metadata(session_dir, participant_id, extra={'experiment': 'claw_v1', 'notes': ''})
 
     # TRAINING TRIALS
-    
     for i, grip_type in enumerate(training_types, start=1):
         claw_ctl.ctl.axis_enabled = False
         await display_trial_start(
@@ -1042,7 +950,6 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             rfid_reader=rfid
         )
 
-        # SAVING DATA
         ts = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%S')
         _, ev_path, _ = save_event_data(trial_record,
                                        participant_id=participant_id,
@@ -1050,7 +957,7 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
                                        save_locally=True,
                                        out_dir=session_dir,
                                        filename_prefix=f"train_trial_{i}",
-                                       include_samples=False)   # set True if you want samples too
+                                       include_samples=False)
         if ev_path:
             print(f"[DATA] Saved training events JSON to {ev_path}")
         all_records.append(trial_record)
@@ -1127,7 +1034,6 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             trial=trial
         )
 
-        # clear nav queue
         with claw_ctl.ctl.ui_nav_queue.mutex:
             claw_ctl.ctl.ui_nav_queue.queue.clear()
         screen.fill((255, 255, 255))
@@ -1156,19 +1062,12 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             total_reward=current_total_reward, rfid_reader=rfid
         )
 
-        # augment record with participant responses & choices
         trial_record['choice'] = choice
         trial_record['selection_confidence'] = selection_confidence
         trial_record['outcome_confidence'] = outcome_confidence
         trial_record['chosen_reward'] = rewards.get(choice)
         trial_record['options_displayed'] = (first_type, second_type)
 
-        # Save experiment trial into the participant/session folder
-        #p = save_trial_json(trial_record, out_dir=session_dir)
-        #print(f"[DATA] Saved experiment trial to {p}")
-        #all_records.append(trial_record)
-
-        # Save minimal choice summary (instead of logger/events)
         choice_path = save_choice_data(trial_record,
                                     participant_id=participant_id,
                                     out_dir=session_dir,
@@ -1181,7 +1080,6 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
     ts = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%S')
 
     def _is_success(rfid_val):
-        """Return True if RFID suggests success; False otherwise."""
         if not rfid_val:
             return False
         s = str(rfid_val).upper()
@@ -1189,22 +1087,22 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             return False
         if 'NO BALL SUCCESS' in s or 'NO SUCCESS' in s:
             return False
-        # anything mentioning SUCCESS or a tag we treat as success
         if 'SUCCESS' in s or 'TAG' in s or 'SUCCESSFUL' in s:
             return True
-        # fallback: if it's not the explicit NO string assume success if non-empty
         return True
 
-    # partition
-    training_trials = [t for t in all_records if t.get('training_mode')]
-    experiment_trials = [t for t in all_records if not t.get('training_mode')]
+    training_trials_list = [t for t in all_records if t.get('training_mode')]
+    experiment_trials_list = [t for t in all_records if not t.get('training_mode')]
 
-    # build minimal summaries
     training_summary = []
-    for t in training_trials:
+    for t in training_trials_list:
+        _gp = t.get('grip_params', {}).get('force', {})
         training_summary.append({
             'participant_id': participant_id,
             'trial_number': t.get('trial_number'),
+            'grip_type': t.get('grip_type'),
+            'force_mu': _gp.get('mu'),
+            'force_sigma': _gp.get('sigma'),
             'grip_force': t.get('grip_sampled_value'),
             'rfid': t.get('rfid'),
             'ir_detection': t.get('ir_detection'),
@@ -1212,10 +1110,14 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
         })
 
     experiment_summary = []
-    for t in experiment_trials:
+    for t in experiment_trials_list:
+        _gp = t.get('grip_params', {}).get('force', {})
         experiment_summary.append({
             'participant_id': participant_id,
             'trial_number': t.get('trial_number'),
+            'grip_type': t.get('grip_type'),
+            'force_mu': _gp.get('mu'),
+            'force_sigma': _gp.get('sigma'),
             'grip_force': t.get('grip_sampled_value'),
             'rfid': t.get('rfid'),
             'ir_detection': t.get('ir_detection'),
@@ -1224,7 +1126,6 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
             'outcome_confidence': t.get('outcome_confidence'),
         })
 
-    # ensure session dir exists
     os.makedirs(session_dir, exist_ok=True)
 
     train_path = os.path.join(session_dir, f'combined_all_training_{participant_id}_{ts}.json')
@@ -1243,13 +1144,12 @@ async def run_game(screen, claw_ctl, total_trials=3, training_trials=2):
         print(f"[DATA] Saved combined experiment summary to {exp_path}")
     except Exception as e:
         print(f"[WARN] failed saving combined experiment summary: {e}")
+
     claw_ctl.ctl.axis_enabled = False
-        # at end of run_game, before exiting:
     try:
         rfid.stop()
     except Exception:
         pass
-
 
     await display_and_wait(
         screen,

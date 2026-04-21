@@ -13,7 +13,7 @@ def main(args=None):
     screen = pygame.display.set_mode((800, 600))
 
     # Decide mode from command line
-    if sys.argv[1] == '--test':
+    if len(sys.argv) > 1 and sys.argv[1] == '--test':
         print("Running grip strength test mode...")
         asyncio.run(run_grip_strength_test(screen, claw_ctl, ir_detector=IR))
         
