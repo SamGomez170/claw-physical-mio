@@ -7,22 +7,22 @@ def gaussian(x, mu, sigma):
 # Grip distribution configuration
 grip_distribution_types = {
     "wide_high": {
-        "force": {"mu": 192, "sigma": 2},
+        "force": {"mu": 191, "sigma": 1},
         "color": "#E6C619",   # yellow
         "label": "Wide High (μ=191, σ=2)"
     },
     "narrow_high": {
-        "force": {"mu": 192, "sigma": 1},
+        "force": {"mu": 191, "sigma": 0.5},
         "color": "#D94F3D",   # red
         "label": "Narrow High (μ=191, σ=0.7)"
     },
     "wide_low": {
-        "force": {"mu": 188, "sigma": 2},
+        "force": {"mu": 188, "sigma": 1},
         "color": "#4CAF82",   # green
         "label": "Wide Low (μ=189, σ=2)"
     },
     "narrow_low": {
-        "force": {"mu": 188, "sigma": 1},
+        "force": {"mu": 188, "sigma": 0.5},
         "color": "#4A90D9",   # blue
         "label": "Narrow Low (μ=189, σ=0.7)"
     }

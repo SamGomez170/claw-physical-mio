@@ -33,7 +33,7 @@ WIDTH = 800
 HEIGHT = 600  # You may need to adjust this based on your screen height
 grip_distribution_types = {
     "wide_high": {
-        "force": {"mu": 192, "sigma": 1.7}, #0.3
+        "force": {"mu": 192, "sigma": 1.2}, #0.3
         "rate": 255
     }, #yellow
     "narrow_high": {
@@ -41,11 +41,11 @@ grip_distribution_types = {
         "rate": 255
     },#red
     "wide_low": {
-        "force": {"mu": 189, "sigma": 1.7},
+        "force": {"mu": 188, "sigma": 1.2},
         "rate": 255
     }, #green
     "narrow_low": {
-        "force": {"mu": 189, "sigma": 0.7},
+        "force": {"mu": 188, "sigma": 0.7},
         "rate": 255
     }#blue
 }
@@ -58,8 +58,8 @@ INTRO = [
     {"text": "You can control the position of the claw with the joystick. When you're happy with the position of the claw over the ball, you can press the red button for it to go down and pick the ball."},
     {"text": "Please use your dominant hand to control the claw."},
     {"text": "Once you press the fire button, the whole pick-and-drop sequence goes automatically."},
-    {"text": "There will be 4 different types of grip fopr the claw, and sometimes it will be easier to pick-and-drop them, and sometimes harder: some grips are weaker on average, some are stronger. Also some have litte variability in their strenght, so they are more predictable while others have more variablity, so they are less predictable."},
-    {"text": "You will be able to tell different grip types by the color of the light in the claw."},
+    {"text": "There will be 4 different types of claw, and sometimes it will be easier to pick-and-drop the ball with them, and sometimes harder: some grips are weaker on average, some are stronger. Also some claws have little variability in their strenght, so they are more predictable while others have more variability, so they are less predictable."},
+    {"text": "You will be able to tell different grip types by the color of the claw in the screen."},
     {"text": "Before the main part of the experiment, you will have a chance to do a number of training trials"},
     {"text": "Thank you for your time and good luck!"},
     {"text": "Press red button to begin the training trials."},
@@ -69,7 +69,7 @@ INTRO = [
 PRE_TRAINING = [
     {"text": "Welcome to the training phase of the experiment."},
     {"text": "In this part, you will get familiar with the claw machine and how different types of grips behave."},
-    {"text": "You will see lights of different colors, each representing a different type of grip:"},
+    {"text": "You will see claws of different colors, each representing a different type of grip:"},
     {"text": ""}, 
     {"text": "BLUE claw is weaker on average and have very predictable grip strength", "icon": True, "color": (30,144,255)},
     {"text": "GREEN claw is weaker on average but have more variable grip strength", "icon": True, "color": (50,205,50)},
@@ -127,6 +127,7 @@ async def display_trial_start(
     automatic_mode=True,
     is_training=False,
     total_training_trials=2,
+    total_trials = 1,
     delay=2000
 ):
     # clear out any old events, prep font
@@ -141,7 +142,7 @@ async def display_trial_start(
         draw_legend(screen)
     else:
         if automatic_mode:
-            msg = f"Trial {trial_number}. Press Red Button to continue"
+            msg = f"Trial {trial_number}/{total_trials}. Press Red Button to continue"
         else:
             msg = f"Action Selection Trial {trial_number}/{total_training_trials}. Red Button to continue"
 
@@ -327,7 +328,7 @@ def draw_reward_display(screen, grip_distribution_type, total_reward, training_m
         screen.blit(total_surface, (reward_x, reward_y + 25))
 
     # Always draw grip debug info
-    draw_grip_debug(screen, grip_sampled=grip_sampled, force_mu=force_mu, force_sigma=force_sigma)
+    #draw_grip_debug(screen, grip_sampled=grip_sampled, force_mu=force_mu, force_sigma=force_sigma)
 
 
 def draw_training_claw_counter(screen, current_claw, total_claws,
@@ -359,7 +360,7 @@ def draw_training_claw_counter(screen, current_claw, total_claws,
     screen.blit(text_surface, text_rect)
 
     # Draw grip debug info in the top-left
-    draw_grip_debug(screen, grip_sampled=grip_sampled, force_mu=force_mu, force_sigma=force_sigma)
+    #draw_grip_debug(screen, grip_sampled=grip_sampled, force_mu=force_mu, force_sigma=force_sigma)
 
 # pop-up drawing helper
 def draw_tag_popup(screen, text, padding=20, alpha=200, font_size=28):
@@ -424,7 +425,7 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
     while not claw_ctl.ctl.ui_nav_queue.empty():
         claw_ctl.ctl.ui_nav_queue.get_nowait()
 
-    current_selection = 0
+    current_selection = None
     clock = pygame.time.Clock()
     font = pygame.font.Font(None, 36)
     small_font = pygame.font.Font(None, 24)
@@ -469,19 +470,22 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
         lx, rx, by = 100, 500, 200
 
         if current_selection == 0:
-            left = pygame.Rect(lx-20, by-20, *selected)
+            left  = pygame.Rect(lx - 20, by - 20, *selected)
             right = pygame.Rect(rx, by, *normal)
-        else:
-            left = pygame.Rect(lx, by, *normal)
-            right = pygame.Rect(rx-20, by-20, *selected)
+        elif current_selection == 1:
+            left  = pygame.Rect(lx, by, *normal)
+            right = pygame.Rect(rx - 20, by - 20, *selected)
+        else:  # Nothing selected yet
+            left  = pygame.Rect(lx, by, *normal)
+            right = pygame.Rect(rx, by, *normal)
 
         highlight = (50,255,255)
         pygame.draw.rect(screen,
-                         highlight if current_selection==0 else (0,0,0),
-                         left, 4 if current_selection==0 else 2)
+                        highlight if current_selection == 0 else (0, 0, 0),
+                        left,  4 if current_selection == 0 else 2)
         pygame.draw.rect(screen,
-                         highlight if current_selection==1 else (0,0,0),
-                         right,4 if current_selection==1 else 2)
+                        highlight if current_selection == 1 else (0, 0, 0),
+                        right, 4 if current_selection == 1 else 2)
 
         draw_claw(screen, left.centerx, left.centery+30, first_type)
         draw_claw(screen, right.centerx, right.centery+30, second_type)
@@ -499,7 +503,7 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
                         (right.centerx - txt.get_width()//2,
                          right.bottom + 15 + i*20))
 
-        instr = font.render("Left/Right to choose, Red button to confirm", True, (0,0,0))
+        instr = font.render("Choose a claw (Left/Right to choose, Red button to confirm)", True, (0,0,0))
         screen.blit(instr, (w//2 - instr.get_width()//2, 100))
 
         pygame.display.flip()
@@ -514,10 +518,11 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
             pass
 
         rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
-
+        
         if claw_ctl.ctl.red_button_event.is_set():
             claw_ctl.ctl.red_button_event.clear()
-            break
+            if current_selection is not None:  # <-- add this guard
+                break
 
         await asyncio.sleep(0.02)
         clock.tick(60)
@@ -530,69 +535,60 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
 async def display_rating(screen, claw_ctl,
                          question_lines, scale_texts,
                          question_type, trial):
-
     pygame.font.init()
     claw_ctl.ctl.ui_enabled   = True
     claw_ctl.ctl.axis_enabled = False
-
     claw_ctl.ctl.red_button_event.clear()
     while not claw_ctl.ctl.ui_nav_queue.empty():
         claw_ctl.ctl.ui_nav_queue.get_nowait()
 
     header_text  = ("BALL SELECTION CONFIDENCE"
-                    if question_type=="selection"
+                    if question_type == "selection"
                     else "ACTION OUTCOME CONFIDENCE")
-    header_color = (0,128,255) if question_type=="selection" else (255,100,0)
+    header_color = (0, 128, 255) if question_type == "selection" else (255, 100, 0)
     trial_text   = f"Trial {trial}."
     header_font  = pygame.font.SysFont(None, 40)
     font         = pygame.font.SysFont(None, 32)
     label_font   = pygame.font.SysFont(None, 28)
     clock        = pygame.time.Clock()
-    current      = 0
+    current      = random.randint(0, len(scale_texts) - 1)  # random start
     locked_in    = False
     locked_value = None
 
-
     def draw():
         nonlocal locked_in, locked_value
-        screen.fill((255,255,255))
-        w,h = screen.get_size()
+        screen.fill((255, 255, 255))
+        w, h = screen.get_size()
         y = 50
 
         surf = header_font.render(header_text, True, header_color)
-        screen.blit(surf, surf.get_rect(center=(w//2,y)))
+        screen.blit(surf, surf.get_rect(center=(w // 2, y)))
         y += header_font.get_linesize() + 10
 
-        surf = font.render(trial_text, True, (0,0,0))
-        screen.blit(surf, surf.get_rect(center=(w//2, y)))
+        surf = font.render(trial_text, True, (0, 0, 0))
+        screen.blit(surf, surf.get_rect(center=(w // 2, y)))
         y += font.get_linesize() + 10
 
         for line in question_lines:
-            surf = font.render(line, True, (0,0,0))
-            screen.blit(surf, surf.get_rect(center=(w//2,y)))
+            surf = font.render(line, True, (0, 0, 0))
+            screen.blit(surf, surf.get_rect(center=(w // 2, y)))
             y += font.get_linesize() + 5
         y += 20
 
         for idx, label in enumerate(scale_texts):
-            col = (0,0,255) if idx==current else (0,0,0)
+            col = (0, 0, 255) if idx == current else (0, 0, 0)
             surf = label_font.render(label, True, col)
-            screen.blit(surf, surf.get_rect(center=(w//2,y)))
+            screen.blit(surf, surf.get_rect(center=(w // 2, y)))
             y += label_font.get_linesize() + 15
 
-        if not locked_in:
-            prompt = "Navigate with Up/Down, then press Red Button"
-        else:
-            prompt = "Press Red again to continue".format(locked_value)
-        instr = label_font.render(prompt, True, (0,0,0))
-        screen.blit(instr, instr.get_rect(center=(w//2, h-40)))
-
+        prompt = "Navigate with Up/Down, then press Red Button" if not locked_in else "Press Red again to continue"
+        instr = label_font.render(prompt, True, (0, 0, 0))
+        screen.blit(instr, instr.get_rect(center=(w // 2, h - 40)))
         pygame.display.flip()
 
     draw()
 
     while True:
-        updated = False
-
         try:
             nav = claw_ctl.ctl.ui_nav_queue.get_nowait()
             if nav == 'Key.up':
@@ -606,9 +602,6 @@ async def display_rating(screen, claw_ctl,
 
         rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
 
-        if updated:
-            draw()
-
         if claw_ctl.ctl.red_button_event.is_set():
             claw_ctl.ctl.red_button_event.clear()
             locked_value = current + 1
@@ -620,7 +613,6 @@ async def display_rating(screen, claw_ctl,
 
     claw_ctl.ctl.ui_enabled   = False
     claw_ctl.ctl.axis_enabled = True
-
     return locked_value
 
 def draw_claw(surface, cx, cy, ctype):
@@ -924,6 +916,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             trial_number=i,
             is_training=True,
             total_training_trials=len(training_types),
+            total_trials = total_trials,
             automatic_mode=True,
             delay=2000
         )
@@ -979,6 +972,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             trial_number=trial,
             is_training=False,
             total_training_trials=total_trials,
+            total_trials = total_trials,
             automatic_mode=True,
             delay=2000
         )
@@ -1000,8 +994,8 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             screen,
             claw_ctl,
             question_lines=[
-                "How confident are you that you selected the ball",
-                "that would give you the highest reward?"
+                "How sure are you that you made the best decision",
+                "for your reward score?"
             ],
             scale_texts=[
                 "1 - very unsure",
@@ -1019,8 +1013,8 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             screen,
             claw_ctl,
             question_lines=[
-                "How sure are you that you made the best decision",
-                "for your reward score?"
+                "How sure are you",
+                "that you will drop the ball in the box?"
             ],
             scale_texts=[
                 "1 - very unsure",

@@ -16,10 +16,10 @@ import random
 # 0.080 kg mass whole ball
 # Each entry: {"mu": <nominal force>, "sigma": <spread>}
 TEST_FORCE_PARAMS = [
-    {"mu": 192,   "sigma": 1},
-    {"mu": 192, "sigma": 2},
-    {"mu": 189,   "sigma": 1},
-    {"mu": 189,   "sigma": 2}
+    {"mu": 192,   "sigma": 0.7},
+    {"mu": 192, "sigma": 1.2},
+    {"mu": 188,   "sigma": 0.7},
+    {"mu": 188,   "sigma": 1.2}
 ]
 TRIALS_PER_FORCE = 5
 SPEED = 255
