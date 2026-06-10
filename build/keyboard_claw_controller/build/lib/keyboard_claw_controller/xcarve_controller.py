@@ -44,7 +44,6 @@ class XcarveController(Node):
 
         # Serial port configuration
         self.serial_port = serial.Serial("/dev/xcarve", 115200)
-
         #self.serial_port = serial.Serial("/dev/ttyUSBxcarve", 115200)
         self.serial_port.parity = serial.PARITY_NONE  # Parity. Options include PARITY_NONE, PARITY_EVEN, PARITY_ODD
         self.serial_port.stopbits = serial.STOPBITS_ONE  # Stop bits. Options include STOPBITS_ONE, STOPBITS_ONE_POINT_FIVE, STOPBITS_TWO
@@ -143,21 +142,6 @@ class XcarveController(Node):
 
     def homing(self):
         self.serial_port.flushInput()
-        self.get_logger().info('Checking current status...') 
-        self.lock.acquire() 
-        self.serial_port.write("?\n".encode('utf-8')) 
-        status = self.serial_port.readline().decode('utf-8') 
-        self.lock.release() 
-        self.get_logger().info(f'Current status: {status}')
-
-        # Send soft reset to clear any errors 
-        self.get_logger().info('Sending soft reset (Ctrl-X)') 
-        self.serial_port.write(b'\x18') 
-        time.sleep(2)
-        # Clear alarm state 
-        self.get_logger().info('Clearing any alarm state') 
-        self.send_cmd("$X") 
-        time.sleep(0.5)
         #print('Going home')
         self.get_logger().info('Going home')
         output = self.send_cmd("$H")
@@ -258,7 +242,7 @@ class XcarveController(Node):
         self.subscription  # prevent unused variable warning
 
 
-        self.serial_port = serial.Serial("/dev/ttyUSB0", 115200)
+        self.serial_port = serial.Serial("/dev/xcarve", 115200)
         self.serial_port.parity = serial.PARITY_NONE  # Parity. Options include PARITY_NONE, PARITY_EVEN, PARITY_ODD
         self.serial_port.stopbits = serial.STOPBITS_ONE  # Stop bits. Options include STOPBITS_ONE, STOPBITS_ONE_POINT_FIVE, STOPBITS_TWO
         self.serial_port.bytesize = serial.EIGHTBITS  # Data bits. Options include FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS

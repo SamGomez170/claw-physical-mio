@@ -13,43 +13,38 @@ import numpy as np
 import datetime
 from .data_logger import DataLogger, save_choice_data, save_event_data, save_trial_json, make_session_dir, save_session_metadata
 import time 
-from .read_rfid import RFIDReader
+import serial
 from .read_IR import IRDetector
+import signal
 
-rfid = RFIDReader(port="/dev/rfid_reader", baud=115200, timeout=0.1, verbose=False)
-rfid.start()
-IR = IRDetector(port="/dev/ir_detector", baud=115200, verbose=True)
-IR.start()
-
-SELECTION_COLOR = (0, 128, 0)   # e.g. a green for "selection" 
-OUTCOME_COLOR   = (128, 0, 0)   # e.g. a red for "outcome"
+SELECTION_COLOR = (0, 128, 0)
+OUTCOME_COLOR   = (128, 0, 0)
 rewards = {
-    "wide_low": 14,      # Base reward
-    "narrow_low": 18,  # Slight penalty for playing it safe
-    "wide_high": 10,     # High reward for risky choice  
-    "narrow_high": 11    # Good reward for skill-based choice
+    "wide_low": 14,
+    "narrow_low": 18,
+    "wide_high": 10,
+    "narrow_high": 11
 }
 WIDTH = 800
-HEIGHT = 600  # You may need to adjust this based on your screen height
+HEIGHT = 600
 grip_distribution_types = {
     "wide_high": {
-        "force": {"mu": 192, "sigma": 1.2}, #0.3
+        "force": {"mu": 192, "sigma": 1.2},
         "rate": 255
-    }, #yellow
+    },
     "narrow_high": {
-        "force": {"mu": 192, "sigma": 0.7}, #0.12
+        "force": {"mu": 192, "sigma": 0.7},
         "rate": 255
-    },#red
+    },
     "wide_low": {
         "force": {"mu": 188, "sigma": 1.2},
         "rate": 255
-    }, #green
+    },
     "narrow_low": {
         "force": {"mu": 188, "sigma": 0.7},
         "rate": 255
-    }#blue
+    }
 }
-
 
 
 # intro
@@ -70,11 +65,11 @@ PRE_TRAINING = [
     {"text": "Welcome to the training phase of the experiment."},
     {"text": "In this part, you will get familiar with the claw machine and how different types of grips behave."},
     {"text": "You will see claws of different colors, each representing a different type of grip:"},
-    {"text": ""}, 
+    {"text": ""},
     {"text": "BLUE claw is weaker on average and have very predictable grip strength", "icon": True, "color": (30,144,255)},
     {"text": "GREEN claw is weaker on average but have more variable grip strength", "icon": True, "color": (50,205,50)},
     {"text": "YELLOW claw is stronger on average and have more variable grip strength", "icon": True, "color": (255,215,0)},
-    {"text": "RED claw is stronger on average and have very predictable grip strength", "icon": True, "color": (220,20,60)}, 
+    {"text": "RED claw is stronger on average and have very predictable grip strength", "icon": True, "color": (220,20,60)},
     {"text": ""},
     {"text": "Your task is to practice picking up and dropping balls into the box."},
     {"text": "Please pay attention to how the different types of claws move and behave."},
@@ -106,6 +101,38 @@ END = [
     {"text": "Press SPACE or ENTER to continue."},
 ]
 
+
+class LEDController:
+    def __init__(self, port="/dev/led_controller", baud=9600, timeout=2):
+        self.ser = None
+        try:
+            self.ser = serial.Serial(port, baud, timeout=timeout)
+            time.sleep(2)
+            print(f"[LED] Connected to Arduino on {port}")
+        except Exception as e:
+            print(f"[LED] Could not connect to Arduino: {e}")
+
+    def set_grip(self, grip_type: str):
+        if self.ser and self.ser.is_open:
+            try:
+                cmd = f"SET_GRIP:{grip_type}\n"
+                self.ser.write(cmd.encode())
+            except Exception as e:
+                print(f"[LED] Serial write failed: {e}")
+
+    def off(self):
+        if self.ser and self.ser.is_open:
+            try:
+                self.ser.write(b"OFF\n")
+            except Exception as e:
+                print(f"[LED] Serial write failed: {e}")
+
+    def close(self):
+        if self.ser:
+            self.off()
+            self.ser.close()
+
+
 async def wrap_text(text, font, max_width):
     words = text.split(" ")
     lines, current = [], ""
@@ -120,6 +147,7 @@ async def wrap_text(text, font, max_width):
         lines.append(current)
     return lines
 
+
 async def display_trial_start(
     screen,
     claw_ctl,
@@ -127,16 +155,14 @@ async def display_trial_start(
     automatic_mode=True,
     is_training=False,
     total_training_trials=2,
-    total_trials = 1,
+    total_trials=1,
     delay=2000
 ):
-    # clear out any old events, prep font
     pygame.event.clear()
     pygame.font.init()
     screen.fill((255, 255, 255))
     font = pygame.font.SysFont(None, 36)
 
-    # choose message
     if is_training:
         msg = f"Training Trial {trial_number}/{total_training_trials}. Press Red Button to continue"
         draw_legend(screen)
@@ -146,23 +172,21 @@ async def display_trial_start(
         else:
             msg = f"Action Selection Trial {trial_number}/{total_training_trials}. Red Button to continue"
 
-    # render & blit
     surf = font.render(msg, True, (0, 0, 0))
     rect = surf.get_rect(center=(screen.get_width()/2, screen.get_height()/2))
     screen.blit(surf, rect)
 
     pygame.display.flip()
 
-    # wait until the fire button is pressed, but keep UI responsive
     while not claw_ctl.ctl.red_button_event.is_set():
         rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
         pygame.event.pump()
         await asyncio.sleep(0.01)
     claw_ctl.ctl.red_button_event.clear()
 
-    # clear screen
     screen.fill((255,255,255))
     pygame.display.flip()
+
 
 def draw_small_claw(screen, color, topleft):
     x0, y0 = topleft
@@ -170,23 +194,18 @@ def draw_small_claw(screen, color, topleft):
     bar_w, bar_h = 20, 4
     pr_w, pr_h = 3, 12
 
-    # cord
     cx = x0 + bar_w // 2
     pygame.draw.line(screen, 'black', (cx, y0), (cx, y0 + cord_len), 2)
 
-    # horizontal bar
     bar_y = y0 + cord_len
     pygame.draw.rect(screen, color, (x0, bar_y, bar_w, bar_h))
 
-    # prongs
     prong_y = bar_y + bar_h
-    # left prong
     pygame.draw.rect(screen, color, (x0, prong_y, pr_w, pr_h))
-    # right prong
-    pygame.draw.rect(screen, color,
-                     (x0 + bar_w - pr_w, prong_y, pr_w, pr_h))
+    pygame.draw.rect(screen, color, (x0 + bar_w - pr_w, prong_y, pr_w, pr_h))
 
     return bar_w
+
 
 async def display_and_wait(screen, claw_ctl=None, render_items=None,
                            title=None, color=(0,0,0), total_reward=0):
@@ -194,9 +213,8 @@ async def display_and_wait(screen, claw_ctl=None, render_items=None,
     pygame.event.clear()
     pygame.font.init()
     screen.fill((255,255,255))
-    monetary_reward = total_reward / 200 
+    monetary_reward = total_reward / 200
 
-    # Draw title or text blocks
     if title is not None:
         font = pygame.font.SysFont(None, 36)
         surf = font.render(title, True, color)
@@ -204,16 +222,15 @@ async def display_and_wait(screen, claw_ctl=None, render_items=None,
                                       screen.get_height() / 2))
         screen.blit(surf, rect)
 
-    # draw centered text blocks with extra spacing
     elif render_items:
         font = pygame.font.Font(None, 26)
         y_offset = 80
         max_width = screen.get_width() - 40
 
         for item in render_items:
-            paragraph   = item.get('text', '')
-            text_color  = item.get('color', color)
-            draw_icon   = item.get('icon', False)
+            paragraph  = item.get('text', '')
+            text_color = item.get('color', color)
+            draw_icon  = item.get('icon', False)
 
             wrapped = await wrap_text(paragraph, font, max_width)
             for line in wrapped:
@@ -265,14 +282,15 @@ async def display_and_wait(screen, claw_ctl=None, render_items=None,
     screen.fill((255,255,255))
     pygame.display.flip()
 
+
 def draw_legend(screen):
     font = pygame.font.Font(None, 24)
     y, x = 20, 10
     colors = {
-        "Weaker, Less Variable": (30, 144, 255),  # Blue
-        "Weaker, More Variable": (50, 205, 50),     # Green   
-        "Stronger, More Variable": (255, 215, 0),    # Yellow
-        "Stronger, Less Variable": (220, 20, 60)   # Red
+        "Weaker, Less Variable": (30, 144, 255),
+        "Weaker, More Variable": (50, 205, 50),
+        "Stronger, More Variable": (255, 215, 0),
+        "Stronger, Less Variable": (220, 20, 60)
     }
     for name, col in colors.items():
         pygame.draw.circle(screen, col, (x+10, y+10), 10)
@@ -282,7 +300,6 @@ def draw_legend(screen):
 
 
 def draw_grip_debug(screen, grip_sampled=None, force_mu=None, force_sigma=None):
-    """Draw grip force parameters (mu, sigma, sampled value) in the top-left corner."""
     font = pygame.font.Font(None, 26)
     debug_x = 10
     debug_y = 10
@@ -327,9 +344,6 @@ def draw_reward_display(screen, grip_distribution_type, total_reward, training_m
         screen.blit(potential_surface, (reward_x, reward_y))
         screen.blit(total_surface, (reward_x, reward_y + 25))
 
-    # Always draw grip debug info
-    #draw_grip_debug(screen, grip_sampled=grip_sampled, force_mu=force_mu, force_sigma=force_sigma)
-
 
 def draw_training_claw_counter(screen, current_claw, total_claws,
                                 grip_sampled=None, force_mu=None, force_sigma=None):
@@ -359,10 +373,7 @@ def draw_training_claw_counter(screen, current_claw, total_claws,
     text_rect = text_surface.get_rect(topright=(WIDTH - 10, 70))
     screen.blit(text_surface, text_rect)
 
-    # Draw grip debug info in the top-left
-    #draw_grip_debug(screen, grip_sampled=grip_sampled, force_mu=force_mu, force_sigma=force_sigma)
 
-# pop-up drawing helper
 def draw_tag_popup(screen, text, padding=20, alpha=200, font_size=28):
     if screen is None:
         return
@@ -391,6 +402,7 @@ def draw_tag_popup(screen, text, padding=20, alpha=200, font_size=28):
 
     screen.blit(surf, (popup_x, popup_y))
 
+
 async def show_popup(screen, text, duration=2.0, fps=30, claw_ctl=None):
     if screen is None:
         await asyncio.sleep(duration)
@@ -414,7 +426,6 @@ async def show_popup(screen, text, duration=2.0, fps=30, claw_ctl=None):
             await asyncio.sleep(period)
     except Exception as e:
         print(f"[WARN] show_popup failed: {e}")
-
 
 
 async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewards):
@@ -475,7 +486,7 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
         elif current_selection == 1:
             left  = pygame.Rect(lx, by, *normal)
             right = pygame.Rect(rx - 20, by - 20, *selected)
-        else:  # Nothing selected yet
+        else:
             left  = pygame.Rect(lx, by, *normal)
             right = pygame.Rect(rx, by, *normal)
 
@@ -494,7 +505,7 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
         lines2 = dist[second_type].split('\n')
         for i, line in enumerate(lines1):
             txt = small_font.render(line, True, (0,0,0))
-            screen.blit(txt, 
+            screen.blit(txt,
                         (left.centerx - txt.get_width()//2,
                          left.bottom + 15 + i*20))
         for i, line in enumerate(lines2):
@@ -518,10 +529,10 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
             pass
 
         rclpy.spin_once(claw_ctl.ctl, timeout_sec=0.0)
-        
+
         if claw_ctl.ctl.red_button_event.is_set():
             claw_ctl.ctl.red_button_event.clear()
-            if current_selection is not None:  # <-- add this guard
+            if current_selection is not None:
                 break
 
         await asyncio.sleep(0.02)
@@ -531,6 +542,7 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
     claw_ctl.ctl.axis_enabled = True
 
     return first_type if current_selection == 0 else second_type
+
 
 async def display_rating(screen, claw_ctl,
                          question_lines, scale_texts,
@@ -551,7 +563,7 @@ async def display_rating(screen, claw_ctl,
     font         = pygame.font.SysFont(None, 32)
     label_font   = pygame.font.SysFont(None, 28)
     clock        = pygame.time.Clock()
-    current      = random.randint(0, len(scale_texts) - 1)  # random start
+    current      = random.randint(0, len(scale_texts) - 1)
     locked_in    = False
     locked_value = None
 
@@ -615,33 +627,34 @@ async def display_rating(screen, claw_ctl,
     claw_ctl.ctl.axis_enabled = True
     return locked_value
 
-def draw_claw(surface, cx, cy, ctype):
-        claw_colors = {
-            "narrow_low": (30, 144, 255),
-            "wide_low":   (50, 205, 50),
-            "wide_high":  (255, 215, 0),
-            "narrow_high":(220, 20, 60)
-        }
-        color = claw_colors.get(ctype, (100, 100, 100))
-        base_w, arm_l, arm_w, cord_l = 60, 50, 10, 100
 
-        pygame.draw.line(surface, (0,0,0),
-                         (cx, cy - cord_l),
-                         (cx, cy - arm_w//2), 2)
-        base_rect = pygame.Rect(cx - base_w//2,
-                                cy - arm_w//2,
-                                base_w, arm_w)
-        pygame.draw.rect(surface, color, base_rect)
-        lx, rx = cx - base_w//2, cx + base_w//2
-        sy = cy
-        ey = cy + arm_l
-        pygame.draw.line(surface, color, (lx, sy), (lx, ey), arm_w)
-        pygame.draw.line(surface, color, (rx, sy), (rx, ey), arm_w)
-        for x in (lx, rx):
-            pygame.draw.circle(surface, color, (x, ey), 4)
+def draw_claw(surface, cx, cy, ctype):
+    claw_colors = {
+        "narrow_low": (30, 144, 255),
+        "wide_low":   (50, 205, 50),
+        "wide_high":  (255, 215, 0),
+        "narrow_high":(220, 20, 60)
+    }
+    color = claw_colors.get(ctype, (100, 100, 100))
+    base_w, arm_l, arm_w, cord_l = 60, 50, 10, 100
+
+    pygame.draw.line(surface, (0,0,0),
+                     (cx, cy - cord_l),
+                     (cx, cy - arm_w//2), 2)
+    base_rect = pygame.Rect(cx - base_w//2,
+                            cy - arm_w//2,
+                            base_w, arm_w)
+    pygame.draw.rect(surface, color, base_rect)
+    lx, rx = cx - base_w//2, cx + base_w//2
+    sy = cy
+    ey = cy + arm_l
+    pygame.draw.line(surface, color, (lx, sy), (lx, ey), arm_w)
+    pygame.draw.line(surface, color, (rx, sy), (rx, ey), arm_w)
+    for x in (lx, rx):
+        pygame.draw.circle(surface, color, (x, ey), 4)
+
 
 def generate_participant_id(prefix='P', length=8):
-    """Return a random hex id like 'P8b3a2f1c' (length is number of chars after prefix)."""
     nbytes = max(1, (length + 1) // 2)
     return prefix + secrets.token_hex(nbytes)[:length]
 
@@ -650,14 +663,15 @@ async def run_trial(claw_ctl, screen, grip_type,
                     speed, grip,
                     home_delay=2, open_delay=2,
                     trial_number=None, total_trials=None,
-                    training_mode=False, total_reward=0, rfid_reader=None):
+                    training_mode=False, total_reward=0,
+                    led=None, IR=None):
     """
     Run one trial while logging telemetry. Returns a trial_record dict.
     """
-    IR.clear_detection()
-    if rfid_reader:
-        rfid_reader.clear_tag()
-    
+    # Clear IR detection if available
+    if IR is not None:
+        IR.clear_detection()
+
     logger = DataLogger(claw_ctl, sample_interval=0.01)
     logger.log_event('trial_init', {'grip_type': grip_type, 'speed': speed, 'grip_sampled': grip, 'training_mode': training_mode})
     logger.start()
@@ -686,12 +700,10 @@ async def run_trial(claw_ctl, screen, grip_type,
     else:
         setattr(claw_ctl, 'on_movement', _movement_handler)
 
-    # Extract mu/sigma for this grip type to display on screen
     grip_params = grip_distribution_types.get(grip_type, {})
     force_mu    = grip_params.get("force", {}).get("mu")
     force_sigma = grip_params.get("force", {}).get("sigma")
 
-    # show UI overlays depending on mode
     if training_mode:
         if trial_number is not None and total_trials is not None:
             draw_legend(screen)
@@ -709,7 +721,11 @@ async def run_trial(claw_ctl, screen, grip_type,
     draw_claw(screen, cx, cy, grip_type)
     pygame.display.flip()
 
-    orig_grab = getattr(claw_ctl, 'grab_sequence', None)
+    # Set LED color for this grip type
+    if led is not None:
+        led.set_grip(grip_type)
+
+    orig_grab      = getattr(claw_ctl, 'grab_sequence', None)
     orig_move_home = getattr(claw_ctl, 'move_home', None)
     orig_open_claw = getattr(claw_ctl, 'open_claw', None)
 
@@ -734,6 +750,7 @@ async def run_trial(claw_ctl, screen, grip_type,
     if orig_open_claw:
         setattr(claw_ctl, 'open_claw', _wrap('open_claw', orig_open_claw))
 
+    claw_ctl.ctl.red_button_event.clear()
     claw_ctl.enable_joystick()
 
     while not claw_ctl.ctl.red_button_event.is_set():
@@ -755,17 +772,15 @@ async def run_trial(claw_ctl, screen, grip_type,
             claw_ctl.move_to_box(x=0.0, y=150.0)
 
         claw_ctl.open_claw()
+
+        # Turn LED off after drop
+        if led is not None:
+            led.off()
+
         await asyncio.sleep(open_delay)
-
-        random_home_x = random.randint(440, 755)
-        random_home_y = random.randint(150, 500)
-        claw_ctl.move_home(target=(random_home_x, random_home_y))
-
-        await asyncio.sleep(0.5)
         claw_ctl.enable_joystick()
     except Exception as e:
         logger.log_event('run_sequence_exception', {'exc': str(e)})
- 
 
     if orig_grab:
         setattr(claw_ctl, 'grab_sequence', orig_grab)
@@ -774,83 +789,26 @@ async def run_trial(claw_ctl, screen, grip_type,
     if orig_open_claw:
         setattr(claw_ctl, 'open_claw', orig_open_claw)
 
-    info_value = None
+    # IR detection
     ir_value = None
-    
-    try:
-        import time as _time
-        with IR._lock:
-            last_det = IR.last_detection
-            last_ts = IR.last_detection_ts
-        
-        if last_ts:
-            age = _time.time() - last_ts
-            print(f"[DEBUG] IR last detection: {last_det}")
-            print(f"[DEBUG] IR detection age: {age:.3f}s ago")
-        else:
-            print(f"[DEBUG] No IR detection timestamp available")
-        
-        ir_detection = IR.get_last_detection(max_age=None)
-        if ir_detection:
-            ir_value = ir_detection
-            print(f"✅ IR detected: {ir_detection}")
-            try:
-                await show_popup(screen, f"IR Ball Detected!\n{ir_detection}", duration=2.0, fps=30, claw_ctl=claw_ctl)
-            except Exception as e:
-                print(f"[WARN] failed to show IR popup: {e}")
-        else:
-            ir_value = "No IR detection"
-            print("❌ No IR detection")
-    except Exception as e:
-        print(f"[WARN] IR check failed: {e}")
-        ir_value = "IR check failed"
-    
-    try:
-        if rfid_reader:
-            import time as _time
-            with rfid_reader._lock:
-                last_tag = rfid_reader.last_tag
-                last_tag_ts = rfid_reader.last_tag_ts
-            
-            if last_tag_ts:
-                age = _time.time() - last_tag_ts
-                print(f"[DEBUG] RFID last tag: {last_tag}")
-                print(f"[DEBUG] RFID tag age: {age:.3f}s ago")
-            else:
-                print(f"[DEBUG] No RFID tag timestamp available")
-            
-            tag = rfid_reader.get_last_tag(max_age=None)
-            if tag:
-                info_value = f"SUCCESSFUL BALL, tag: {tag}"
-                print(f"✅ Tag detected: {tag}")
-
-                popup_text = f"Tag detected!\n{tag}"
-                try:
-                    await show_popup(screen, popup_text, duration=2.0, fps=30, claw_ctl=claw_ctl)
-                except Exception as e:
-                    print(f"[WARN] failed to show popup: {e}")
-            else:
-                info_value = "NO BALL SUCCESS"
-                print("❌ No RFID tag detected")
-    except Exception as e:
-        print(f"[WARN] RFID check failed: {e}")
-        info_value = "RFID check failed"
-
-
-    if not info_value:
-        info_value = "NO BALL SUCCESS"
-        logger.log_event('trial_end', info_value)
+    if IR is not None:
         try:
-            await show_popup(
-                screen,
-                "NO TAG\nDETECTED",
-                duration=2.0,
-                fps=30,
-                claw_ctl=claw_ctl
-            )
-        except Exception:
-            pass
+            ir_detection = IR.get_last_detection(max_age=None)
+            if ir_detection:
+                ir_value = ir_detection
+                try:
+                    await show_popup(screen, f"IR Ball Detected!\n{ir_detection}", duration=2.0, fps=30, claw_ctl=claw_ctl)
+                except Exception as e:
+                    print(f"[WARN] failed to show IR popup: {e}")
+            else:
+                ir_value = "No IR detection"
+        except Exception as e:
+            print(f"[WARN] IR check failed: {e}")
+            ir_value = "IR check failed"
+    else:
+        ir_value = "IR not available"
 
+    logger.log_event('trial_end', {'ir_detection': ir_value})
     logger.stop()
 
     try:
@@ -887,19 +845,60 @@ async def run_trial(claw_ctl, screen, grip_type,
         'total_reward_before': total_reward,
         'logger': logger.as_dict(),
         'original_claw_position': original_position,
-        'rfid': info_value,
         'ir_detection': ir_value
     }
 
     return trial_record
 
-#30 min - 50 trials a mano
+
 async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
+
+    # --- Device startup check ---
+    print("[STARTUP] Checking devices...")
+    for name, path in [("IR detector", "/dev/ir_detector"),
+                       ("LED controller", "/dev/led_controller"),
+                       ("XCarve", "/dev/xcarve")]:
+        if not os.path.exists(path):
+            print(f"[WARN] {name} not found at {path}")
+        else:
+            print(f"[OK] {name} found at {path}")
+
+    # --- Init IR (safe, won't crash game if missing) ---
+    IR = None
+    try:
+        IR = IRDetector(port="/dev/ir_detector", baud=115200, verbose=True)
+        IR.start()
+        print("[OK] IR detector started")
+    except Exception as e:
+        print(f"[WARN] IR detector not available: {e}")
+
+    # --- Init LED (safe, won't crash game if missing) ---
+    led = None
+    try:
+        led = LEDController(port="/dev/led_controller")
+        print("[OK] LED controller started")
+    except Exception as e:
+        print(f"[WARN] LED controller not available: {e}")
+
+    
+    def handle_exit(sig, frame):
+        print("\n[EXIT] Caught interrupt, cleaning up...")
+        if led is not None:
+            led.off()
+            led.close()
+        if IR is not None:
+            try:
+                IR.stop()
+            except Exception:
+                pass
+        pygame.quit()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, handle_exit)
+    signal.signal(signal.SIGTERM, handle_exit)
+
     await display_and_wait(screen, claw_ctl, INTRO)
     await display_and_wait(screen, claw_ctl, PRE_TRAINING)
-
-    rfid = RFIDReader(port="/dev/rfid_reader", baud=115200, timeout=0.1, verbose=True)
-    rfid.start()
 
     all_records = []
     training_types = list(grip_distribution_types.keys())
@@ -916,7 +915,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             trial_number=i,
             is_training=True,
             total_training_trials=len(training_types),
-            total_trials = total_trials,
+            total_trials=total_trials,
             automatic_mode=True,
             delay=2000
         )
@@ -928,19 +927,20 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             grip_params["force"]["sigma"]
         )
 
-        grip_value = grip_force
+        grip_value  = grip_force
         speed_value = grip_distribution_types[grip_type]["rate"]
 
         trial_record = await run_trial(
             claw_ctl,
             screen,
-            grip_type = grip_type,
+            grip_type=grip_type,
             speed=speed_value,
             grip=grip_value,
             trial_number=i,
             training_mode=True,
             total_trials=len(training_types),
-            rfid_reader=rfid
+            led=led,
+            IR=IR,
         )
 
         ts = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%S')
@@ -954,7 +954,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
         if ev_path:
             print(f"[DATA] Saved training events JSON to {ev_path}")
         all_records.append(trial_record)
-    
+
     # TRAINING COMPLETE
     claw_ctl.ctl.axis_enabled = False
     await display_and_wait(
@@ -972,7 +972,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             trial_number=trial,
             is_training=False,
             total_training_trials=total_trials,
-            total_trials = total_trials,
+            total_trials=total_trials,
             automatic_mode=True,
             delay=2000
         )
@@ -1038,7 +1038,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             grip_params["force"]["mu"],
             grip_params["force"]["sigma"]
         )
-        grip_value = grip_force
+        grip_value  = grip_force
         speed_value = grip_distribution_types[choice]["rate"]
 
         claw_ctl.ctl.axis_enabled = True
@@ -1053,7 +1053,9 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             trial_number=trial,
             total_trials=total_trials,
             training_mode=False,
-            total_reward=current_total_reward, rfid_reader=rfid
+            total_reward=current_total_reward,
+            led=led,
+            IR=IR,
         )
 
         trial_record['choice'] = choice
@@ -1073,19 +1075,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
 
     ts = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%S')
 
-    def _is_success(rfid_val):
-        if not rfid_val:
-            return False
-        s = str(rfid_val).upper()
-        if 'NO' in s and 'NO BALL' in s:
-            return False
-        if 'NO BALL SUCCESS' in s or 'NO SUCCESS' in s:
-            return False
-        if 'SUCCESS' in s or 'TAG' in s or 'SUCCESSFUL' in s:
-            return True
-        return True
-
-    training_trials_list = [t for t in all_records if t.get('training_mode')]
+    training_trials_list  = [t for t in all_records if t.get('training_mode')]
     experiment_trials_list = [t for t in all_records if not t.get('training_mode')]
 
     training_summary = []
@@ -1098,9 +1088,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             'force_mu': _gp.get('mu'),
             'force_sigma': _gp.get('sigma'),
             'grip_force': t.get('grip_sampled_value'),
-            'rfid': t.get('rfid'),
             'ir_detection': t.get('ir_detection'),
-            'success': _is_success(t.get('rfid')),
         })
 
     experiment_summary = []
@@ -1113,9 +1101,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             'force_mu': _gp.get('mu'),
             'force_sigma': _gp.get('sigma'),
             'grip_force': t.get('grip_sampled_value'),
-            'rfid': t.get('rfid'),
             'ir_detection': t.get('ir_detection'),
-            'success': _is_success(t.get('rfid')),
             'selection_confidence': t.get('selection_confidence'),
             'outcome_confidence': t.get('outcome_confidence'),
         })
@@ -1140,10 +1126,6 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
         print(f"[WARN] failed saving combined experiment summary: {e}")
 
     claw_ctl.ctl.axis_enabled = False
-    try:
-        rfid.stop()
-    except Exception:
-        pass
 
     await display_and_wait(
         screen,
@@ -1151,3 +1133,14 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
         title="Experiment completed",
         total_reward=10
     )
+
+    # Cleanup
+    if led is not None:
+        led.off()
+        led.close()
+
+    if IR is not None:
+        try:
+            IR.stop()
+        except Exception:
+            pass
