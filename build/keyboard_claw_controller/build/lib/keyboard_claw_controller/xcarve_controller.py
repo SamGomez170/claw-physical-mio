@@ -7,56 +7,37 @@ import time
 import threading
 from claw_machine_msgs.msg import Position
 import re
-from std_msgs.msg import UInt8
 
 
 class XcarveController(Node):
     def __init__(self):
         super().__init__('xcarve_controller')
 
-        self.joystick_enabled = False
-
-        self.last_received_cmd = 'x'
+        self.last_received_cmd = 'stop'
 
         self.lock = threading.Lock()
 
-        self.joystick_enable_subscription = self.create_subscription(
-            UInt8,
-            'joystick/enable',
-            self.joystick_enable_callback,
-            1)
-
-        self.move_cmds_subscription = self.create_subscription(
+        # subscriber for movement commands for xcarve
+        self.subscription = self.create_subscription(
             String,
-            'joystick/filtered_cmd',
+            'arrow_key',
             self.movement_cmd_callback,
-            1
-        )
-
-        # subscriber for command to move to specific position
-        self.goto_subscription = self.create_subscription(
-            Position,
-            'xcarve/goto',
-            self.goto_callback,
             1)
-        self.goto_subscription  # prevent unused variable warning
+        self.subscription  # prevent unused variable warning
 
-
-        # Serial port configuration
         self.serial_port = serial.Serial("/dev/xcarve", 115200)
-
-        #self.serial_port = serial.Serial("/dev/ttyUSBxcarve", 115200)
+        #self.serial_port = serial.Serial("/dev/ttyUSB0", 115200)
         self.serial_port.parity = serial.PARITY_NONE  # Parity. Options include PARITY_NONE, PARITY_EVEN, PARITY_ODD
         self.serial_port.stopbits = serial.STOPBITS_ONE  # Stop bits. Options include STOPBITS_ONE, STOPBITS_ONE_POINT_FIVE, STOPBITS_TWO
         self.serial_port.bytesize = serial.EIGHTBITS  # Data bits. Options include FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS
-        self.serial_port.timeout = 30  # Read timeout in seconds (None for blocking mode, 0 for non-blocking mode)
+        self.serial_port.timeout = 10  # Read timeout in seconds (None for blocking mode, 0 for non-blocking mode)
 
         # sleep after connecting serial port to xcarve. it needs some seconds to start
         time.sleep(5)
         self.homing()
 
         # publisher for xcarve current position
-        self.xcarve_position_publisher = self.create_publisher(Position, 'xcarve/position', 1)
+        self.xcarve_position_publisher = self.create_publisher(Position, 'xcarve_position', 1)
         self.timer_publish_position = self.create_timer(0.1, self.timer_publish_position_callback)
 
     def xcarve_stop_cmd(self):
@@ -68,13 +49,6 @@ class XcarveController(Node):
         self.lock.release()
 
     def movement_cmd_callback(self, msg):
-        #drop _all_ movement keys when joystick is disabled
-        if not self.joystick_enabled:
-            return
-
-        #if not self.axis_enabled:
-            #return
-
         self.get_logger().info('I heard: "%s"' % msg.data)
 
         # when receives a move command it tells the xcarve to move all the way
@@ -118,21 +92,7 @@ class XcarveController(Node):
                 self.xcarve_stop_cmd()
 
         self.last_received_cmd = msg.data
-    
-    def joystick_enable_callback(self, msg: UInt8):
-        """
-        msg.data == 0  → disable all movement
-        msg.data == 1  → enable movement
-        """
-        self.joystick_enabled = bool(msg.data)
-        state = "ENABLED" if self.joystick_enabled else "DISABLED"
-        self.get_logger().info(f"Joystick movement is now {state}")
-
-    #moves to specific position 
-    def goto_callback(self, msg):
-        cmd = f"$J=G90 G21 X{msg.x} Y{msg.y} F8000"
-        self.get_logger().info('I heard: "%s"' % cmd)
-        self.send_cmd(cmd)
+        
 
 
     def timer_publish_position_callback(self):  
@@ -143,21 +103,6 @@ class XcarveController(Node):
 
     def homing(self):
         self.serial_port.flushInput()
-        self.get_logger().info('Checking current status...') 
-        self.lock.acquire() 
-        self.serial_port.write("?\n".encode('utf-8')) 
-        status = self.serial_port.readline().decode('utf-8') 
-        self.lock.release() 
-        self.get_logger().info(f'Current status: {status}')
-
-        # Send soft reset to clear any errors 
-        self.get_logger().info('Sending soft reset (Ctrl-X)') 
-        self.serial_port.write(b'\x18') 
-        time.sleep(2)
-        # Clear alarm state 
-        self.get_logger().info('Clearing any alarm state') 
-        self.send_cmd("$X") 
-        time.sleep(0.5)
         #print('Going home')
         self.get_logger().info('Going home')
         output = self.send_cmd("$H")
@@ -218,11 +163,6 @@ class XcarveController(Node):
             mess.z = -1.0
         
         return mess
-
-    def __del__(self):
-        if self.serial_port and self.serial_port.is_open:
-            self.serial_port.close()
-
 
 def main(args=None):
     rclpy.init(args=args)
