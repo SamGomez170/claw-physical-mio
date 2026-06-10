@@ -1,5 +1,0 @@
-  File "/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller/strength_test.py", line 234
-    result = await test_single_grip(
-             
-SyntaxError: 'await' outside async function
-

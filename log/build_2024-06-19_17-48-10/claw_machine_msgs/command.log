@@ -1,1 +1,0 @@
-Invoking command in '/home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller CONDA_PROMPT_MODIFIER=(ros_env) /home/clawMachine/miniforge3/envs/ros_env/bin/cmake --build /home/clawMachine/code/claw_machine_ros2/build/claw_machine_msgs -- -j8 -l8

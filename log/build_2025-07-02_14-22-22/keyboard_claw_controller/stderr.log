@@ -1,5 +1,0 @@
-  File "/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller/game_flow.py", line 52
-    {"text": "Then you'll have a chance to pick and drop the ball you've chosen."}
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-SyntaxError: invalid syntax. Perhaps you forgot a comma?
-

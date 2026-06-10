@@ -1,5 +1,0 @@
-  File "/home/clawMachine/code/claw_machine_ros2/install/keyboard_claw_controller/lib/python3.11/site-packages/keyboard_claw_controller/game_flow.py", line 33
-    {"text": "RED claw is stronger on average and have very predictable grip strength", "color": (220,20,60)}, "icon": True,
-                                                                                                                     ^
-SyntaxError: invalid syntax
-

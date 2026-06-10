@@ -1,2 +1,7 @@
 # custom
 #cache/
+build/
+install/
+log/
+__pycache__/
+*.pyc

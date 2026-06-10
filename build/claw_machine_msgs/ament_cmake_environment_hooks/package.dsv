@@ -1,4 +1,0 @@
-source;share/claw_machine_msgs/local_setup.bash
-source;share/claw_machine_msgs/local_setup.dsv
-source;share/claw_machine_msgs/local_setup.sh
-source;share/claw_machine_msgs/local_setup.zsh
