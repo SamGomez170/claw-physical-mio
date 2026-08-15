@@ -1,2 +1,19 @@
-# custom
-#cache/
+# ROS2 / colcon build artifacts
+build/
+install/
+log/
+src/build/
+src/install/
+src/log/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
