@@ -28,7 +28,8 @@ setup(
             'keyboard_publisher = keyboard_claw_controller.keyboard_publisher:main',
             'xcarve_controller = keyboard_claw_controller.xcarve_controller:main',
             'ros2_mqtt_bridge = keyboard_claw_controller.ros2_mqtt_bridge:main',
-            'basic_game = keyboard_claw_controller.basic_game:main'
+            'basic_game = keyboard_claw_controller.basic_game:main',
+            'claw_adapter = keyboard_claw_controller.claw_adapter:main'
         ],
     },
 )
