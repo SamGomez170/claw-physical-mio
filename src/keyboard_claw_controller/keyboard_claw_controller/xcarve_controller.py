@@ -42,8 +42,11 @@ class XcarveController(Node):
         self.goto_subscription  # prevent unused variable warning
 
 
-        # Serial port configuration
-        self.serial_port = serial.Serial("/dev/ttyUSBxcarve", 115200)
+        # Serial port configuration.
+        # /dev/xcarve is the persistent udev symlink for the X-Carve (-> ttyUSB0).
+        # The old hardcoded "/dev/ttyUSBxcarve" no longer exists, so the open failed
+        # and surfaced as an AttributeError on serial_port during __del__.
+        self.serial_port = serial.Serial("/dev/xcarve", 115200)
         self.serial_port.parity = serial.PARITY_NONE  # Parity. Options include PARITY_NONE, PARITY_EVEN, PARITY_ODD
         self.serial_port.stopbits = serial.STOPBITS_ONE  # Stop bits. Options include STOPBITS_ONE, STOPBITS_ONE_POINT_FIVE, STOPBITS_TWO
         self.serial_port.bytesize = serial.EIGHTBITS  # Data bits. Options include FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS
@@ -203,8 +206,12 @@ class XcarveController(Node):
         return mess
 
     def __del__(self):
-        if self.serial_port and self.serial_port.is_open:
-            self.serial_port.close()
+        # getattr guard: if serial.Serial(...) raised in __init__, serial_port was
+        # never assigned. Without this, cleanup masks the real serial error with a
+        # confusing "no attribute 'serial_port'" AttributeError.
+        sp = getattr(self, 'serial_port', None)
+        if sp and sp.is_open:
+            sp.close()
 
 
 def main(args=None):
