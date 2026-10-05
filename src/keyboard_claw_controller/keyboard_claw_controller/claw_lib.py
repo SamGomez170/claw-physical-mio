@@ -4,7 +4,9 @@ from std_msgs.msg import UInt8,String
 from claw_machine_msgs.msg import Position
 import threading
 import time
-
+import queue
+import threading
+import random
 
 class ClawCtl():
     '''Wrapper class for using ROS2 functions for claw controller'''
@@ -17,44 +19,88 @@ class ClawCtl():
         joy_en = UInt8(data=0)
         self.ctl.joystick_enable_publisher.publish(joy_en)
         # 2) also lock the local axis filter
-        #self.ctl.axis_enabled = False
+        self.ctl.axis_enabled = False
         self.ctl.get_logger().info("axes LOCKED")
 
     def enable_joystick(self):
         joy_en = UInt8(data=1)
         self.ctl.joystick_enable_publisher.publish(joy_en)
-        #self.ctl.axis_enabled = True
+        self.ctl.axis_enabled = True
         self.ctl.get_logger().info("axes UNLOCKED")
-        '''
-        def disable_joystick(self):
-            #disable joystick
-            self.ctl.get_logger().info(f'disabling joystick...')
-            joytick_enable_msg = UInt8()
-            joytick_enable_msg.data = 0
-            self.ctl.joystick_enable_publisher.publish(joytick_enable_msg)
-        
-        def enable_joystick(self):
-            #enable joystick to send commands
-            self.ctl.get_logger().info(f'enabling joystick ...')
-            joytick_enable_msg = UInt8()
-            joytick_enable_msg.data = 1
-            self.ctl.joystick_enable_publisher.publish(joytick_enable_msg)
-        '''
-    def move_home(self):
-        #move xcarve to initial position
-        self.ctl.get_logger().info(f'going to home position...')
-        xcarve_position_msg = Position()
-        xcarve_position_msg.x = 0.0
-        xcarve_position_msg.y = 150.0
-        self.ctl.xcarve_goto_publisher.publish(xcarve_position_msg)
 
-        #wait to get to home position
+    def move_to_box(self, x=0.0, y=150.0):
+        """
+        Move to the fixed drop-box position (default 0,150) and block until the
+        node's home_event is set (i.e. arrival confirmed by xcarve_position_callback).
+        """
+        self.ctl.get_logger().info(f'moving to drop-box at x={x}, y={y}...')
+
+        # set expected target on node (thread-safe setter if available)
+        try:
+            if hasattr(self.ctl, 'set_home_target'):
+                self.ctl.set_home_target(x, y)
+            else:
+                # fallback (less safe)
+                self.ctl.home_x = float(x)
+                self.ctl.home_y = float(y)
+                self.ctl.home_event.clear()
+        except Exception:
+            # be defensive: continue to publish even if setter fails
+            pass
+
+        # publish goto message
+        pos_msg = Position()
+        pos_msg.x = float(x)
+        pos_msg.y = float(y)
+        self.ctl.xcarve_goto_publisher.publish(pos_msg)
+
+        # wait until arrival
         self.ctl.home_event.clear()
         while not self.ctl.home_event.is_set():
             rclpy.spin_once(self.ctl, timeout_sec=0.5)
 
-        self.ctl.get_logger().info(f'home position.')
+        self.ctl.get_logger().info(f'arrived at drop-box x={x:.2f}, y={y:.2f}.')
 
+    def move_home(self, target=None, bounds=(0.0, 0.0, 100.0, 100.0)):
+        """
+        Move xcarve to 'home'. Uniform random point inside the rectangle defined by bounds = (xmin, ymin, xmax, ymax).
+        """
+        self.ctl.get_logger().info('going to home position...')
+
+        # home position defined
+        if target is None:
+            xmin, ymin, xmax, ymax = bounds
+            x = random.uniform(xmin, xmax)
+            y = random.uniform(ymin, ymax)
+        else:
+            x, y = float(target[0]), float(target[1])
+
+        # Tell the node what the new home target is (thread-safe) BEFORE publishing
+        try:
+            # preferred: use the node's method
+            if hasattr(self.ctl, 'set_home_target'):
+                self.ctl.set_home_target(x, y)
+            else:
+                # fallback: direct assignment (still ok but less safe)
+                self.ctl.home_x = x
+                self.ctl.home_y = y
+                self.ctl.home_event.clear()
+        except Exception:
+            # be defensive
+            pass
+
+        xcarve_position_msg = Position()
+        xcarve_position_msg.x = x
+        xcarve_position_msg.y = y
+        self.ctl.xcarve_goto_publisher.publish(xcarve_position_msg)
+
+        # wait to get to home position
+        self.ctl.home_event.clear()
+        while not self.ctl.home_event.is_set():
+            rclpy.spin_once(self.ctl, timeout_sec=0.5)
+
+        self.ctl.get_logger().info(f'home position reached at x={x:.2f}, y={y:.2f}.')
+        
     def move_to(self, x, y):
         #move xcarve to initial position
         self.ctl.get_logger().info(f'going to home position...')
@@ -82,14 +128,9 @@ class ClawCtl():
         self.ctl.get_logger().info(f'grabbing object ...')
 
         cmd = f'grab_seq {int(speed)} {int(grip)}'
-        self.ctl.claw_status_event.clear()
         self.__send_claw_msg(cmd)
 
         self.ctl.get_logger().info(f'claw done')
-
-        while not self.ctl.claw_status_event.wait(timeout=5):
-            self.ctl.get_logger().warn("Timeout waiting for claw to finish")
-
 
     def open_claw(self):
         self.ctl.get_logger().info(f'releasing object ...')
@@ -162,9 +203,6 @@ class ClawCtl():
 
 
 
-
-
-
 class RosClawCtl(Node):
     '''ROS2 node for controlling claw controller messages manually'''
     def __init__(self):
@@ -173,7 +211,10 @@ class RosClawCtl(Node):
         self.xcarve_goto_publisher = self.create_publisher(Position, 'xcarve/goto', 1)
         self.claw_cmds_publisher = self.create_publisher(String, 'claw/ctl', 1)
 
-        #coordinates for home position
+        # lock to protect home_x/home_y
+        self.home_lock = threading.Lock()
+
+        # coordinates for home position (defaults)
         self.home_x = 0.0
         self.home_y = 150.0
         #flag to indicate that xcarve is in home position
@@ -186,6 +227,9 @@ class RosClawCtl(Node):
 
         #flag to indicate you can't move the claw
         self.axis_enabled = False
+        self.ui_enabled = False
+        self.ui_nav_queue = queue.Queue()
+
 
         #flag to indicate that a claw status message was received
         self.claw_status_event = threading.Event()
@@ -228,11 +272,25 @@ class RosClawCtl(Node):
         if msg.data == 'done':
             self.claw_status_event.set()
 
+    def set_home_target(self, x, y):
+        """Set the expected home position (thread-safe). Clears home_event so we wait for arrival."""
+        with self.home_lock:
+            self.home_x = float(x)
+            self.home_y = float(y)
+            # clear event so any waiting routine will block until arrival
+            self.home_event.clear()
+
     def xcarve_position_callback(self, msg):
+        # read target under lock to avoid race
+        with self.home_lock:
+            target_x = self.home_x
+            target_y = self.home_y
+            max_error = getattr(self, 'home_tolerance', 5.0)
+
         #absolute errors between home and current positions
         max_error = 5.0
-        ex = abs(msg.x - self.home_x)
-        ey = abs(msg.y - self.home_y)
+        ex = abs(msg.x - target_x)
+        ey = abs(msg.y - target_y)
 
         #self.get_logger().info(f'position: {ex} {ey}')
         
@@ -243,17 +301,39 @@ class RosClawCtl(Node):
     def joystick_callback(self, msg):
         data = msg.data
 
-        # 1) Fire button is always delivered
+        # Always catch the fire button
         if data == 'Button.red':
             self.get_logger().info("  → fire button pressed")
             self.red_button_event.set()
             return
 
-        # 2) When locked (lever), ignore absolutely everything else
+        # If we're in UI mode, capture left/right but don't forward to the claw
+        if self.ui_enabled and data in ('Key.left','Key.right', 'Key.up', 'Key.down'):
+            self.get_logger().info(f"  → UI nav: {data}")
+            self.ui_nav_queue.put(data)
+            return
+
+        # Otherwise, normal axis gating logic
         if not self.axis_enabled:
             return
 
-        # 3) When unlocked, handle movement + stop
         if data in ('Key.up','Key.down','Key.left','Key.right','Key.stop'):
             self.get_logger().info(f"  → forwarding movement: {data}")
+
+            # <-- NEW: call optional movement handler (safe, non-fatal)
+            try:
+                # handler signature: handler(movement_string, raw_msg_optional)
+                if hasattr(self, 'on_movement') and callable(self.on_movement):
+                    # pass both data and the full msg in case caller wants timestamp/seq
+                    try:
+                        self.on_movement(data, msg)
+                    except TypeError:
+                        # older handlers may accept only single arg
+                        self.on_movement(data)
+            except Exception as e:
+                # don't crash the callback when the handler raises
+                self.get_logger().warning(f"movement handler raised: {e}")
+
+            # publish for the rest of the system as before
             self.filtered_joy_pub.publish(msg)
+
