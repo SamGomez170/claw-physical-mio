@@ -36,12 +36,23 @@ def main(args=None):
     # `if not self.axis_enabled: return` drop in joystick_callback.
     node.axis_enabled = True
 
-    # Gate 2: the ROS->Xcarve enable path. Logs "Joystick movement is now ENABLED".
+    # Gate 2: the ROS->Xcarve enable path (joystick/enable=1, watched by
+    # xcarve_controller, logs "Joystick movement is now ENABLED").
+    #
+    # Must be sent REPEATEDLY, not once. A single publish at startup races the
+    # xcarve_controller subscription: the publisher is QoS depth-1, not transient
+    # local, so an enable sent before that subscriber has matched is dropped and
+    # xcarve_controller stays joystick_enabled=False -- every jog is then silently
+    # dropped. Intermittent (worked only when timing lined up, or after basic_game
+    # had already enabled the controller). game_flow avoids this by re-enabling
+    # every trial; a 1s timer does the same here, independent of startup order,
+    # and re-enables the controller automatically if it restarts.
     ctl.enable_joystick()
+    node.create_timer(1.0, ctl.enable_joystick)
 
     node.get_logger().info(
-        "claw_adapter ready: axis_enabled=True, joystick enabled. "
-        "Forwarding joystick/cmd -> joystick/filtered_cmd. No game logic."
+        "claw_adapter ready: axis_enabled=True, re-publishing joystick/enable=1 "
+        "every 1s. Forwarding joystick/cmd -> joystick/filtered_cmd. No game logic."
     )
 
     try:
