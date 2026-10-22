@@ -1,10 +1,7 @@
-# custom
-#cache/
-build/
-install/
-log/
-__pycache__/
-*.pyc
+# ROS2 / colcon build artifacts — anywhere in the tree, not just top-level.
+# (main had nested src/install/, src/build/ etc. committed; these patterns and
+#  a one-time `git rm -r --cached` untrack them. .gitignore alone does not
+#  untrack already-tracked files.)
 build/
 install/
 log/
