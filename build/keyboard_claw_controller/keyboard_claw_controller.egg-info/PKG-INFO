@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: keyboard_claw_controller
-Version: 0.0.0
-Summary: TODO: Package description
-Maintainer: rosdev
-Maintainer-email: a.pico@posteo.de
-License: TODO: License declaration
-Requires-Dist: setuptools

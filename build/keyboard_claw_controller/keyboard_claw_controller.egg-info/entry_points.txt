@@ -1,5 +1,0 @@
-[console_scripts]
-basic_game = keyboard_claw_controller.basic_game:main
-keyboard_publisher = keyboard_claw_controller.keyboard_publisher:main
-ros2_mqtt_bridge = keyboard_claw_controller.ros2_mqtt_bridge:main
-xcarve_controller = keyboard_claw_controller.xcarve_controller:main

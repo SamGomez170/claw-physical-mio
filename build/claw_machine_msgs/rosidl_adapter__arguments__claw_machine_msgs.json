@@ -1,6 +1,0 @@
-{
-  "package_name": "claw_machine_msgs",
-  "non_idl_tuples": [
-    "/home/clawMachine/code/claw_machine_ros2/src/claw_machine_msgs:msg/Position.msg"
-  ]
-}
