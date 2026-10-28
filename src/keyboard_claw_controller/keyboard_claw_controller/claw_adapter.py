@@ -1,66 +1,76 @@
-"""claw_adapter — headless replacement for basic_game in the command path.
+# Headless replacement for basic_game: opens the movement gate and forwards
+# joystick commands, plus handles xcarve/goto for absolute carry/home moves.
+# Reuses RosClawCtl (claw_lib) for the filter + grab path. No game rules, no UI.
+#   ros2 run keyboard_claw_controller claw_adapter
 
-basic_game is two layers: a game state machine (condition choice, scoring, pygame
-UI) and the machine plumbing. The agent recreates the game layer itself, so for the
-command path all we need from basic_game is the one thing it does there: open the
-movement gate and let the existing filter forward joystick commands.
+import threading
+import time
 
-The filter already lives in RosClawCtl (claw_lib): it subscribes to joystick/cmd,
-and when axis_enabled is True it republishes movement keys to joystick/filtered_cmd,
-which xcarve_controller acts on. The only reason MQTT jogs did nothing without
-basic_game is that axis_enabled inits False and nothing but basic_game ever set it
-True. So this adapter reuses RosClawCtl verbatim, opens BOTH enable gates, and spins.
-No game rules, no UI.
-
-Bring-up (replaces `ros2 run ... basic_game` in terminal 2):
-    ros2 run keyboard_claw_controller claw_adapter
-
-Two gates, both must be open or jogs are silently dropped:
-  1. axis_enabled      — the local filter flag in joystick_callback (set here directly;
-                         enable_joystick() leaves it commented out).
-  2. joystick/enable=1 — the ROS->Xcarve path xcarve_controller watches.
-"""
-
+import paho.mqtt.client as mqtt
 import rclpy
 
 from keyboard_claw_controller.claw_lib import ClawCtl
 
 
 def main(args=None):
-    # ClawCtl.__init__ calls rclpy.init and builds the RosClawCtl filter node.
     ctl = ClawCtl(args)
     node = ctl.ctl
 
-    # Gate 1: the local filter flag. enable_joystick() publishes joystick/enable
-    # but leaves this line commented, so set it directly or every key hits the
-    # `if not self.axis_enabled: return` drop in joystick_callback.
-    node.axis_enabled = True
-
-    # Gate 2: the ROS->Xcarve enable path (joystick/enable=1, watched by
-    # xcarve_controller, logs "Joystick movement is now ENABLED").
-    #
-    # Must be sent REPEATEDLY, not once. A single publish at startup races the
-    # xcarve_controller subscription: the publisher is QoS depth-1, not transient
-    # local, so an enable sent before that subscriber has matched is dropped and
-    # xcarve_controller stays joystick_enabled=False -- every jog is then silently
-    # dropped. Intermittent (worked only when timing lined up, or after basic_game
-    # had already enabled the controller). game_flow avoids this by re-enabling
-    # every trial; a 1s timer does the same here, independent of startup order,
-    # and re-enables the controller automatically if it restarts.
-    ctl.enable_joystick()
+    # Two enable gates, both needed or jogs get dropped silently:
+    node.axis_enabled = True          # local filter flag in joystick_callback
+    ctl.enable_joystick()             # joystick/enable=1, watched by xcarve_controller
+    # Re-send enable on a timer: a single startup publish races the controller's
+    # subscription (QoS depth-1) and gets dropped if it connects first. game_flow
+    # re-enables every trial; this does the same.
     node.create_timer(1.0, ctl.enable_joystick)
 
-    node.get_logger().info(
-        "claw_adapter ready: axis_enabled=True, re-publishing joystick/enable=1 "
-        "every 1s. Forwarding joystick/cmd -> joystick/filtered_cmd. No game logic."
-    )
+    # xcarve/goto: paho thread just stashes the latest target; the drive loop
+    # below runs the blocking move_to on the main thread (move_to spin_once's
+    # internally, so it can't be called from the paho callback).
+    pending = [None]
+    lock = threading.Lock()
+
+    def _on_connect(client, userdata, flags, reason_code, properties):
+        node.get_logger().info("adapter MQTT connected rc=%s" % reason_code)
+        client.subscribe("xcarve/goto", qos=0)
+
+    def _on_message(client, userdata, msg):
+        text = msg.payload.decode(errors="replace")
+        parts = text.split()
+        if len(parts) != 2:
+            node.get_logger().warn("bad goto payload: %r" % text)
+            return
+        try:
+            x, y = float(parts[0]), float(parts[1])
+        except ValueError:
+            node.get_logger().warn("bad goto payload: %r" % text)
+            return
+        with lock:
+            pending[0] = (x, y)
+
+    client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+    client.on_connect = _on_connect
+    client.on_message = _on_message
+    client.connect("localhost", 1883, 60)
+    client.loop_start()
+
+    node.get_logger().info("claw_adapter ready")
 
     try:
-        rclpy.spin(node)
+        while rclpy.ok():
+            rclpy.spin_once(node, timeout_sec=0.0)
+            with lock:
+                target = pending[0]
+                pending[0] = None
+            if target is not None:
+                node.set_home_target(*target)   # wait against this target, not (0,150)
+                ctl.move_to(*target)
+            time.sleep(0.01)
     except KeyboardInterrupt:
         pass
     finally:
-        # ClawCtl.__del__ destroys the node and calls rclpy.shutdown().
+        client.loop_stop()
+        client.disconnect()
         del ctl
 
 
