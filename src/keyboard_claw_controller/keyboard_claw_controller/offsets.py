@@ -19,6 +19,9 @@ Usage:
         --tests: plot the automatic grip tests (grip_offset_test_*.csv/.json)
         instead; uses the measured grab position, or the target position when
         no measured position was saved.
+        Only test trials run with a distribution listed in grip_distribution_types
+        (same mu AND sigma) are used, all together in one plot.
+        Set ONLY_LISTED_DISTRIBUTIONS = False to use every test trial.
 
 Only needs numpy and matplotlib.
 """
@@ -53,6 +56,30 @@ SMALL_POINTS = True            # thin markers so the dark-blue spots are not hid
 ZOOM = 80                      # half-width of each per-goal zoom panel
 AREA_COVERAGE = 0.80           # aim area (ellipse) holds this share of the grabs at each goal
 AREA_MAX_DIST = 80.0           # grabs farther than this from the goal are not used for the ellipse
+
+# --tests: only use trials run with these distributions (same mu AND sigma)
+grip_distribution_types = {
+    "wide_high": {
+        "force": {"mu": 197, "sigma": 2},
+        "rate": 255
+    },
+    "narrow_high": {
+        "force": {"mu": 197, "sigma": 0.5},
+        "rate": 255
+    },
+    "wide_low": {
+        "force": {"mu": 191, "sigma": 2},
+        "rate": 255
+    },
+    "narrow_low": {
+        "force": {"mu": 191, "sigma": 0.5},
+        "rate": 255
+    }
+}
+ONLY_LISTED_DISTRIBUTIONS = True
+# --tests: draw the participants' aim area on the test plots if this file exists
+# (None = look for aim_areas.json in the data folder)
+AIM_AREAS_FILE = None
 
 # colours: sequential blue ramp for density, orange for misses, ink for the rest
 HEAT = LinearSegmentedColormap.from_list(
@@ -111,6 +138,17 @@ def _num(v):
         return None
 
 
+def match_distribution(r):
+    """Name of the listed distribution this test trial was run with, or None."""
+    mu, sd = _num(r.get("claw_mu")), _num(r.get("claw_sigma"))
+    if mu is None or sd is None:
+        return None
+    for name, c in grip_distribution_types.items():
+        if abs(mu - c["force"]["mu"]) < 1e-6 and abs(sd - c["force"]["sigma"]) < 1e-6:
+            return name
+    return None
+
+
 def load_test_rows(root):
     """Automatic grip tests (grip_offset_test_*.csv / .json).
     Position = MEASURED grab position if it was saved, otherwise the TARGET
@@ -132,6 +170,9 @@ def load_test_rows(root):
             print(f"[skip] {path}: {e}")
             continue
         for r in data:
+            dist_name = match_distribution(r)
+            if ONLY_LISTED_DISTRIBUTIONS and dist_name is None:
+                continue
             gx, gy = _num(r.get("grab_measured_x")), _num(r.get("grab_measured_y"))
             src = "measured"
             if gx is None or gy is None:
@@ -146,7 +187,7 @@ def load_test_rows(root):
                 "participant_id": "grip test", "phase": "test",
                 "trial_number": int(_num(r.get("trial_number")) or 0), "grip_type": r.get("claw") or "",
                 "grab_x": gx, "grab_y": gy, "hit": _true(r.get("success_ir")),
-                "pos_source": src,
+                "pos_source": src, "distribution": dist_name,
             }
     rows = list(rows.values())
     n_meas = sum(r["pos_source"] == "measured" for r in rows)
@@ -388,10 +429,23 @@ def main():
     if args.tests:
         rows = assign_goals(load_test_rows(args.folder))
         if not rows:
-            print(f"No grip_offset_test_* files with positions in {args.folder}")
+            print(f"No grip_offset_test_* trials in {args.folder}" +
+                  (" with the distributions listed in grip_distribution_types"
+                   if ONLY_LISTED_DISTRIBUTIONS else ""))
             return
-        plot(rows, f"Automatic grip tests · {len(rows)} trials",
-             os.path.join(out_dir, "goal_heatmap_tests.png"))
+        areas = None
+        af = AIM_AREAS_FILE or os.path.join(args.folder, "aim_areas.json")
+        if os.path.isfile(af):
+            with open(af) as f:
+                areas = json.load(f)
+            print(f"drawing aim areas from {af}")
+        if ONLY_LISTED_DISTRIBUTIONS:
+            for name in grip_distribution_types:
+                n = sum(r["distribution"] == name for r in rows)
+                print(f"  {name:12s} {n} trials")
+        plot(rows, f"Automatic grip tests · {len(rows)} trials"
+             + (" · listed distributions only" if ONLY_LISTED_DISTRIBUTIONS else ""),
+             os.path.join(out_dir, "goal_heatmap_tests.png"), areas)
         return
 
     if not find_summaries(args.folder):

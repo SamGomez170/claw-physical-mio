@@ -72,7 +72,7 @@ def aim_areas(folder, coverage, areas_file=None):
     if os.path.isfile(path):
         with open(path) as f:
             areas = json.load(f)
-        if areas and abs(next(iter(areas.values()))["coverage"] - coverage) < 1e-9:
+        if areas:
             print(f"aim areas read from {path}")
             return areas
     # look for an aim_areas.json made by goal_heatmap.py one level up (e.g. ~/claw_data)
@@ -253,7 +253,8 @@ def main():
     ap.add_argument("--areas", default=None,
                     help="aim_areas.json made by goal_heatmap.py (e.g. from the participant folder)")
     ap.add_argument("--coverage", type=float, default=0.8,
-                    help="aim area holds this share of participant grabs (default 0.8)")
+                    help="only used when no aim_areas.json is found and the area is computed "
+                         "from participant files (default 0.8); otherwise the file's own value is used")
     ap.add_argument("--threshold", type=float, default=0.9)
     ap.add_argument("--bin", type=float, default=1.0, help="bin width for the dots")
     ap.add_argument("--out", default=None)
@@ -277,6 +278,8 @@ def main():
             raise SystemExit("--aim-area: no aim_areas.json and no participant files in " + folder +
                              "\nRun goal_heatmap.py on the participant folder first and pass "
                              "--areas <that folder>/aim_areas.json")
+        args.coverage = next(iter(areas.values()))["coverage"]    # the area actually used
+        print(f"  area holds {args.coverage:.0%} of participant grabs")
         for name, a in areas.items():
             print(f"  {name}: centre offset ({a['mean'][0]:+.1f}, {a['mean'][1]:+.1f}), n={a['n']}")
     files, F, Y, W = load(args.folder, args.offsets, args.no_game, areas, args.weighted)

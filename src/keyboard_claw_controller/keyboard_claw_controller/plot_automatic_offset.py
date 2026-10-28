@@ -25,19 +25,19 @@ import matplotlib.pyplot as plt
 # =====================================================================
 grip_distribution_types = {
     "wide_high": {
-        "force": {"mu": 192, "sigma": 2},
+        "force": {"mu": 199, "sigma": 2},
         "rate": 255
     },
     "narrow_high": {
-        "force": {"mu": 192, "sigma": 0.5},
+        "force": {"mu": 199, "sigma": 0.5},
         "rate": 255
     },
     "wide_low": {
-        "force": {"mu": 190, "sigma": 2},
+        "force": {"mu": 191, "sigma": 2},
         "rate": 255
     },
     "narrow_low": {
-        "force": {"mu": 190, "sigma": 0.5},
+        "force": {"mu": 191, "sigma": 0.5},
         "rate": 255
     }
 }
