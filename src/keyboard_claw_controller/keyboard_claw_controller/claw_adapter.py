@@ -72,7 +72,8 @@ def main(args=None):
                 pending[0] = None
             if target is not None:
                 node.set_home_target(*target)   # wait against this target, not (0,150)
-                ctl.move_to(*target)
+                ctl.move_to(*target)            # blocks until the gantry arrives
+                client.publish("xcarve/goto_done", "done", qos=1)
             time.sleep(0.01)
     except KeyboardInterrupt:
         pass
