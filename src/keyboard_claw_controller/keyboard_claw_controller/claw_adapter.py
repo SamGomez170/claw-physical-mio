@@ -71,8 +71,7 @@ def main(args=None):
                 target = pending[0]
                 pending[0] = None
             if target is not None:
-                node.set_home_target(*target)   # wait against this target, not (0,150)
-                ctl.move_to(*target)            # blocks until the gantry arrives
+                ctl.move_to_box(*target)        # same path basic_game uses; blocks until arrival
                 client.publish("xcarve/goto_done", "done", qos=1)
             time.sleep(0.01)
     except KeyboardInterrupt:
