@@ -19,10 +19,18 @@ def main(args=None):
     # Two enable gates, both needed or jogs get dropped silently:
     node.axis_enabled = True          # local filter flag in joystick_callback
     ctl.enable_joystick()             # joystick/enable=1, watched by xcarve_controller
-    # Re-send enable on a timer: a single startup publish races the controller's
-    # subscription (QoS depth-1) and gets dropped if it connects first. game_flow
-    # re-enables every trial; this does the same.
-    node.create_timer(1.0, ctl.enable_joystick)
+    # A single enable publish races the controller's subscription (QoS depth-1).
+    # Controller keeps the state once it's set, so just retry a few times at
+    # startup instead of spamming forever.
+    tries = [0]
+
+    def _enable_startup():
+        ctl.enable_joystick()
+        tries[0] += 1
+        if tries[0] >= 5:
+            enable_timer.cancel()
+
+    enable_timer = node.create_timer(1.0, _enable_startup)
 
     # xcarve/goto: paho thread just stashes the latest target; the drive loop
     # below runs the blocking move_to on the main thread (move_to spin_once's
