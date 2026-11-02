@@ -36,7 +36,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-DEFAULT_FOLDER = "/home/clawMachine/claw_data/offset_data"
+DEFAULT_FOLDER = "/home/clawMachine/claw_data"
 BALLS = [(445, 385), (625, 150), (750, 450)]
 
 

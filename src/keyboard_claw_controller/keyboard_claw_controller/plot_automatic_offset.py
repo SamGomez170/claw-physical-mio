@@ -2,8 +2,12 @@
 Success rate per grip distribution type, from the trials you actually ran,
 counting ONLY the trials inside the participants' aim area.
 
-For each entry in grip_distribution_types below, it takes the grip-test trials
-that were run with exactly that mu and sigma (claw_mu / claw_sigma columns),
+Reads BOTH kinds of data (choose with SOURCE below):
+  - automatic grip tests  (grip_offset_test_*.csv/.json: claw_mu, claw_sigma, success_ir)
+  - participant games     (combined_all_*.json: force_mu, force_sigma, grab_x/grab_y, ir_success)
+
+For each entry in grip_distribution_types below, it takes the trials
+that were run with exactly that mu and sigma,
 keeps those inside the aim area (aim_areas.json from goal_heatmap.py),
 and plots  successes / trials  as a bar. No fitting, no model.
 
@@ -43,7 +47,9 @@ grip_distribution_types = {
 }
 
 DATA_FOLDER = "/home/clawMachine/claw_data/offset_data"   # grip-test .csv / .json files
-AREAS_FILE = os.path.join(DATA_FOLDER, "aim_areas.json")  # made by goal_heatmap.py
+AREAS_FILE = os.path.join(DATA_FOLDER, "aim_areas.json")  # made by offsets.py
+# SOURCE: "tests" = automatic grip tests only, "game" = participant games only, "both"
+SOURCE = "both"
 OUTPUT_PNG = os.path.join(DATA_FOLDER, "success_by_claw_aim_area.png")
 # =====================================================================
 
@@ -66,15 +72,13 @@ def _records(path):
     return data if isinstance(data, list) else [data]
 
 
-def in_area(r, areas):
-    bx, by = _num(r.get("ball_x")), _num(r.get("ball_y"))
-    if bx is None or by is None:
-        return False
-    mx, my = _num(r.get("grab_measured_x")), _num(r.get("grab_measured_y"))
-    if mx is not None and my is not None:
-        dx, dy = mx - bx, my - by
-    else:                                         # no measured position saved
-        dx, dy = _num(r.get("offset_dx")) or 0.0, _num(r.get("offset_dy")) or 0.0
+def _true(v):
+    return str(v).strip().lower() in ("true", "1", "yes")
+
+
+def in_area(t, areas):
+    """t = (ball_x, ball_y, dx, dy): inside the aim area of that ball?"""
+    bx, by, dx, dy = t
     name = min(GOALS, key=lambda g: math.hypot(bx - GOALS[g][0], by - GOALS[g][1]))
     a = areas.get(name)
     if a is None:
@@ -83,19 +87,56 @@ def in_area(r, areas):
     return float(d @ np.linalg.inv(np.array(a["cov"])) @ d) <= a["r2"]
 
 
+def parse(r, path):
+    """One record -> dict(kind, mu, sigma, hit, pos=(ball_x, ball_y, dx, dy)) or None."""
+    if not isinstance(r, dict):
+        return None
+    # automatic grip test
+    if "success_ir" in r and _num(r.get("claw_mu")) is not None:
+        bx, by = _num(r.get("ball_x")), _num(r.get("ball_y"))
+        if bx is None or by is None:
+            return None
+        mx, my = _num(r.get("grab_measured_x")), _num(r.get("grab_measured_y"))
+        if mx is not None and my is not None:
+            dx, dy = mx - bx, my - by
+        else:                                     # no measured position saved
+            dx, dy = _num(r.get("offset_dx")) or 0.0, _num(r.get("offset_dy")) or 0.0
+        return {"kind": "test", "key": r.get("timestamp") or (path, r.get("trial_number")),
+                "mu": _num(r["claw_mu"]), "sigma": _num(r.get("claw_sigma")),
+                "hit": _true(r["success_ir"]), "pos": (bx, by, dx, dy)}
+    # participant game trial
+    if "ir_success" in r and _num(r.get("force_mu")) is not None:
+        gx, gy = _num(r.get("grab_x")), _num(r.get("grab_y"))
+        if gx is None or gy is None:
+            return None                           # no grab position saved -> can't place it
+        g = min(GOALS, key=lambda k: math.hypot(gx - GOALS[k][0], gy - GOALS[k][1]))
+        bx, by = GOALS[g]
+        phase = "training" if "training" in os.path.basename(path) else "trial"
+        return {"kind": "game", "key": (r.get("participant_id"), phase, r.get("trial_number")),
+                "mu": _num(r["force_mu"]), "sigma": _num(r.get("force_sigma")),
+                "hit": _true(r["ir_success"]), "pos": (bx, by, gx - bx, gy - by)}
+    return None
+
+
 def load_trials(folder):
     files = []
     for ext in ("csv", "json"):
         files += glob.glob(os.path.join(folder, "**", f"*.{ext}"), recursive=True)
     trials = {}
     for path in sorted(set(files)):
+        if os.path.basename(path) == "aim_areas.json":
+            continue
         try:
             recs = _records(path)
         except Exception:
             continue
         for r in recs:
-            if isinstance(r, dict) and "success_ir" in r and _num(r.get("claw_mu")) is not None:
-                trials[r.get("timestamp") or (path, r.get("trial_number"))] = r
+            t = parse(r, path)
+            if t is None or t["sigma"] is None:
+                continue
+            if SOURCE != "both" and t["kind"] != SOURCE:
+                continue
+            trials[t["key"]] = t
     return list(trials.values())
 
 
@@ -105,15 +146,17 @@ def main():
     with open(AREAS_FILE) as f:
         areas = json.load(f)
     trials = load_trials(DATA_FOLDER)
+    n_test = sum(t["kind"] == "test" for t in trials)
+    print(f"read {n_test} grip-test trials and {len(trials) - n_test} participant game trials "
+          f"(SOURCE = {SOURCE!r}) from {DATA_FOLDER}")
 
     names, labels, k_hit, n_tot, n_all = [], [], [], [], []
     print("claw            mu    sigma   inside area      all trials")
     for name, c in grip_distribution_types.items():
         mu, sd = c["force"]["mu"], c["force"]["sigma"]
-        same = [r for r in trials
-                if abs(_num(r["claw_mu"]) - mu) < 1e-6 and abs(_num(r["claw_sigma"]) - sd) < 1e-6]
-        inside = [r for r in same if in_area(r, areas)]
-        k = sum(str(r["success_ir"]).strip().lower() == "true" for r in inside)
+        same = [t for t in trials if abs(t["mu"] - mu) < 1e-6 and abs(t["sigma"] - sd) < 1e-6]
+        inside = [t for t in same if in_area(t["pos"], areas)]
+        k = sum(t["hit"] for t in inside)
         names.append(name)
         labels.append(f"{name.replace('_', ' ').title()}\n(μ={mu:g}, σ={sd:g})")
         k_hit.append(k); n_tot.append(len(inside)); n_all.append(len(same))
@@ -135,12 +178,12 @@ def main():
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     cov = next(iter(areas.values()))["coverage"]
-    ax.set_title(f"Success Rate by Grip Distribution Type (trials inside aim area, {cov:.0%})",
+    src = {"tests": "grip tests", "game": "participants", "both": "grip tests + participants"}[SOURCE]
+    ax.set_title(f"Success Rate by Grip Distribution Type ({src}, inside aim area {cov:.0%})",
                  fontsize=14, weight="bold")
     fig.tight_layout()
     fig.savefig(OUTPUT_PNG, dpi=150, facecolor="white")
     print(f"\nsaved {OUTPUT_PNG}")
-    plt.show()
 
 
 if __name__ == "__main__":
