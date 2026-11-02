@@ -264,6 +264,12 @@ class RosClawCtl(Node):
             1)
         self.xcarve_position_subscription  # prevent unused variable warning 
 
+        # latest measured X-Carve position (updated by xcarve_position_callback);
+        # game_flow.py / strength_test.py read these to save where the claw went down
+        self.current_x = None
+        self.current_y = None
+        self.on_position = None      # optional handler(msg), e.g. to log the trajectory
+
         self.last_key = None
         #self.timer = self.create_timer(5, self.timer_callback)
         self.prev_joystick_status = 0
@@ -281,6 +287,15 @@ class RosClawCtl(Node):
             self.home_event.clear()
 
     def xcarve_position_callback(self, msg):
+        # remember where the claw is right now
+        self.current_x = float(msg.x)
+        self.current_y = float(msg.y)
+        if callable(getattr(self, 'on_position', None)):
+            try:
+                self.on_position(msg)
+            except Exception as e:
+                self.get_logger().warning(f"position handler raised: {e}")
+
         # read target under lock to avoid race
         with self.home_lock:
             target_x = self.home_x
@@ -336,4 +351,3 @@ class RosClawCtl(Node):
 
             # publish for the rest of the system as before
             self.filtered_joy_pub.publish(msg)
-

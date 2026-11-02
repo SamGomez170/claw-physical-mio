@@ -27,6 +27,12 @@ rewards = {
 }
 WIDTH = 800
 HEIGHT = 600
+
+# After each trial the claw moves to a random spot (like before), so the next
+# trial starts from a random position. Set to False to switch off.
+RANDOM_REPOSITION = True
+ARENA_X = (300.0, 750.0)
+ARENA_Y = (100.0, 480.0)
 grip_distribution_types = {
     "wide_high": {
         "force": {"mu": 192, "sigma": 1.2},
@@ -654,6 +660,73 @@ def draw_claw(surface, cx, cy, ctype):
         pygame.draw.circle(surface, color, (x, ey), 4)
 
 
+def read_claw_position(claw_ctl):
+    """Latest measured X-Carve position (x, y), or None if claw_lib does not
+    store it (needs current_x / current_y in claw_lib's position callback)."""
+    node = getattr(claw_ctl, 'ctl', None)
+    x = getattr(node, 'current_x', None) if node is not None else None
+    y = getattr(node, 'current_y', None) if node is not None else None
+    if x is None or y is None:
+        return None
+    try:
+        return (float(x), float(y))
+    except (TypeError, ValueError):
+        return None
+
+
+def _xy(pos):
+    return (None, None) if pos is None else (pos[0], pos[1])
+
+
+def build_summaries(all_records, participant_id):
+    training, experiment = [], []
+    for t in all_records:
+        _gp = t.get('grip_params', {}).get('force', {})
+        sx, sy = _xy(t.get('start_position'))
+        gx, gy = _xy(t.get('grab_position'))
+        row = {
+            'participant_id': participant_id,
+            'trial_number': t.get('trial_number'),
+            'grip_type': t.get('grip_type'),
+            'force_mu': _gp.get('mu'),
+            'force_sigma': _gp.get('sigma'),
+            'grip_force': t.get('grip_sampled_value'),
+            'start_x': sx, 'start_y': sy,          # claw position when the trial started
+            'grab_x': gx, 'grab_y': gy,            # where the claw went down (red button)
+            'ir_detection': t.get('ir_detection'),
+            'ir_success': t.get('ir_success'),
+        }
+        if t.get('training_mode'):
+            training.append(row)
+        else:
+            row.update({
+                'options_displayed': t.get('options_displayed'),
+                'chosen_reward': t.get('chosen_reward'),
+                'selection_confidence': t.get('selection_confidence'),
+                'outcome_confidence': t.get('outcome_confidence'),
+            })
+            experiment.append(row)
+    return training, experiment
+
+
+def _write_json_atomic(path, data):
+    tmp = path + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, default=str)
+    os.replace(tmp, path)
+
+
+def save_summaries(all_records, participant_id, train_path, exp_path):
+    """Rewrite both combined summaries - called after EVERY trial, so nothing is
+    lost if the session stops early."""
+    training, experiment = build_summaries(all_records, participant_id)
+    for path, data in ((train_path, training), (exp_path, experiment)):
+        try:
+            _write_json_atomic(path, data)
+        except Exception as e:
+            print(f"[WARN] failed saving {path}: {e}")
+
+
 def generate_participant_id(prefix='P', length=8):
     nbytes = max(1, (length + 1) // 2)
     return prefix + secrets.token_hex(nbytes)[:length]
@@ -699,6 +772,10 @@ async def run_trial(claw_ctl, screen, grip_type,
         claw_ctl.ctl.on_movement = _movement_handler
     else:
         setattr(claw_ctl, 'on_movement', _movement_handler)
+
+    start_position = read_claw_position(claw_ctl)
+    logger.log_event('start_position', {'x': start_position[0] if start_position else None,
+                                        'y': start_position[1] if start_position else None})
 
     grip_params = grip_distribution_types.get(grip_type, {})
     force_mu    = grip_params.get("force", {}).get("mu")
@@ -759,7 +836,13 @@ async def run_trial(claw_ctl, screen, grip_type,
         await asyncio.sleep(0.01)
     claw_ctl.ctl.red_button_event.clear()
 
-    logger.log_event('fire_pressed')
+    # where the claw goes down: its measured position when the red button is pressed
+    grab_position = read_claw_position(claw_ctl)
+    if grab_position is None:
+        print("[WARN] claw position not available - grab_x/grab_y will be empty "
+              "(claw_lib needs current_x / current_y)")
+    logger.log_event('fire_pressed', {'grab_x': grab_position[0] if grab_position else None,
+                                      'grab_y': grab_position[1] if grab_position else None})
 
     try:
         claw_ctl.open_claw()
@@ -791,11 +874,13 @@ async def run_trial(claw_ctl, screen, grip_type,
 
     # IR detection
     ir_value = None
+    ir_success = False
     if IR is not None:
         try:
             ir_detection = IR.get_last_detection(max_age=None)
             if ir_detection:
                 ir_value = ir_detection
+                ir_success = True
                 try:
                     await show_popup(screen, f"IR Ball Detected!\n{ir_detection}", duration=2.0, fps=30, claw_ctl=claw_ctl)
                 except Exception as e:
@@ -807,6 +892,16 @@ async def run_trial(claw_ctl, screen, grip_type,
             ir_value = "IR check failed"
     else:
         ir_value = "IR not available"
+
+    # move to a random spot so the next trial starts somewhere new
+    if RANDOM_REPOSITION and hasattr(claw_ctl, 'move_to_box'):
+        rand_x = random.uniform(*ARENA_X)
+        rand_y = random.uniform(*ARENA_Y)
+        logger.log_event('random_reposition', {'x': rand_x, 'y': rand_y})
+        try:
+            claw_ctl.move_to_box(x=rand_x, y=rand_y)
+        except Exception as e:
+            logger.log_event('random_reposition_exception', {'exc': str(e)})
 
     logger.log_event('trial_end', {'ir_detection': ir_value})
     logger.stop()
@@ -845,7 +940,10 @@ async def run_trial(claw_ctl, screen, grip_type,
         'total_reward_before': total_reward,
         'logger': logger.as_dict(),
         'original_claw_position': original_position,
-        'ir_detection': ir_value
+        'start_position': start_position,
+        'grab_position': grab_position,
+        'ir_detection': ir_value,
+        'ir_success': ir_success,
     }
 
     return trial_record
@@ -906,6 +1004,10 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
 
     participant_id = generate_participant_id()
     session_dir = make_session_dir(participant_id, base_dir='claw_data')
+    os.makedirs(session_dir, exist_ok=True)
+    ts_start = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%S')
+    train_path = os.path.join(session_dir, f'combined_all_training_{participant_id}_{ts_start}.json')
+    exp_path   = os.path.join(session_dir, f'combined_all_trials_{participant_id}_{ts_start}.json')
 
     # TRAINING TRIALS
     for i, grip_type in enumerate(training_types, start=1):
@@ -954,6 +1056,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
         if ev_path:
             print(f"[DATA] Saved training events JSON to {ev_path}")
         all_records.append(trial_record)
+        save_summaries(all_records, participant_id, train_path, exp_path)
 
     # TRAINING COMPLETE
     claw_ctl.ctl.axis_enabled = False
@@ -1070,60 +1173,13 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
                                     filename_prefix=f"choice_trial_{trial}")
         print(f"[DATA] Saved choice summary to {choice_path}")
         all_records.append(trial_record)
+        save_summaries(all_records, participant_id, train_path, exp_path)
 
         claw_ctl.ctl.axis_enabled = False
 
-    ts = datetime.datetime.utcnow().strftime('%Y%m%dT%H%M%S')
-
-    training_trials_list  = [t for t in all_records if t.get('training_mode')]
-    experiment_trials_list = [t for t in all_records if not t.get('training_mode')]
-
-    training_summary = []
-    for t in training_trials_list:
-        _gp = t.get('grip_params', {}).get('force', {})
-        training_summary.append({
-            'participant_id': participant_id,
-            'trial_number': t.get('trial_number'),
-            'grip_type': t.get('grip_type'),
-            'force_mu': _gp.get('mu'),
-            'force_sigma': _gp.get('sigma'),
-            'grip_force': t.get('grip_sampled_value'),
-            'ir_detection': t.get('ir_detection'),
-        })
-
-    experiment_summary = []
-    for t in experiment_trials_list:
-        _gp = t.get('grip_params', {}).get('force', {})
-        experiment_summary.append({
-            'participant_id': participant_id,
-            'trial_number': t.get('trial_number'),
-            'grip_type': t.get('grip_type'),
-            'force_mu': _gp.get('mu'),
-            'force_sigma': _gp.get('sigma'),
-            'grip_force': t.get('grip_sampled_value'),
-            'ir_detection': t.get('ir_detection'),
-            'selection_confidence': t.get('selection_confidence'),
-            'outcome_confidence': t.get('outcome_confidence'),
-        })
-
-    os.makedirs(session_dir, exist_ok=True)
-
-    train_path = os.path.join(session_dir, f'combined_all_training_{participant_id}_{ts}.json')
-    exp_path   = os.path.join(session_dir, f'combined_all_trials_{participant_id}_{ts}.json')
-
-    try:
-        with open(train_path, 'w', encoding='utf-8') as f:
-            json.dump(training_summary, f, indent=2, default=str)
-        print(f"[DATA] Saved combined training summary to {train_path}")
-    except Exception as e:
-        print(f"[WARN] failed saving combined training summary: {e}")
-
-    try:
-        with open(exp_path, 'w', encoding='utf-8') as f:
-            json.dump(experiment_summary, f, indent=2, default=str)
-        print(f"[DATA] Saved combined experiment summary to {exp_path}")
-    except Exception as e:
-        print(f"[WARN] failed saving combined experiment summary: {e}")
+    save_summaries(all_records, participant_id, train_path, exp_path)
+    print(f"[DATA] Saved combined training summary to {train_path}")
+    print(f"[DATA] Saved combined experiment summary to {exp_path}")
 
     claw_ctl.ctl.axis_enabled = False
 
