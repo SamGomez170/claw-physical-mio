@@ -9,7 +9,7 @@ from .strength_test import run_grip_strength_test
 def main(args=None):
     claw_ctl = ClawCtl(args)
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
+    screen = make_screen()
 
     if len(sys.argv) > 1 and sys.argv[1] == '--test':
         print("Running grip strength test mode...")

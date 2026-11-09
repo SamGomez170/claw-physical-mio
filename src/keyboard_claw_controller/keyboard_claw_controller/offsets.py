@@ -23,6 +23,15 @@ Usage:
         (same mu AND sigma) are used, all together in one plot.
         Set ONLY_LISTED_DISTRIBUTIONS = False to use every test trial.
 
+Both modes also make, for the distributions listed in grip_distribution_types
+(ALL trials with that mu and sigma, no aim-area filter):
+    success_by_distribution[_tests].png   bar plot of the success rate per distribution
+    success_by_distribution_phases.png    same, training and experiment side by side
+                                          (participants only)
+    force_vs_success[_tests].png          every trial at its drawn force, pass (top) /
+                                          fail (bottom), coloured by distribution, with
+                                          each distribution's Gaussian drawn dashed
+
 Only needs numpy and matplotlib.
 """
 import argparse
@@ -149,6 +158,26 @@ def match_distribution(r):
     return None
 
 
+def load_participant_outcomes(root):
+    """Every participant trial (also those without a grab position):
+    one (distribution name, hit, drawn force, phase) per (participant, phase, trial)."""
+    out = {}
+    for path in find_summaries(root):
+        phase = "training" if "combined_all_training_" in os.path.basename(path) else "experiment"
+        try:
+            with open(path, encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            continue
+        for r in data:
+            name = match_distribution({"claw_mu": r.get("force_mu"), "claw_sigma": r.get("force_sigma")})
+            if name is None or "ir_success" not in r:
+                continue
+            out[(r.get("participant_id"), phase, r.get("trial_number"))] = (
+                name, _true(r.get("ir_success")), _num(r.get("grip_force")), phase)
+    return list(out.values())
+
+
 def load_test_rows(root):
     """Automatic grip tests (grip_offset_test_*.csv / .json).
     Position = MEASURED grab position if it was saved, otherwise the TARGET
@@ -187,7 +216,7 @@ def load_test_rows(root):
                 "participant_id": "grip test", "phase": "test",
                 "trial_number": int(_num(r.get("trial_number")) or 0), "grip_type": r.get("claw") or "",
                 "grab_x": gx, "grab_y": gy, "hit": _true(r.get("success_ir")),
-                "pos_source": src, "distribution": dist_name,
+                "pos_source": src, "distribution": dist_name, "force": _num(r.get("force")),
             }
     rows = list(rows.values())
     n_meas = sum(r["pos_source"] == "measured" for r in rows)
@@ -385,6 +414,192 @@ def plot(rows, title, out_png, areas=None):
     print(f"saved {out_png}")
 
 
+# ---------------- bar plot per distribution ----------------
+def bar_plot(outcomes, title, out_png):
+    """outcomes: list of (distribution name, hit). One bar per listed distribution."""
+    names, labels, k_hit, n_tot = [], [], [], []
+    print("\nsuccess per distribution (all trials):")
+    for name, c in grip_distribution_types.items():
+        mu, sd = c["force"]["mu"], c["force"]["sigma"]
+        hits = [o[1] for o in outcomes if o[0] == name]
+        k = sum(hits)
+        names.append(name)
+        labels.append(f"{name.replace('_', ' ').title()}\n(μ={mu:g}, σ={sd:g})")
+        k_hit.append(k)
+        n_tot.append(len(hits))
+        print(f"  {name:12s} {k}/{len(hits)}" + (f" = {k/len(hits):.1%}" if hits else "  no trials"))
+    rates = [100 * k / n if n else 0 for k, n in zip(k_hit, n_tot)]
+    fig, ax = plt.subplots(figsize=(11, 7.5))
+    x = np.arange(len(names))
+    ax.bar(x, rates, width=0.5, color="#3b9ff5", edgecolor="black", linewidth=1.5, zorder=3)
+    for i in range(len(names)):
+        txt = f"{rates[i]:.1f}%\n({k_hit[i]}/{n_tot[i]})" if n_tot[i] else "no trials"
+        ax.text(x[i], rates[i] + 2, txt, ha="center", va="bottom", fontsize=12, weight="bold")
+    ax.set_xticks(x, labels, fontsize=12, weight="bold")
+    ax.set_ylim(0, 100)
+    ax.set_yticks(range(0, 101, 20), [f"{v}%" for v in range(0, 101, 20)])
+    ax.set_ylabel("Success Rate", fontsize=14, weight="bold")
+    ax.grid(axis="y", color=GRID, zorder=0)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    ax.set_title(f"{title} · {sum(n_tot)} trials", fontsize=14, weight="bold")
+    fig.tight_layout()
+    fig.savefig(out_png, dpi=150, facecolor="white")
+    plt.close(fig)
+    print(f"saved {out_png}")
+
+
+def bar_plot_phases(outcomes, title, out_png):
+    """outcomes: (distribution, hit, force, phase). Two bars per distribution:
+    training and experiment, side by side."""
+    phases = [("training", "Training", "#9ec5f4"), ("experiment", "Experiment", "#256abf")]
+    names = list(grip_distribution_types)
+    x = np.arange(len(names))
+    width = 0.38
+    fig, ax = plt.subplots(figsize=(12, 7.5))
+    print("\nsuccess per distribution, training vs experiment:")
+    totals = {}
+    for j, (ph, label, col) in enumerate(phases):
+        rates, ks, ns = [], [], []
+        for name in names:
+            hits = [o[1] for o in outcomes if o[0] == name and o[3] == ph]
+            ks.append(sum(hits)); ns.append(len(hits))
+            rates.append(100 * sum(hits) / len(hits) if hits else 0)
+        totals[ph] = sum(ns)
+        pos = x + (j - 0.5) * width
+        ax.bar(pos, rates, width=width * 0.95, color=col, edgecolor="black", linewidth=1.2,
+               label=f"{label} ({sum(ns)} trials)", zorder=3)
+        for p, r, k, n in zip(pos, rates, ks, ns):
+            ax.text(p, r + 1.5, f"{r:.0f}%\n({k}/{n})" if n else "no\ntrials",
+                    ha="center", va="bottom", fontsize=10, weight="bold")
+        print(f"  {label:10s} " + "  ".join(f"{nm} {k}/{n}" for nm, k, n in zip(names, ks, ns)))
+    labels = [f"{n.replace('_', ' ').title()}\n(μ={grip_distribution_types[n]['force']['mu']:g}, "
+              f"σ={grip_distribution_types[n]['force']['sigma']:g})" for n in names]
+    ax.set_xticks(x, labels, fontsize=12, weight="bold")
+    ax.set_ylim(0, 110)
+    ax.set_yticks(range(0, 101, 20), [f"{v}%" for v in range(0, 101, 20)])
+    ax.set_ylabel("Success Rate", fontsize=14, weight="bold")
+    ax.grid(axis="y", color=GRID, zorder=0)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    ax.legend(frameon=False, fontsize=11, loc="upper left", bbox_to_anchor=(0.0, 1.0), ncol=2)
+    ax.set_title(title, fontsize=14, weight="bold", pad=14)
+    fig.tight_layout()
+    fig.savefig(out_png, dpi=150, facecolor="white")
+    plt.close(fig)
+    print(f"saved {out_png}")
+
+
+# ---------------- drawn force vs success ----------------
+DIST_COLORS = ["#2a78d6", "#1baf8f", "#eb6834", "#a855c7", "#d4a017", "#6b6a64"]
+DIST_MARKERS = ["o", "s", "^", "D", "P", "X"]
+
+
+def force_success_plot(outcomes, title, out_png, seed=0):
+    """outcomes: (distribution, hit, force). One dot per trial at its drawn force,
+    pass at the top, fail at the bottom (slightly jittered so dots don't overlap);
+    dashed: each distribution's Gaussian N(mu, sigma), all scaled to the same height."""
+    pts = [o for o in outcomes if o[2] is not None]
+    if not pts:
+        print("[force plot] no trials with a drawn force - skipped")
+        return
+    rng = np.random.default_rng(seed)
+    forces = [o[2] for o in pts]
+    lo = min(min(forces), min(c["force"]["mu"] - 3 * c["force"]["sigma"] for c in grip_distribution_types.values())) - 1
+    hi = max(max(forces), max(c["force"]["mu"] + 3 * c["force"]["sigma"] for c in grip_distribution_types.values())) + 1
+    xs = np.linspace(lo, hi, 500)
+
+    fig, ax = plt.subplots(figsize=(14, 6.5))
+    for i, (name, c) in enumerate(grip_distribution_types.items()):
+        col, mk = DIST_COLORS[i % len(DIST_COLORS)], DIST_MARKERS[i % len(DIST_MARKERS)]
+        mu, sd = c["force"]["mu"], c["force"]["sigma"]
+        # Gaussian shape, peak at 0.9 above the "pass" row
+        g = np.exp(-0.5 * ((xs - mu) / sd) ** 2)
+        ax.plot(xs, 1.12 + 0.75 * g, ls="--", lw=1.6, color=col, alpha=0.85)
+        sub = [o for o in pts if o[0] == name]
+        if not sub:
+            continue
+        f = np.array([o[2] for o in sub])
+        y = np.array([1.0 if o[1] else 0.0 for o in sub]) + rng.uniform(-0.06, 0.06, len(sub))
+        k = sum(o[1] for o in sub)
+        ax.scatter(f, y, s=34, marker=mk, color=col, edgecolor="white", lw=0.6, alpha=0.9,
+                   label=f"{name.replace('_', ' ')} (μ={mu:g}, σ={sd:g})  ·  {k}/{len(sub)} = {k/len(sub):.0%}",
+                   zorder=3)
+    ax.set_yticks([0, 1], ["Fail (0)", "Pass (1)"])
+    ax.set_ylim(-0.3, 2.0)
+    ax.set_xlim(lo, hi)
+    ax.set_xlabel("actual drawn force", color=MUTED)
+    ax.set_ylabel("IR success", color=MUTED)
+    ax.grid(axis="x", color=GRID, ls="--", lw=0.8)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    ax.tick_params(colors=MUTED)
+    ax.legend(frameon=False, fontsize=9, loc="upper left", bbox_to_anchor=(1.01, 1.0))
+    ax.set_title(f"{title} · {len(pts)} trials   (dashed = each distribution's Gaussian)",
+                 loc="left", fontsize=13, color=INK)
+    fig.tight_layout()
+    fig.savefig(out_png, dpi=150, facecolor="white")
+    plt.close(fig)
+    print(f"saved {out_png}")
+
+
+def _force_panel(ax, pts, xs, lo, hi, rng, title):
+    for i, (name, c) in enumerate(grip_distribution_types.items()):
+        col, mk = DIST_COLORS[i % len(DIST_COLORS)], DIST_MARKERS[i % len(DIST_MARKERS)]
+        mu, sd = c["force"]["mu"], c["force"]["sigma"]
+        g = np.exp(-0.5 * ((xs - mu) / sd) ** 2)
+        ax.plot(xs, 1.12 + 0.75 * g, ls="--", lw=1.6, color=col, alpha=0.85)
+        sub = [o for o in pts if o[0] == name]
+        lab = f"{name.replace('_', ' ')} (μ={mu:g}, σ={sd:g})  ·  "
+        if sub:
+            f = np.array([o[2] for o in sub])
+            y = np.array([1.0 if o[1] else 0.0 for o in sub]) + rng.uniform(-0.06, 0.06, len(sub))
+            k = sum(o[1] for o in sub)
+            ax.scatter(f, y, s=34, marker=mk, color=col, edgecolor="white", lw=0.6, alpha=0.9,
+                       label=lab + f"{k}/{len(sub)} = {k/len(sub):.0%}", zorder=3)
+        else:
+            ax.scatter([], [], s=34, marker=mk, color=col, label=lab + "no trials")
+    ax.set_yticks([0, 1], ["Fail (0)", "Pass (1)"])
+    ax.set_ylim(-0.3, 2.0)
+    ax.set_xlim(lo, hi)
+    ax.set_ylabel("IR success", color=MUTED)
+    ax.grid(axis="x", color=GRID, ls="--", lw=0.8)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    ax.tick_params(colors=MUTED)
+    ax.legend(frameon=False, fontsize=9, loc="upper left", bbox_to_anchor=(1.01, 1.0))
+    ax.set_title(title, loc="left", fontsize=12, color=INK)
+
+
+def force_success_phases(outcomes, title, out_png, seed=0):
+    """outcomes: (distribution, hit, force, phase). The force plot with all distributions
+    together, one panel for training and one for experiment (same x axis)."""
+    pts = [o for o in outcomes if o[2] is not None and len(o) > 3]
+    if not pts:
+        print("[force plot phases] no trials with a drawn force - skipped")
+        return
+    rng = np.random.default_rng(seed)
+    forces = [o[2] for o in pts]
+    dists = grip_distribution_types.values()
+    lo = min(min(forces), min(c["force"]["mu"] - 3 * c["force"]["sigma"] for c in dists)) - 1
+    hi = max(max(forces), max(c["force"]["mu"] + 3 * c["force"]["sigma"] for c in dists)) + 1
+    xs = np.linspace(lo, hi, 500)
+    fig, axes = plt.subplots(2, 1, figsize=(14, 10), sharex=True)
+    for ax, phase in zip(axes, ("training", "experiment")):
+        sub = [o for o in pts if o[3] == phase]
+        k = sum(o[1] for o in sub)
+        info = f"{k}/{len(sub)} = {k/len(sub):.0%}" if sub else "no trials"
+        _force_panel(ax, sub, xs, lo, hi, rng, f"{phase.capitalize()} · {len(sub)} trials · {info}")
+        print(f"  force plot {phase:10s} {len(sub)} trials")
+    axes[-1].set_xlabel("actual drawn force", color=MUTED)
+    fig.suptitle(f"{title}   (dashed = each distribution's Gaussian)", x=0.01, ha="left",
+                 fontsize=13, color=INK)
+    fig.tight_layout()
+    fig.savefig(out_png, dpi=150, facecolor="white")
+    plt.close(fig)
+    print(f"saved {out_png}")
+
+
 # ---------------- tables ----------------
 def write_tables(rows, out_dir):
     cols = ["participant_id", "phase", "trial_number", "grip_type", "grab_x",
@@ -446,6 +661,11 @@ def main():
         plot(rows, f"Automatic grip tests · {len(rows)} trials"
              + (" · listed distributions only" if ONLY_LISTED_DISTRIBUTIONS else ""),
              os.path.join(out_dir, "goal_heatmap_tests.png"), areas)
+        test_out = [(r["distribution"], r["hit"], r.get("force")) for r in rows if r.get("distribution")]
+        bar_plot(test_out, "Success Rate by Grip Distribution Type (grip tests)",
+                 os.path.join(out_dir, "success_by_distribution_tests.png"))
+        force_success_plot(test_out, "Drawn force vs IR success (grip tests)",
+                           os.path.join(out_dir, "force_vs_success_tests.png"))
         return
 
     if not find_summaries(args.folder):
@@ -476,6 +696,15 @@ def main():
             plot(sub, f"{phase.capitalize()} trials · {len({r['participant_id'] for r in sub})} participant(s)",
                  os.path.join(out_dir, f"goal_heatmap_{phase}.png"))
     write_tables(rows, out_dir)
+    part_out = load_participant_outcomes(args.folder)
+    bar_plot(part_out, "Success Rate by Grip Distribution Type (participants)",
+             os.path.join(out_dir, "success_by_distribution.png"))
+    bar_plot_phases(part_out, "Success Rate by Grip Distribution Type: training vs experiment",
+                    os.path.join(out_dir, "success_by_distribution_phases.png"))
+    force_success_plot(part_out, "Drawn force vs IR success (participants)",
+                       os.path.join(out_dir, "force_vs_success.png"))
+    force_success_phases(part_out, "Drawn force vs IR success: training vs experiment",
+                         os.path.join(out_dir, "force_vs_success_phases.png"))
 
 
 if __name__ == "__main__":
