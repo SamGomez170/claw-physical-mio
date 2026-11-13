@@ -36,7 +36,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-DEFAULT_FOLDER = "/home/clawMachine/claw_data"
+DEFAULT_FOLDER = "/home/clawMachine/claw_data/data"
 BALLS = [(445, 385), (625, 150), (750, 450)]
 
 
@@ -325,8 +325,10 @@ def main():
 
     xs = np.linspace(np.floor(F.min()) - 1, np.ceil(F.max()) + 1, 400)
     fig, ax = plt.subplots(figsize=(11, 7))
-    ax.scatter(bx, bp, s=25 * bn, color="#3987e5", alpha=0.55, edgecolor="white",
-               label="binned pass rate (size = n)", zorder=3)
+    sizes = 20 + 600 * bn / bn.max()          # biggest dot always the same size
+    ax.scatter(bx, bp, s=sizes, color="#3987e5", alpha=0.55, edgecolor="white", zorder=3)
+    ax.scatter([], [], s=120, color="#3987e5", alpha=0.55, edgecolor="white",
+               label="binned pass rate (size = n)")
     for x, p, n in zip(bx, bp, bn):
         ax.text(x, p + 0.04, f"n={n}", ha="center", fontsize=8, color="#6b6a64")
     ax.plot(xs, sigmoid(xs, a, b, lapse), color="#0d366b", lw=2.6,
@@ -362,7 +364,6 @@ def main():
                                          if args.aim_area else "sigmoid.png")
     fig.savefig(out, dpi=150, bbox_inches="tight", facecolor="white")
     print(f"saved {out}")
-    plt.show()
 
 
 if __name__ == "__main__":

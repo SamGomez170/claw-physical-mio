@@ -26,8 +26,8 @@ OUTCOME_COLOR   = (128, 0, 0)
 rewards = {
     "wide_low": 14,
     "narrow_low": 18,
-    "wide_high": 10,
-    "narrow_high": 11
+    "wide_high": 11,
+    "narrow_high": 10
 }
 WIDTH = 800     # layout was designed for 800 x 600; everything is scaled to the real screen
 HEIGHT = 600
@@ -53,7 +53,7 @@ def P(v):
 # Arena limits for the random start position (same units as move_to_box)
 ARENA_X = (300.0, 750.0)
 ARENA_Y = (100.0, 480.0)
-NUM_TRAINING_ROUNDS = 15  # each round shows every claw once -> 12 trials per claw (48 in total)
+NUM_TRAINING_ROUNDS = 4  # each round shows every claw once -> 12 trials per claw (48 in total)
 SKIP_TRAINING = False   # True = go straight from the intro to the experiment
 STRATIFIED_TRAINING = True  # True = training forces cover each claw's distribution evenly
                             # (stratified sampling); False = plain random draws (random.gauss)
