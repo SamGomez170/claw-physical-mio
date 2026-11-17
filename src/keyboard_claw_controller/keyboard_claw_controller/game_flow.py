@@ -53,7 +53,7 @@ def P(v):
 # Arena limits for the random start position (same units as move_to_box)
 ARENA_X = (300.0, 750.0)
 ARENA_Y = (100.0, 480.0)
-NUM_TRAINING_ROUNDS = 15  # each round shows every claw once -> 12 trials per claw (48 in total)
+NUM_TRAINING_ROUNDS = 13  # each round shows every claw once -> 12 trials per claw (48 in total)
 SKIP_TRAINING = False   # True = go straight from the intro to the experiment
 STRATIFIED_TRAINING = True  # True = training forces cover each claw's distribution evenly
                             # (stratified sampling); False = plain random draws (random.gauss)
@@ -68,11 +68,11 @@ grip_distribution_types = {
         "rate": 255
     },
     "wide_low": {
-        "force": {"mu": 190, "sigma": 2},
+        "force": {"mu": 191, "sigma": 2},
         "rate": 255
     },
     "narrow_low": {
-        "force": {"mu": 190, "sigma": 0.5},
+        "force": {"mu": 191, "sigma": 0.5},
         "rate": 255
     }
 }
@@ -1167,7 +1167,7 @@ async def run_trial(claw_ctl, screen, grip_type,
         'grip_type': grip_type,
         'grip_params': grip_distribution_types.get(grip_type, {}),
         'grip_sampled_value': grip,
-        'total_reward_before': total_reward,
+        'total_reward_before': total_reward,  
         'logger': logger.as_dict(),
         'original_claw_position': original_position,
         'start_position': start_position,
