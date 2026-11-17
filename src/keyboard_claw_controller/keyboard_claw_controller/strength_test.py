@@ -1,26 +1,3 @@
-# strength_test.py
-#
-# Automatic grip test that maps success as a function of BOTH grip force and
-# aiming offset. Each trial:
-#   1. picks a ball position, an offset (distance + direction) and a force
-#   2. moves the claw to ball + offset and does the grab
-#   3. drops in the box and records RFID / IR success
-#
-# Balls are tested in a fixed cycle (1 -> 2 -> 3 -> 1 ...) so the operator
-# always knows where to put the ball; each trial starts right away - no buttons,
-# no waiting.
-# Force: drawn uniformly over FORCE_RANGE ("uniform") or like the game from a claw
-# distribution ("claws").
-# Offset: OFFSET_MODE = "rings" -> balanced over OFFSET_RADII with a random direction
-#         OFFSET_MODE = "aim_area" -> a random point INSIDE the participants' aim area
-#         of that ball (ellipse from aim_areas.json, made by goal_heatmap.py / offsets.py)
-#
-# After the drop the claw moves to a random spot (as in the game), so every
-# trial starts from a random position and approaches its target from there.
-#
-# Saved per trial (CSV, appended after every trial, + JSON backup at the end):
-#   ball position, requested offset, target position, MEASURED position where the
-#   claw went down, measured end position, force, success (RFID / IR / both).
 import asyncio
 import time
 import json

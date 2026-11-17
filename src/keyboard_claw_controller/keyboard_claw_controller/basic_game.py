@@ -12,9 +12,7 @@ from .strength_test import run_grip_strength_test
 
 GAME_MONITOR = "other"   # "other" = the screen that is NOT the main one, "primary", or a number (0, 1)
 
-# Claw colours per participant (Latin square, 4 groups; see COLOR_LATIN_SQUARES in game_flow.py)
-#   None    = automatic: each new participant gets the next group (0, 1, 2, 3, 0, ...)
-#   0 - 3   = use this group (e.g. to repeat a session or to test)
+
 COLOR_GROUP = None
 COLOR_COUNTER_FILE = os.path.join("claw_data", "color_group_counter.txt")
 

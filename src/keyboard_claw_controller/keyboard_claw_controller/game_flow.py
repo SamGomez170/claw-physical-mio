@@ -31,7 +31,6 @@ rewards = {
 }
 # ---------------------------------------------------------------- claw colours
 # Latin square: across the 4 groups every claw gets every colour once.
-# The group is chosen in basic_game.py and passed to run_game(color_group=...).
 BLUE, GREEN, YELLOW, RED = (30, 144, 255), (50, 205, 50), (255, 215, 0), (220, 20, 60)
 COLOR_NAMES = {BLUE: "BLUE", GREEN: "GREEN", YELLOW: "YELLOW", RED: "RED"}
 COLOR_LATIN_SQUARES = {
@@ -43,9 +42,7 @@ COLOR_LATIN_SQUARES = {
 COLOR_GROUP = 0
 CLAW_COLORS = dict(COLOR_LATIN_SQUARES[0])   # claw -> colour for this participant (set_color_group)
 
-# The LED Arduino (led_claw.ino) knows only claw names, each with a fixed colour.
-# To show a colour on the LEDs we send the name the Arduino uses for that colour,
-# so the Arduino code does not need to change.
+
 ARDUINO_NAME_FOR_COLOR = {BLUE: "narrow_low", GREEN: "wide_low", YELLOW: "wide_high", RED: "narrow_high"}
 
 CLAW_DESCRIPTIONS = {   # used on the pre-training screen, in this order
@@ -93,12 +90,8 @@ def F(size):
 def P(v):
     """Distance/size in pixels (as designed for 800x600), scaled to the screen."""
     return int(round(v * UI_SCALE))
-# ---------------------------------------------------------------- ball positions
-# Where the experimenter places the ball (same units as grab_x / grab_y, same as the analysis scripts)
 GOAL_POSITIONS = {1: (750.0, 450.0), 2: (625.0, 150.0), 3: (445.0, 385.0)}
-# Where the goals are DRAWN on the small map (only the picture; the saved data use GOAL_POSITIONS).
-# Goal 1 is drawn halfway between goals 2 and 3 in y, as it is on the real machine.
-MAP_POSITIONS = {1: (750.0, 267.5), 2: (625.0, 150.0), 3: (445.0, 385.0)}
+MAP_POSITIONS = {1: (750.0, 267.5), 2: (625.0, 150.0), 3: (525.0, 385.0)}   # goal 3 drawn closer in x (map only)
 BALL_MAP_CORNER = "bottomleft"     # where the small map is drawn: "bottomleft" or "bottomright"
 BALL_MAP_FLIP_X = False            # flip the map if it does not match how you see the machine
 BALL_MAP_FLIP_Y = False            # (default: x to the right, y up, like the heatmap plots)
