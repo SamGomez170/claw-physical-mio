@@ -12,6 +12,29 @@ from .strength_test import run_grip_strength_test
 
 GAME_MONITOR = "other"   # "other" = the screen that is NOT the main one, "primary", or a number (0, 1)
 
+# Claw colours per participant (Latin square, 4 groups; see COLOR_LATIN_SQUARES in game_flow.py)
+#   None    = automatic: each new participant gets the next group (0, 1, 2, 3, 0, ...)
+#   0 - 3   = use this group (e.g. to repeat a session or to test)
+COLOR_GROUP = None
+COLOR_COUNTER_FILE = os.path.join("claw_data", "color_group_counter.txt")
+
+
+def next_color_group():
+    """Next group in the rotation 0-3, remembered in COLOR_COUNTER_FILE."""
+    count = 0
+    try:
+        with open(COLOR_COUNTER_FILE) as f:
+            count = int(f.read().strip())
+    except (FileNotFoundError, ValueError):
+        pass
+    try:
+        os.makedirs(os.path.dirname(COLOR_COUNTER_FILE), exist_ok=True)
+        with open(COLOR_COUNTER_FILE, "w") as f:
+            f.write(str(count + 1))
+    except OSError as e:
+        print(f"[COLORS] could not update {COLOR_COUNTER_FILE}: {e}")
+    return count % 4
+
 
 def _monitors():
     """Monitors from `xrandr --listmonitors`: list of (index, is_primary, width, height, x, y)."""
@@ -61,8 +84,9 @@ def main(args=None):
         print("Running grip strength test mode...")
         asyncio.run(run_grip_strength_test(screen, claw_ctl, ir_detector=None))
     else:
-        print("Running normal game mode...")
-        asyncio.run(run_game(screen, claw_ctl))
+        group = next_color_group() if COLOR_GROUP is None else int(COLOR_GROUP) % 4
+        print(f"Running normal game mode... (colour group {group})")
+        asyncio.run(run_game(screen, claw_ctl, color_group=group))
 
 
 if __name__ == '__main__':

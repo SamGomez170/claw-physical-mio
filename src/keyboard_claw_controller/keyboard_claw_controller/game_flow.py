@@ -29,6 +29,49 @@ rewards = {
     "wide_high": 11,
     "narrow_high": 10
 }
+# ---------------------------------------------------------------- claw colours
+# Latin square: across the 4 groups every claw gets every colour once.
+# The group is chosen in basic_game.py and passed to run_game(color_group=...).
+BLUE, GREEN, YELLOW, RED = (30, 144, 255), (50, 205, 50), (255, 215, 0), (220, 20, 60)
+COLOR_NAMES = {BLUE: "BLUE", GREEN: "GREEN", YELLOW: "YELLOW", RED: "RED"}
+COLOR_LATIN_SQUARES = {
+    0: {"narrow_low": BLUE,   "wide_low": GREEN,  "narrow_high": RED,    "wide_high": YELLOW},
+    1: {"narrow_low": GREEN,  "wide_low": YELLOW, "narrow_high": BLUE,   "wide_high": RED},
+    2: {"narrow_low": YELLOW, "wide_low": RED,    "narrow_high": GREEN,  "wide_high": BLUE},
+    3: {"narrow_low": RED,    "wide_low": BLUE,   "narrow_high": YELLOW, "wide_high": GREEN},
+}
+COLOR_GROUP = 0
+CLAW_COLORS = dict(COLOR_LATIN_SQUARES[0])   # claw -> colour for this participant (set_color_group)
+
+# The LED Arduino (led_claw.ino) knows only claw names, each with a fixed colour.
+# To show a colour on the LEDs we send the name the Arduino uses for that colour,
+# so the Arduino code does not need to change.
+ARDUINO_NAME_FOR_COLOR = {BLUE: "narrow_low", GREEN: "wide_low", YELLOW: "wide_high", RED: "narrow_high"}
+
+CLAW_DESCRIPTIONS = {   # used on the pre-training screen, in this order
+    "narrow_low":  "claw is weaker on average and have very predictable grip strength",
+    "wide_low":    "claw is weaker on average but have more variable grip strength",
+    "wide_high":   "claw is stronger on average and have more variable grip strength",
+    "narrow_high": "claw is stronger on average and have very predictable grip strength",
+}
+
+
+def set_color_group(group):
+    """Use the colours of Latin-square group 0-3 for this participant
+    (screen claws, legend, pre-training text and LEDs)."""
+    global COLOR_GROUP
+    COLOR_GROUP = int(group) % len(COLOR_LATIN_SQUARES)
+    CLAW_COLORS.clear()
+    CLAW_COLORS.update(COLOR_LATIN_SQUARES[COLOR_GROUP])
+    # rebuild the four colour lines of the pre-training screen
+    lines = [{"text": f"{COLOR_NAMES[CLAW_COLORS[c]]} {d}", "icon": True, "color": CLAW_COLORS[c]}
+             for c, d in CLAW_DESCRIPTIONS.items()]
+    first = next(i for i, it in enumerate(PRE_TRAINING) if it.get("icon"))
+    PRE_TRAINING[first:first + 4] = lines
+    print(f"[COLORS] group {COLOR_GROUP}: " +
+          ", ".join(f"{c}={COLOR_NAMES[CLAW_COLORS[c]]}" for c in CLAW_DESCRIPTIONS))
+
+
 WIDTH = 800     # layout was designed for 800 x 600; everything is scaled to the real screen
 HEIGHT = 600
 UI_SCALE = 1.0  # set from the real screen size at the start of run_game
@@ -50,17 +93,88 @@ def F(size):
 def P(v):
     """Distance/size in pixels (as designed for 800x600), scaled to the screen."""
     return int(round(v * UI_SCALE))
+# ---------------------------------------------------------------- ball positions
+# Where the experimenter places the ball (same units as grab_x / grab_y, same as the analysis scripts)
+GOAL_POSITIONS = {1: (750.0, 450.0), 2: (625.0, 150.0), 3: (445.0, 385.0)}
+# Where the goals are DRAWN on the small map (only the picture; the saved data use GOAL_POSITIONS).
+# Goal 1 is drawn halfway between goals 2 and 3 in y, as it is on the real machine.
+MAP_POSITIONS = {1: (750.0, 267.5), 2: (625.0, 150.0), 3: (445.0, 385.0)}
+BALL_MAP_CORNER = "bottomleft"     # where the small map is drawn: "bottomleft" or "bottomright"
+BALL_MAP_FLIP_X = False            # flip the map if it does not match how you see the machine
+BALL_MAP_FLIP_Y = False            # (default: x to the right, y up, like the heatmap plots)
+
+
+BALL_NO_REPEAT = False   # True = a new block never starts with the goal that ended the previous one
+
+
+class BallPositionBalancer:
+    """Ball positions in shuffled blocks of 3: every 3 trials each goal is used
+    once, in a new random order (e.g. 2 3 1 | 1 2 3 | 3 1 2 ...).
+    With BALL_NO_REPEAT, the same goal never comes twice in a row
+    (the first goal of a block is never the last goal of the previous block)."""
+    def __init__(self, goals=GOAL_POSITIONS):
+        self.goals = list(goals)
+        self.block = []
+        self.last = None
+
+    def next(self, claw=None):
+        if not self.block:
+            self.block = self.goals[:]
+            random.shuffle(self.block)
+            if BALL_NO_REPEAT and len(self.block) > 1 and self.block[0] == self.last:
+                self.block.append(self.block.pop(0))   # move it to the end of the block
+        g = self.block.pop(0)
+        self.last = g
+        return g
+
+
+def draw_ball_map(screen, goal):
+    """Small square in a corner: the 3 goals, the one where the ball goes highlighted."""
+    if goal is None:
+        return
+    size, pad = P(100), P(10)
+    W, H = screen.get_size()
+    left = P(10) if BALL_MAP_CORNER == "bottomleft" else W - size - P(10)
+    top = H - size - P(10)
+    box = pygame.Rect(left, top, size, size)
+    pygame.draw.rect(screen, (250, 250, 250), box)
+    pygame.draw.rect(screen, (0, 0, 0), box, max(1, P(1)))
+
+    xs = [p[0] for p in MAP_POSITIONS.values()]
+    ys = [p[1] for p in MAP_POSITIONS.values()]
+    x0, x1 = min(xs) - 60, max(xs) + 60
+    y0, y1 = min(ys) - 60, max(ys) + 60
+    span = max(x1 - x0, y1 - y0)
+    small = F(16)
+    for g, (gx, gy) in MAP_POSITIONS.items():
+        fx = (gx - x0) / span
+        fy = (gy - y0) / span
+        if BALL_MAP_FLIP_X:
+            fx = 1 - fx
+        if not BALL_MAP_FLIP_Y:       # y up on the screen
+            fy = 1 - fy
+        px = int(left + pad + fx * (size - 2 * pad))
+        py = int(top + pad + fy * (size - 2 * pad))
+        if g == goal:
+            pygame.draw.circle(screen, (30, 30, 30), (px, py), P(9))   # black, not a claw colour
+            lab = small.render(str(g), True, (255, 255, 255))
+        else:
+            pygame.draw.circle(screen, (170, 170, 170), (px, py), P(6), max(1, P(1)))
+            lab = small.render(str(g), True, (120, 120, 120))
+        screen.blit(lab, lab.get_rect(center=(px, py)))
+
+
 # Arena limits for the random start position (same units as move_to_box)
 ARENA_X = (300.0, 750.0)
 ARENA_Y = (100.0, 480.0)
-NUM_TRAINING_ROUNDS = 13  # each round shows every claw once -> 12 trials per claw (48 in total)
+NUM_TRAINING_ROUNDS = 15  # each round shows every claw once -> 12 trials per claw (48 in total)
 SKIP_TRAINING = False   # True = go straight from the intro to the experiment
 STRATIFIED_TRAINING = True  # True = training forces cover each claw's distribution evenly
                             # (stratified sampling); False = plain random draws (random.gauss)
 
 grip_distribution_types = {
     "wide_high": {
-        "force": {"mu": 197, "sigma": 2},
+        "force": {"mu": 197, "sigma": 3},
         "rate": 255
     },
     "narrow_high": {
@@ -68,11 +182,11 @@ grip_distribution_types = {
         "rate": 255
     },
     "wide_low": {
-        "force": {"mu": 191, "sigma": 2},
+        "force": {"mu": 189, "sigma": 3},
         "rate": 255
     },
     "narrow_low": {
-        "force": {"mu": 191, "sigma": 0.5},
+        "force": {"mu": 189, "sigma": 0.5},
         "rate": 255
     }
 }
@@ -98,7 +212,7 @@ PRE_TRAINING = [
     {"text": "You will see claws of different colors, each representing a different type of grip:"},
     {"text": ""},
     {"text": "BLUE claw is weaker on average and have very predictable grip strength", "icon": True, "color": (30,144,255)},
-    {"text": "GREEN claw is weaker on average but have more variable grip strength", "icon": True, "color": (50,205,50)},
+    {"text": "GREEN claw is weaker on average and have more variable grip strength", "icon": True, "color": (50,205,50)},
     {"text": "YELLOW claw is stronger on average and have more variable grip strength", "icon": True, "color": (255,215,0)},
     {"text": "RED claw is stronger on average and have very predictable grip strength", "icon": True, "color": (220,20,60)},
     {"text": ""},
@@ -199,7 +313,9 @@ class LEDController:
         return False
 
     def set_grip(self, grip_type: str):
-        self._send(f"SET_GRIP:{grip_type}\n".encode(), f"OK:{grip_type}")
+        # send the Arduino name whose colour is this claw's colour for the participant
+        name = ARDUINO_NAME_FOR_COLOR.get(CLAW_COLORS.get(grip_type), grip_type)
+        self._send(f"SET_GRIP:{name}\n".encode(), f"OK:{name}")
 
     def off(self):
         self._send(b"OFF\n", "OK:off")
@@ -447,10 +563,10 @@ def draw_legend(screen, training_results=None, per_claw_total=None):
     font = F(24)
     y, x = P(20), P(10)
     rows = [
-        ("Weaker, Less Variable",   "narrow_low",  (30, 144, 255)),
-        ("Weaker, More Variable",   "wide_low",    (50, 205, 50)),
-        ("Stronger, More Variable", "wide_high",   (255, 215, 0)),
-        ("Stronger, Less Variable", "narrow_high", (220, 20, 60)),
+        ("Weaker, Less Variable",   "narrow_low",  CLAW_COLORS["narrow_low"]),
+        ("Weaker, More Variable",   "wide_low",    CLAW_COLORS["wide_low"]),
+        ("Stronger, More Variable", "wide_high",   CLAW_COLORS["wide_high"]),
+        ("Stronger, Less Variable", "narrow_high", CLAW_COLORS["narrow_high"]),
     ]
     for name, grip_type, col in rows:
         label = name
@@ -616,13 +732,7 @@ async def display_claw_selection(screen, first_type, second_type, claw_ctl, rewa
     }
 
     def draw_claw(surface, cx, cy, ctype):
-        claw_colors = {
-            "narrow_low": (30, 144, 255),
-            "wide_low":   (50, 205, 50),
-            "wide_high":  (255, 215, 0),
-            "narrow_high":(220, 20, 60)
-        }
-        color = claw_colors.get(ctype, (100, 100, 100))
+        color = CLAW_COLORS.get(ctype, (100, 100, 100))
         base_w, arm_l, arm_w, cord_l = P(60), P(50), P(10), P(100)
 
         pygame.draw.line(surface, (0,0,0),
@@ -795,13 +905,7 @@ async def display_rating(screen, claw_ctl,
 
 
 def draw_claw(surface, cx, cy, ctype):
-    claw_colors = {
-        "narrow_low": (30, 144, 255),
-        "wide_low":   (50, 205, 50),
-        "wide_high":  (255, 215, 0),
-        "narrow_high":(220, 20, 60)
-    }
-    color = claw_colors.get(ctype, (100, 100, 100))
+    color = CLAW_COLORS.get(ctype, (100, 100, 100))
     base_w, arm_l, arm_w, cord_l = P(60), P(50), P(10), P(100)
 
     pygame.draw.line(surface, (0,0,0),
@@ -849,11 +953,16 @@ def build_training_summary(records, participant_id):
         gx, gy = _xy(t.get('grab_position'))
         rows.append({
             'participant_id': participant_id,
+            'color_group': COLOR_GROUP,
+            'claw_color': COLOR_NAMES.get(CLAW_COLORS.get(t.get('grip_type'))),
             'trial_number': t.get('trial_number'),
             'grip_type': t.get('grip_type'),
             'force_mu': _gp.get('mu'),
             'force_sigma': _gp.get('sigma'),
             'grip_force': t.get('grip_sampled_value'),
+            'ball_goal': t.get('ball_goal'),
+            'ball_x': (t.get('ball_position') or (None, None))[0],
+            'ball_y': (t.get('ball_position') or (None, None))[1],
             'start_x': sx,
             'start_y': sy,
             'grab_x': gx,
@@ -874,6 +983,8 @@ def build_experiment_summary(records, participant_id):
         gx, gy = _xy(t.get('grab_position'))
         rows.append({
             'participant_id': participant_id,
+            'color_group': COLOR_GROUP,
+            'claw_color': COLOR_NAMES.get(CLAW_COLORS.get(t.get('grip_type'))),
             'trial_number': t.get('trial_number'),
             'options_displayed': t.get('options_displayed'),
             'grip_type': t.get('grip_type'),
@@ -885,6 +996,9 @@ def build_experiment_summary(records, participant_id):
             'grip_force': t.get('grip_sampled_value'),
             'selection_confidence': t.get('selection_confidence'),
             'outcome_confidence': t.get('outcome_confidence'),
+            'ball_goal': t.get('ball_goal'),
+            'ball_x': (t.get('ball_position') or (None, None))[0],
+            'ball_y': (t.get('ball_position') or (None, None))[1],
             'start_x': sx,
             'start_y': sy,
             'grab_x': gx,
@@ -946,7 +1060,7 @@ async def run_trial(claw_ctl, screen, grip_type,
                     home_delay=2, open_delay=2,
                     trial_number=None, total_trials=None,
                     training_mode=False, total_reward=0,
-                    led=None, IR=None, training_results=None):
+                    led=None, IR=None, training_results=None, ball_goal=None):
     """
     Run one trial while logging telemetry. Returns a trial_record dict.
     """
@@ -1019,7 +1133,13 @@ async def run_trial(claw_ctl, screen, grip_type,
 
     cx, cy = screen.get_width() // 2, screen.get_height() // 2
     draw_claw(screen, cx, cy, grip_type)
+    draw_ball_map(screen, ball_goal)
     pygame.display.flip()
+    if ball_goal is not None:
+        print(f"[BALL] trial {trial_number}: place the ball at goal {ball_goal} {GOAL_POSITIONS[ball_goal]}")
+        logger.log_event('ball_goal', {'goal': ball_goal,
+                                       'x': GOAL_POSITIONS[ball_goal][0],
+                                       'y': GOAL_POSITIONS[ball_goal][1]})
 
     # Set LED color for this grip type
     # (in experiment trials it is already lit from the moment the claw was chosen;
@@ -1167,10 +1287,12 @@ async def run_trial(claw_ctl, screen, grip_type,
         'grip_type': grip_type,
         'grip_params': grip_distribution_types.get(grip_type, {}),
         'grip_sampled_value': grip,
-        'total_reward_before': total_reward,  
+        'total_reward_before': total_reward,
         'logger': logger.as_dict(),
         'original_claw_position': original_position,
         'start_position': start_position,
+        'ball_goal': ball_goal,
+        'ball_position': GOAL_POSITIONS.get(ball_goal),
         'grab_position': grab_position,
         'ir_detection': ir_value,
         'ir_success': ir_success
@@ -1179,8 +1301,9 @@ async def run_trial(claw_ctl, screen, grip_type,
     return trial_record
 
 
-async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
+async def run_game(screen, claw_ctl, total_trials=50, training_trials=1, color_group=0):
     set_ui_scale(screen)
+    set_color_group(color_group)
 
     # --- Device startup check ---
     print("[STARTUP] Checking devices...")
@@ -1264,6 +1387,18 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
     train_path = os.path.join(session_dir, f'combined_all_training_{participant_id}_{session_ts}.json')
     exp_path   = os.path.join(session_dir, f'combined_all_trials_{participant_id}_{session_ts}.json')
     print(f"[DATA] Summaries will be updated after every trial in {session_dir}")
+    try:   # which colour each claw had for this participant
+        write_json_atomic(os.path.join(session_dir, f'colors_{participant_id}_{session_ts}.json'), {
+            'participant_id': participant_id,
+            'color_group': COLOR_GROUP,
+            'claw_colors': {c: {'name': COLOR_NAMES[rgb], 'rgb': list(rgb)} for c, rgb in CLAW_COLORS.items()},
+        })
+    except Exception as e:
+        print(f"[WARN] could not save colour file: {e}")
+
+    # Ball positions: counterbalanced separately for training and experiment
+    train_balls = BallPositionBalancer()
+    exp_balls = BallPositionBalancer()
 
     # TRAINING TRIALS
     for i, grip_type in enumerate(training_types, start=1):
@@ -1301,6 +1436,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             led=led,
             IR=IR,
             training_results=training_results,
+            ball_goal=train_balls.next(grip_type),
         )
 
         training_results[grip_type]["attempts"] += 1
@@ -1441,6 +1577,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             total_reward=total_reward,
             led=led,
             IR=IR,
+            ball_goal=exp_balls.next(choice),
         )
 
         trial_record['choice'] = choice
