@@ -77,14 +77,15 @@ grip_distribution_types = {
         "rate": 255
     },
     "wide_low": {
-        "force": {"mu": 191, "sigma": 2},
+        "force": {"mu": 190, "sigma": 2},
         "rate": 255
     },
     "narrow_low": {
-        "force": {"mu": 191, "sigma": 0.5},
+        "force": {"mu": 190, "sigma": 0.5},
         "rate": 255
     }
 }
+
 ONLY_LISTED_DISTRIBUTIONS = True
 # --tests: draw the participants' aim area on the test plots if this file exists
 # (None = look for aim_areas.json in the data folder)

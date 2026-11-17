@@ -24,8 +24,8 @@ from statistics import NormalDist
 SELECTION_COLOR = (0, 128, 0)
 OUTCOME_COLOR   = (128, 0, 0)
 rewards = {
-    "wide_low": 14,
-    "narrow_low": 18,
+    "wide_low": 18,
+    "narrow_low": 14,
     "wide_high": 11,
     "narrow_high": 10
 }
@@ -53,7 +53,7 @@ def P(v):
 # Arena limits for the random start position (same units as move_to_box)
 ARENA_X = (300.0, 750.0)
 ARENA_Y = (100.0, 480.0)
-NUM_TRAINING_ROUNDS = 4  # each round shows every claw once -> 12 trials per claw (48 in total)
+NUM_TRAINING_ROUNDS = 15  # each round shows every claw once -> 12 trials per claw (48 in total)
 SKIP_TRAINING = False   # True = go straight from the intro to the experiment
 STRATIFIED_TRAINING = True  # True = training forces cover each claw's distribution evenly
                             # (stratified sampling); False = plain random draws (random.gauss)
@@ -68,11 +68,11 @@ grip_distribution_types = {
         "rate": 255
     },
     "wide_low": {
-        "force": {"mu": 191, "sigma": 2},
+        "force": {"mu": 190, "sigma": 2},
         "rate": 255
     },
     "narrow_low": {
-        "force": {"mu": 191, "sigma": 0.5},
+        "force": {"mu": 190, "sigma": 0.5},
         "rate": 255
     }
 }
@@ -318,12 +318,11 @@ def draw_small_claw(screen, color, topleft):
 
 
 async def display_and_wait(screen, claw_ctl=None, render_items=None,
-                           title=None, color=(0,0,0), total_reward=0):
+                           title=None, color=(0,0,0), total_reward=None):
 
     pygame.event.clear()
     pygame.font.init()
     screen.fill((255,255,255))
-    monetary_reward = total_reward / 200
 
     if title is not None:
         font = F(36)
@@ -503,8 +502,8 @@ def draw_reward_display(screen, grip_distribution_type, total_reward, training_m
 
     if not training_mode:
         potential_reward = rewards[grip_distribution_type] if grip_distribution_type in rewards else 0
-        potential_text = f"Potential Reward in This Trial: {potential_reward:.1f}"
-        total_text = f"Total Reward: {total_reward:.1f}"
+        potential_text = f"Potential Reward in This Trial: {potential_reward:g}"
+        total_text = f"Total Reward: {total_reward:g}"
         potential_surface = font.render(potential_text, True, (0, 0, 0))
         total_surface = font.render(total_text, True, (0, 0, 0))
         screen.blit(potential_surface, potential_surface.get_rect(topright=(W - P(10), reward_y)))
@@ -879,6 +878,8 @@ def build_experiment_summary(records, participant_id):
             'options_displayed': t.get('options_displayed'),
             'grip_type': t.get('grip_type'),
             'chosen_reward': t.get('chosen_reward'),
+            'reward_earned': t.get('reward_earned'),
+            'total_reward': t.get('total_reward_after'),
             'force_mu': _gp.get('mu'),
             'force_sigma': _gp.get('sigma'),
             'grip_force': t.get('grip_sampled_value'),
@@ -1338,6 +1339,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
         await show_instruction_screen_with_text(screen, claw_ctl, text)
 
     # EXPERIMENT TRIALS
+    total_reward = 0     # sum of the rewards of all successful trials so far
     for trial in range(1, total_trials + 1):
         claw_ctl.ctl.axis_enabled = False
 
@@ -1426,7 +1428,6 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
         speed_value = grip_distribution_types[choice]["rate"]
 
         claw_ctl.ctl.axis_enabled = True
-        current_total_reward = 0
 
         trial_record = await run_trial(
             claw_ctl,
@@ -1437,7 +1438,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
             trial_number=trial,
             total_trials=total_trials,
             training_mode=False,
-            total_reward=current_total_reward,
+            total_reward=total_reward,
             led=led,
             IR=IR,
         )
@@ -1446,6 +1447,12 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
         trial_record['selection_confidence'] = selection_confidence
         trial_record['outcome_confidence'] = outcome_confidence
         trial_record['chosen_reward'] = rewards.get(choice)
+        # reward is earned only when the ball lands in the box
+        reward_earned = rewards.get(choice, 0) if trial_record.get('ir_success') else 0
+        total_reward += reward_earned
+        trial_record['reward_earned'] = reward_earned
+        trial_record['total_reward_after'] = total_reward
+        print(f"[REWARD] trial {trial}: +{reward_earned}, total {total_reward}")
         trial_record['options_displayed'] = (first_type, second_type)
 
         choice_path = save_choice_data(trial_record,
@@ -1482,8 +1489,7 @@ async def run_game(screen, claw_ctl, total_trials=50, training_trials=1):
     await display_and_wait(
         screen,
         claw_ctl,
-        title="Experiment completed",
-        total_reward=10
+        title="Experiment completed"
     )
 
     # Cleanup
