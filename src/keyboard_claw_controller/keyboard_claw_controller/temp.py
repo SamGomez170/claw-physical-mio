@@ -6,8 +6,7 @@ import threading
 import time
 
 class ClawCtl():
-    
-
+    pass
 
 
 
